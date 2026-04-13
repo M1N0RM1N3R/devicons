@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from "astro:content";
+type IconNav = { slug: string; name: string } | null;
+type Props = CollectionEntry<"icons">["data"] & {
+  slug: string;
+  prev: IconNav;
+  next: IconNav;
+};
+
+const {
+  name,
+  description,
+  icons,
+  tags,
+  deprecated,
+  version,
+  website,
+  slug,
+  prev,
+  next,
+} = Astro.props;
+import PageLayout from "../components/layout/page-layout.astro";
+import { IconDetail } from "../components/icons/icon-detail";
+---
+
+<PageLayout
+  title={`${name} — Devicons`}
+  description={description ?? `${name} icon for developers`}
+>
+  <IconDetail
+    client:idle
+    name={name}
+    description={description}
+    icons={icons}
+    tags={tags}
+    deprecated={deprecated}
+    version={version}
+    website={website}
+    slug={slug}
+    prev={prev}
+    next={next}
+  />
+</PageLayout>

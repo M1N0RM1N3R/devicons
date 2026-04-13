@@ -1,0 +1,204 @@
+---
+const GITHUB_REPO = 'https://github.com/vorillaz/devicons';
+const pathname = Astro.url.pathname;
+const isDocs = pathname === '/docs' || pathname.startsWith('/docs/');
+const isIcons = pathname === '/search' || pathname.startsWith('/search/');
+const navLinks = [
+  { href: '/search', label: 'All Icons', active: isIcons },
+  { href: '/docs', label: 'Docs', active: isDocs },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-bg border-b border-border">
+  <div
+    class="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between">
+    <a
+      href="/"
+      class="type-brand text-text hover:text-accent transition-colors">
+      DEVICONS
+    </a>
+
+    <nav class="flex items-center gap-6">
+      {
+        navLinks.map(link => (
+          <a
+            href={link.href}
+            class:list={[
+              'navbar-link transition-colors hidden sm:block',
+              link.active ? 'text-accent' : 'text-text-muted hover:text-text',
+            ]}>
+            {link.label}
+          </a>
+        ))
+      }
+      <a
+        href={GITHUB_REPO}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="View Devicons on GitHub"
+        class="btn btn--ghost btn--mono btn--sm hidden sm:inline-flex">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="shrink-0"
+          aria-hidden="true">
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+          ></path>
+        </svg>
+        <span class="hidden sm:block">GitHub</span>
+        <span
+          data-stars
+          class="hidden items-center gap-1 px-1.5 py-0.5 bg-bg border border-border type-mono-sm text-accent">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="shrink-0"
+            aria-hidden="true">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+            ></polygon>
+          </svg>
+          <span data-stars-value></span>
+        </span>
+      </a>
+
+      <button
+        type="button"
+        data-mobile-menu-trigger
+        aria-label="Open menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        class="sm:hidden inline-flex items-center justify-center w-9 h-9 border border-border bg-surface text-text hover:border-accent hover:text-accent transition-colors">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          aria-hidden="true">
+          <line x1="2" y1="4" x2="14" y2="4"></line>
+          <line x1="2" y1="8" x2="14" y2="8"></line>
+          <line x1="2" y1="12" x2="14" y2="12"></line>
+        </svg>
+      </button>
+    </nav>
+  </div>
+
+  <div
+    id="mobile-menu"
+    data-mobile-menu
+    data-state="closed"
+    aria-hidden="true"
+    class="mobile-menu sm:hidden">
+    <div data-mobile-menu-overlay class="mobile-menu__overlay"></div>
+
+    <aside
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile menu"
+      data-mobile-menu-panel
+      class="mobile-menu__panel bg-bg border-l border-border flex flex-col">
+      <div
+        class="h-14 flex items-center justify-between px-6 border-b border-border shrink-0">
+        <span class="type-label">Menu</span>
+        <button
+          type="button"
+          data-mobile-menu-close
+          aria-label="Close menu"
+          class="inline-flex items-center justify-center w-9 h-9 border border-border bg-surface text-text hover:border-accent hover:text-accent transition-colors">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            aria-hidden="true">
+            <line x1="3" y1="3" x2="13" y2="13"></line>
+            <line x1="13" y1="3" x2="3" y2="13"></line>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="flex flex-col py-2" aria-label="Primary">
+        {
+          navLinks.map(link => (
+            <a
+              href={link.href}
+              class:list={[
+                'navbar-link px-6 py-4 border-b border-border transition-colors',
+                link.active
+                  ? 'text-accent bg-surface'
+                  : 'text-text hover:text-accent hover:bg-surface',
+              ]}>
+              {link.label}
+            </a>
+          ))
+        }
+        <a
+          href={GITHUB_REPO}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="navbar-link px-6 py-4 border-b border-border text-text hover:text-accent hover:bg-surface transition-colors flex items-center gap-2">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="shrink-0"
+            aria-hidden="true">
+            <path
+              d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+            ></path>
+          </svg>
+          GitHub
+        </a>
+      </nav>
+    </aside>
+  </div>
+</header>
+
+<script>
+  const starsEl = document.querySelector<HTMLElement>('[data-stars]');
+  const valueEl = document.querySelector<HTMLElement>('[data-stars-value]');
+
+  function format(n: number): string {
+    if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+    return String(n);
+  }
+
+  function fetchStars() {
+    fetch('https://api.github.com/repos/vorillaz/devicons')
+      .then(r => (r.ok ? r.json() : Promise.reject()))
+      .then(data => {
+        if (typeof data?.stargazers_count === 'number' && starsEl && valueEl) {
+          valueEl.textContent = format(data.stargazers_count);
+          starsEl.classList.remove('hidden');
+          starsEl.classList.add('flex');
+        }
+      })
+      .catch(() => {});
+  }
+
+  const ric = (
+    window as unknown as {
+      requestIdleCallback?: (
+        cb: () => void,
+        opts?: { timeout: number },
+      ) => number;
+    }
+  ).requestIdleCallback;
+  if (ric) ric(fetchStars, { timeout: 2500 });
+  else setTimeout(fetchStars, 1500);
+</script>
+
+<script>
+  import { setupMobileMenu } from '../../lib/mobile-menu';
+  setupMobileMenu({ key: 'mobile-menu', breakpoint: '(min-width: 640px)' });
+</script>

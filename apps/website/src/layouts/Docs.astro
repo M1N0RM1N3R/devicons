@@ -1,0 +1,116 @@
+---
+import type { MarkdownHeading } from 'astro';
+import PageLayout from '../components/layout/page-layout.astro';
+import DocsSidebar from '../components/docs/docs-sidebar.astro';
+import DocsMobileNav from '../components/docs/docs-mobile-nav.astro';
+import DocsToc from '../components/docs/docs-toc.astro';
+import DocsPagination from '../components/docs/docs-pagination.astro';
+import { getDocNav } from '../lib/docs';
+
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  badge?: 'new' | 'updated' | 'beta';
+  headings: MarkdownHeading[];
+  isIndex?: boolean;
+}
+
+const {
+  id,
+  title,
+  description,
+  badge,
+  headings,
+  isIndex = false,
+} = Astro.props;
+const { prev, next } = await getDocNav(id);
+
+const badgeStyles: Record<string, string> = {
+  new: 'border-accent/40 text-accent bg-accent/10',
+  updated: 'border-success/40 text-success bg-success/10',
+  beta: 'border-border text-text-muted bg-surface',
+};
+---
+
+<PageLayout
+  title={`${title} — Devicons Docs`}
+  description={description ?? `${title} — Devicons documentation.`}>
+  <div class="max-w-[1400px] mx-auto px-6">
+    <DocsMobileNav currentSlug={id} />
+    <div
+      class="grid grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_200px] gap-10 pt-10">
+      {/* Sidebar */}
+      <aside
+        class="hidden md:block border-r border-border sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto">
+        <DocsSidebar currentSlug={id} />
+      </aside>
+
+      {/* Main content */}
+      <article class="min-w-0 pb-12 md:pb-14">
+        <header class="mb-10 flex flex-col gap-5 pb-8 border-b border-border">
+          <div class="flex flex-wrap items-end gap-3">
+            {
+              isIndex ? (
+                <h1 class="type-h1">
+                  Build with <span class="text-accent">Devicons</span>.
+                </h1>
+              ) : (
+                <h1 class="type-h1">{title}</h1>
+              )
+            }
+            {
+              badge && (
+                <span
+                  class:list={[
+                    'font-mono text-[10px] font-medium uppercase tracking-[0.15em] px-2 py-1 border leading-none mb-2',
+                    badgeStyles[badge],
+                  ]}>
+                  {badge}
+                </span>
+              )
+            }
+          </div>
+
+          {
+            description && (
+              <p class="type-body-lg max-w-[64ch]">{description}</p>
+            )
+          }
+
+          {
+            isIndex && (
+              <div class="flex flex-wrap gap-2 pt-1">
+                <a
+                  href="/docs/installation"
+                  data-astro-prefetch
+                  class="btn btn--primary btn--mono btn--sm group">
+                  <span>Get started</span>
+                  <span class="transition-transform group-hover:translate-x-1">
+                    &rarr;
+                  </span>
+                </a>
+              </div>
+            )
+          }
+        </header>
+
+        <div class="prose mb-5">
+          <slot />
+        </div>
+
+        {!isIndex && <DocsPagination prev={prev} next={next} />}
+      </article>
+
+      <script>
+        import { setupCodeCopy } from '../lib/code-copy';
+        setupCodeCopy();
+      </script>
+
+      {/* Right TOC */}
+      <aside class="hidden xl:block">
+        <DocsToc headings={headings} />
+      </aside>
+    </div>
+  </div>
+</PageLayout>

@@ -1,0 +1,9 @@
+---
+import PageLayout from "../components/layout/page-layout.astro";
+import { SearchIsland } from "../components/search/search-island";
+import { SITE_TITLE } from "../consts";
+---
+
+<PageLayout title={`Search — ${SITE_TITLE}`} description="Search all developer icons">
+  <SearchIsland client:only="react" />
+</PageLayout>

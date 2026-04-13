@@ -1,0 +1,582 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+interface Props {
+  iconCount: number;
+}
+
+const { iconCount } = Astro.props;
+
+const LOGOS = [
+  { id: 'react', label: 'React', svg: '/models/react-logo.svg', dispScale: 22 },
+  {
+    id: 'claude',
+    label: 'Claude',
+    svg: '/models/claude-logo.svg',
+    dispScale: 38,
+  },
+  {
+    id: 'svelte',
+    label: 'Svelte',
+    svg: '/models/svelte-logo.svg',
+    dispScale: 42,
+  },
+  {
+    id: 'tailwind',
+    label: 'Tailwind',
+    svg: '/models/tailwind-logo.svg',
+    dispScale: 40,
+  },
+  {
+    id: 'vscode',
+    label: 'VS Code',
+    svg: '/models/vscode-logo.svg',
+    dispScale: 38,
+  },
+  {
+    id: 'vercel',
+    label: 'Vercel',
+    svg: '/models/vercel-logo.svg',
+    dispScale: 42,
+  },
+  { id: 'vue', label: 'Vue', svg: '/models/vue-logo.svg', dispScale: 38 },
+];
+
+const INSTALL_CMD = 'npm i @dev.icons/react';
+const initial = LOGOS[0];
+
+const publicDir = path.join(process.cwd(), 'public');
+const initialRaw = fs.readFileSync(
+  path.join(publicDir, initial.svg.replace(/^\//, '')),
+  'utf-8',
+);
+const initialSvgData = initialRaw
+  .replace(/<\?xml[^?]*\?>\s*/, '')
+  .replace(/\s+/g, ' ')
+  .trim();
+const initialDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(initialSvgData)}`;
+---
+
+<section class="hero relative flex flex-col overflow-hidden">
+  <div class="hero-backdrop" aria-hidden="true"></div>
+  <div class="hero-grid" aria-hidden="true"></div>
+
+  <div
+    class="hero-content relative z-10 flex-1 flex flex-col justify-center px-4 sm:px-6 max-w-[1400px] mx-auto w-full">
+    <div
+      class="flex flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-12">
+      <div class="flex-1 min-w-0">
+        <p class="hero-eyebrow type-label mb-4 sm:mb-5">
+          {iconCount.toLocaleString()} Icons / MIT / Open Source
+        </p>
+        <h1 class="hero-title type-display">
+          Logos & Icons for<br />people who ship.
+        </h1>
+        <div
+          class="hero-actions flex flex-wrap items-center gap-3 mt-6 sm:mt-8">
+          <a href="#icons" class="btn btn--primary btn--mono"> Browse Icons </a>
+          <button
+            type="button"
+            data-copy={INSTALL_CMD}
+            class="hero-copy btn btn--ghost type-mono">
+            <span data-label>$ {INSTALL_CMD}</span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="hero-logo hidden md:flex self-end cursor-pointer items-center justify-center"
+        data-logos={JSON.stringify(LOGOS)}
+        role="button"
+        tabindex="0"
+        aria-label="Cycle through showcase logo">
+        <div
+          class="hero-glass-shape"
+          data-glass-shape
+          style={`--logo: url("${initialDataUrl}")`}
+          aria-hidden="true">
+          <div class="hero-glass-refract" aria-hidden="true"></div>
+          <div class="hero-glass-depth" aria-hidden="true"></div>
+          <div class="hero-glass-highlight" aria-hidden="true"></div>
+          <div class="hero-glass-specular" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <svg
+        class="hero-glass-defs"
+        aria-hidden="true"
+        focusable="false"
+        width="0"
+        height="0">
+        <defs></defs>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 70dvh;
+  }
+  @media (min-width: 768px) {
+    .hero {
+      min-height: calc(100dvh - 56px);
+    }
+  }
+
+  /* Brutalist grid. Pure geometric lines with a directional gradient
+        wash — gives the hero something to refract through while staying
+        visually austere. */
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    --grid-line: rgba(var(--c-grid), 0.06);
+    --grid-major: rgba(var(--c-grid), 0.06);
+    background:
+      /* minor 64px lines */
+      linear-gradient(0deg, var(--grid-line) 1px, transparent 1px) 0 0 / 48px
+        48px,
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 48px
+        48px,
+      /* major 320px lines (every 5th cell) */
+      linear-gradient(0deg, var(--grid-major) 1px, transparent 1px) 0 0 / 320px
+        320px,
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px) 0 0 / 320px
+        320px;
+    mask-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      black 12%,
+      black 48%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      black 12%,
+      black 48%,
+      transparent 100%
+    );
+  }
+
+  .hero-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 70% 50% at 72% 55%,
+        rgba(255, 77, 0, 0.1) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 55% 45% at 18% 78%,
+        rgba(255, 107, 43, 0.05) 0%,
+        transparent 55%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(var(--c-overlay), 0.55) 0%,
+        transparent 30%,
+        transparent 70%,
+        rgba(var(--c-overlay), 0.65) 100%
+      );
+  }
+
+  .hero {
+    --c-grid: 230, 230, 230;
+  }
+  :global([data-theme='light']) .hero {
+    --c-grid: 23, 23, 23;
+  }
+  :global([data-theme='light']) .hero-grid {
+    --grid-line: rgba(var(--c-grid), 0.07);
+    --grid-major: rgba(var(--c-grid), 0.15);
+  }
+
+  .hero-eyebrow,
+  .hero-actions {
+    animation: heroFadeUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+  .hero-eyebrow {
+    animation-delay: 0.1s;
+  }
+  .hero-actions {
+    animation-delay: 0.2s;
+  }
+
+  @keyframes heroFadeUp {
+    from {
+      opacity: 0.6;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-logo {
+    position: relative;
+    width: 420px;
+    height: 420px;
+    animation: heroFadeIn 0.8s ease 0.2s both;
+    isolation: isolate;
+  }
+  @media (min-width: 1024px) {
+    .hero-logo {
+      width: 540px;
+      height: 540px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .hero-logo {
+      width: 640px;
+      height: 640px;
+    }
+  }
+
+  @keyframes heroFadeIn {
+    from {
+      opacity: 0.4;
+      transform: scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .hero-glass-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  @property --sx {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 32;
+  }
+  @property --sy {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 22;
+  }
+
+  .hero-glass-shape {
+    position: relative;
+    width: 78%;
+    height: 78%;
+    --liquid-filter-id: url(#heroLiquid-fallback);
+    filter: drop-shadow(0 0 32px rgba(170, 205, 255, 0.18))
+      drop-shadow(0 2px 2px rgba(255, 255, 255, 0.08))
+      drop-shadow(0 18px 28px rgba(0, 0, 0, 0.45))
+      drop-shadow(0 42px 80px rgba(0, 0, 0, 0.65));
+  }
+
+  .hero-glass-shape > * {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    -webkit-mask: var(--logo) center / contain no-repeat;
+    mask: var(--logo) center / contain no-repeat;
+  }
+
+  /* 1. Lens + frosted material body. Directional gradient fakes
+        convex thickness. Heavier blur so the grid blooms through the
+        glass like frost, but saturation + brightness still let
+        colour from the radial wash pick up. */
+  .hero-glass-refract {
+    background: linear-gradient(
+      158deg,
+      var(--glass-hi, rgba(255, 255, 255, 0.32)) 0%,
+      var(--glass-mid, rgba(255, 255, 255, 0.16)) 28%,
+      var(--glass-lo, rgba(255, 255, 255, 0.06)) 55%,
+      var(--glass-tint-a, rgba(190, 210, 240, 0.14)) 80%,
+      var(--glass-tint-b, rgba(150, 175, 215, 0.22)) 100%
+    );
+    backdrop-filter: var(--liquid-filter-id) blur(16px) saturate(1.9)
+      brightness(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(1.9) brightness(1.1);
+    will-change: backdrop-filter;
+  }
+
+  /* 2. Inner light — very subtle top lift + bottom counter-glow.
+        Dialed way down; glass must read transparent, not frosted. */
+  .hero-glass-depth {
+    background:
+      radial-gradient(
+        95% 65% at 50% 6%,
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0.12) 34%,
+        transparent 62%
+      ),
+      radial-gradient(
+        110% 55% at 55% 105%,
+        rgba(220, 230, 250, 0.38) 0%,
+        rgba(210, 225, 255, 0.1) 38%,
+        transparent 64%
+      ),
+      radial-gradient(
+        120% 120% at 50% 50%,
+        transparent 54%,
+        rgba(0, 0, 0, 0.3) 88%,
+        rgba(0, 0, 0, 0.55) 100%
+      );
+    mix-blend-mode: plus-lighter;
+  }
+
+  /* 3. Edge — thin sharp rim light at top (and softer one at bottom).
+        The signature "line light" of real transparent curved glass. */
+  .hero-glass-highlight {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(255, 255, 255, 0.55) 2.5%,
+        rgba(255, 255, 255, 0.1) 7%,
+        transparent 14%
+      ),
+      radial-gradient(
+        ellipse 60% 30% at 36% 5%,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(255, 255, 255, 0.32) 30%,
+        rgba(255, 255, 255, 0.06) 58%,
+        transparent 76%
+      ),
+      linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0.18) 3.5%,
+        rgba(255, 255, 255, 0.02) 9%,
+        transparent 15%
+      );
+    mix-blend-mode: plus-lighter;
+    opacity: 1;
+  }
+
+  /* 4. Specular — pointer-reactive bright reflection on the curved
+        surface. Moves with the cursor with a gentle ease. */
+  .hero-glass-specular {
+    background:
+      radial-gradient(
+        ellipse 22% 15% at calc(var(--sx) * 1%) calc(var(--sy) * 1%),
+        rgba(255, 255, 255, 1) 0%,
+        rgba(255, 255, 255, 0.55) 30%,
+        rgba(255, 255, 255, 0.12) 62%,
+        transparent 82%
+      ),
+      radial-gradient(
+        ellipse 10% 7% at calc((var(--sx) + 18) * 1%) calc((var(--sy) + 8) * 1%),
+        rgba(255, 235, 210, 0.55) 0%,
+        transparent 72%
+      );
+    mix-blend-mode: plus-lighter;
+    opacity: 0.95;
+    transition:
+      --sx 0.4s cubic-bezier(0.2, 0.6, 0.3, 1),
+      --sy 0.4s cubic-bezier(0.2, 0.6, 0.3, 1),
+      opacity 0.3s ease;
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .hero-glass-refract {
+      background: linear-gradient(
+        158deg,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(255, 255, 255, 0.14) 50%,
+        rgba(150, 175, 215, 0.22) 100%
+      );
+    }
+  }
+
+  /* Light-mode glass. On a bright backdrop, brightening the glass
+        erases it — instead we darken slightly, keep a warm-grey tint,
+        and invert the depth vignette so the rim reads dark and the
+        centre stays neutral. Highlights stay bright-white (they still
+        read because plus-lighter clamps). */
+  :global([data-theme='light']) .hero-glass-shape {
+    filter: drop-shadow(0 0 32px rgba(70, 110, 160, 0.15))
+      drop-shadow(0 2px 2px rgba(0, 0, 0, 0.06))
+      drop-shadow(0 18px 28px rgba(0, 0, 0, 0.18))
+      drop-shadow(0 42px 80px rgba(0, 0, 0, 0.25));
+  }
+
+  :global([data-theme='light']) .hero-glass-refract {
+    --glass-hi: rgba(35, 45, 60, 0.28);
+    --glass-mid: rgba(50, 65, 85, 0.16);
+    --glass-lo: rgba(70, 85, 110, 0.08);
+    --glass-tint-a: rgba(70, 95, 135, 0.14);
+    --glass-tint-b: rgba(40, 65, 105, 0.22);
+    backdrop-filter: var(--liquid-filter-id) blur(18px) saturate(1.25)
+      brightness(0.94);
+    -webkit-backdrop-filter: blur(18px) saturate(1.25) brightness(0.94);
+  }
+
+  :global([data-theme='light']) .hero-glass-depth {
+    background:
+      radial-gradient(
+        95% 65% at 50% 6%,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.08) 34%,
+        transparent 62%
+      ),
+      radial-gradient(
+        110% 55% at 55% 105%,
+        rgba(60, 80, 110, 0.18) 0%,
+        rgba(60, 80, 110, 0.05) 40%,
+        transparent 64%
+      ),
+      radial-gradient(
+        120% 120% at 50% 50%,
+        transparent 52%,
+        rgba(0, 20, 50, 0.18) 88%,
+        rgba(0, 20, 50, 0.3) 100%
+      );
+    mix-blend-mode: multiply;
+  }
+
+  :global([data-theme='light']) .hero-glass-highlight {
+    opacity: 0.9;
+  }
+
+  :global([data-theme='light']) .hero-glass-specular {
+    opacity: 0.75;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-eyebrow,
+    .hero-actions,
+    .hero-logo {
+      animation: none;
+      opacity: 1;
+    }
+    .hero-glass-specular {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import {
+    installLogoGlass,
+    installIdentityFilter,
+    scheduleIdle,
+  } from '../effects/logo-glass';
+
+  type Logo = { id: string; label: string; svg: string; dispScale: number };
+
+  const copyBtn = document.querySelector<HTMLButtonElement>('.hero-copy');
+  if (copyBtn) {
+    const label = copyBtn.querySelector<HTMLSpanElement>('[data-label]');
+    const original = label?.textContent ?? '';
+    copyBtn.addEventListener('click', async () => {
+      const text = copyBtn.dataset.copy ?? '';
+      try {
+        await navigator.clipboard.writeText(text);
+        if (label) {
+          label.textContent = 'Copied!';
+          setTimeout(() => {
+            label.textContent = original;
+          }, 2000);
+        }
+      } catch {}
+    });
+  }
+
+  const logoEl = document.querySelector<HTMLElement>('.hero-logo');
+  const shapeEl = logoEl?.querySelector<HTMLElement>('[data-glass-shape]');
+  const defsSvg = document.querySelector<SVGSVGElement>('.hero-glass-defs');
+
+  if (logoEl && shapeEl && defsSvg) {
+    const logos = JSON.parse(logoEl.dataset.logos ?? '[]') as Logo[];
+    installIdentityFilter(defsSvg, 'heroLiquid-fallback');
+
+    const filterIdFor = (id: string) => `heroLiquid-${id}`;
+    const mapReady = new Set<string>();
+
+    const filterSize = Math.max(shapeEl.clientWidth, 1);
+
+    const ensureMap = async (logo: Logo): Promise<boolean> => {
+      if (mapReady.has(logo.id)) return true;
+      const shader = await installLogoGlass(logo.svg, {
+        size: filterSize,
+        filterHost: defsSvg,
+        filterId: filterIdFor(logo.id),
+        strength: (logo.dispScale ?? 24) / 70,
+      });
+      if (!shader) return false;
+      mapReady.add(logo.id);
+      return true;
+    };
+
+    const pointToFilter = (logo: Logo) => {
+      shapeEl.style.setProperty(
+        '--liquid-filter-id',
+        mapReady.has(logo.id)
+          ? `url(#${filterIdFor(logo.id)})`
+          : 'url(#heroLiquid-fallback)',
+      );
+    };
+
+    const setLogoMask = (logo: Logo) => {
+      fetch(logo.svg)
+        .then(r => r.text())
+        .then(text => {
+          const compact = text
+            .replace(/<\?xml[^?]*\?>\s*/, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+          const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(compact)}`;
+          shapeEl.style.setProperty('--logo', `url("${dataUrl}")`);
+        })
+        .catch(() => {
+          shapeEl.style.setProperty('--logo', `url("${logo.svg}")`);
+        });
+    };
+
+    if (logos.length) {
+      let idx = 0;
+      const first = logos[0];
+      if (first) {
+        void ensureMap(first).then(() => pointToFilter(first));
+      }
+      logos.slice(1).forEach(logo => {
+        scheduleIdle(() => void ensureMap(logo));
+      });
+
+      const next = () => {
+        idx = (idx + 1) % logos.length;
+        const logo = logos[idx];
+        if (!logo) return;
+        setLogoMask(logo);
+        void ensureMap(logo).then(() => pointToFilter(logo));
+      };
+
+      logoEl.addEventListener('click', next);
+      logoEl.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          next();
+        }
+      });
+    }
+
+    logoEl.addEventListener('pointermove', e => {
+      const r = shapeEl.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) return;
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      shapeEl.style.setProperty('--sx', String(Math.max(0, Math.min(100, x))));
+      shapeEl.style.setProperty('--sy', String(Math.max(0, Math.min(100, y))));
+    });
+    logoEl.addEventListener('pointerleave', () => {
+      shapeEl.style.setProperty('--sx', '32');
+      shapeEl.style.setProperty('--sy', '22');
+    });
+  }
+</script>

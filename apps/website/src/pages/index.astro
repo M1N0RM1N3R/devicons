@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "../components/layout/page-layout.astro";
+import HeroSection from "../components/home/hero-section.astro";
+import IconMarquee from "../components/home/icon-marquee.astro";
+import { SearchIsland } from "../components/search/search-island";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+
+const icons = await getCollection("icons");
+const iconCount = icons.length;
+---
+
+<PageLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <HeroSection iconCount={iconCount} />
+  <IconMarquee />
+  <div class="h-[120px]" aria-hidden="true"></div>
+  <SearchIsland client:visible maxResults={72} />
+  <div class="h-[200px]" aria-hidden="true"></div>
+  <div class="border-t border-border px-6 py-16 max-w-[1400px] mx-auto">
+    <h2 class="type-display-sm flex flex-col gap-4">
+      <span>Ship with better icons.</span>
+      <a
+        href="/docs"
+        class="text-accent hover:text-accent-hover transition-colors">
+        Read the docs &rarr;
+      </a>
+    </h2>
+  </div>
+</PageLayout>

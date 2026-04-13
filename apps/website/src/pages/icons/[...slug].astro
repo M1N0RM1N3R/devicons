@@ -1,0 +1,28 @@
+---
+import { getCollection } from "astro:content";
+import Icon from "../../layouts/Icon.astro";
+
+export async function getStaticPaths() {
+  const icons = await getCollection("icons");
+  const sorted = [...icons].sort((a, b) =>
+    a.data.name.localeCompare(b.data.name, undefined, { sensitivity: "base" }),
+  );
+  return sorted.map((icon, index) => {
+    const prev = sorted[index - 1];
+    const next = sorted[index + 1];
+    return {
+      params: { slug: icon.id },
+      props: {
+        ...icon.data,
+        slug: icon.id,
+        prev: prev ? { slug: prev.id, name: prev.data.name } : null,
+        next: next ? { slug: next.id, name: next.data.name } : null,
+      },
+    };
+  });
+}
+
+const props = Astro.props;
+---
+
+<Icon {...props} />
