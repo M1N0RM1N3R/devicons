@@ -2,6 +2,8 @@
 dist/
 # generated types
 .astro/
+# generated assets (populated by scripts/sync-assets.ts)
+public/devicons/
 
 # dependencies
 node_modules/
