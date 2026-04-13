@@ -1,0 +1,18 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { ReactElement } from "react";
+import { IconType } from "../lib";
+
+export default new Map<IconType, ReactElement>([
+  [
+    "icon",
+    <>
+      <path d="M400.001 389.803L564.001 295.203V105.703L400.001 200.503V389.803Z" fill="#4040B2"/><path d="M218 105.7L382 200.5V389.8L218 295.1M36 189.4L200 284.1V94.7L36 0M218 505.3L382 600V410.6L218 315.9" fill="#5C4EE5"/>
+    </>,
+  ],
+  [
+    "font",
+    <>
+      <path d="M400.001 389.803L564.001 295.203V105.703L400.001 200.503V389.803Z" fill="currentColor"/><path d="M218 105.7L382 200.5V389.8L218 295.1M36 189.4L200 284.1V94.7L36 0M218 505.3L382 600V410.6L218 315.9" fill="currentColor"/>
+    </>,
+  ],
+]);

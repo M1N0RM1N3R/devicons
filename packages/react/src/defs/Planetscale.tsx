@@ -1,0 +1,18 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { ReactElement } from "react";
+import { IconType } from "../lib";
+
+export default new Map<IconType, ReactElement>([
+  [
+    "icon",
+    <>
+      <g clipPath="url(#devicon-planetscale-1-a)"><path d="M600 300.104C599.944 465.706 465.706 599.944 300.104 600L600 300.104ZM300 0C421.822 0 526.684 72.6109 573.668 176.914L176.914 573.668C159.889 565.999 143.707 556.788 128.548 546.211L374.76 300H300L87.8681 512.131C33.5787 457.842 0 382.842 0 300C0 134.314 134.315 0 300 0Z" fill="black"/></g><defs><clipPath id="devicon-planetscale-1-a"><rect width="600" height="600" fill="white"/></clipPath></defs>
+    </>,
+  ],
+  [
+    "font",
+    <>
+      <g><path d="M600 300.104C599.944 465.706 465.706 599.944 300.104 600L600 300.104ZM300 0C421.822 0 526.684 72.6109 573.668 176.914L176.914 573.668C159.889 565.999 143.707 556.788 128.548 546.211L374.76 300H300L87.8681 512.131C33.5787 457.842 0 382.842 0 300C0 134.314 134.315 0 300 0Z" fill="currentColor"/></g>
+    </>,
+  ],
+]);

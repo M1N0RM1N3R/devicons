@@ -1,0 +1,21 @@
+{
+  "name": "@dev.icons/figma",
+  "version": "1.8.0",
+  "description": "Devicons - Figma plugin for Devicons",
+  "main": "code.js",
+  "keywords": [
+    "devicons",
+    "figma",
+    "plugin",
+    "icons",
+    "svg",
+    "design",
+    "interface",
+    "UI",
+    "UX",
+    "figma",
+    "figma-plugin"
+  ],
+  "scripts": {},
+  "devDependencies": {}
+}

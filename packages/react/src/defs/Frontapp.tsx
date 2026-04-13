@@ -1,0 +1,18 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { ReactElement } from "react";
+import { IconType } from "../lib";
+
+export default new Map<IconType, ReactElement>([
+  [
+    "icon",
+    <>
+      <path d="M90 99.8395C90 44.6998 134.7 0 189.84 0H282H510V142.08C510 169.65 487.65 192 460.08 192H329.219C303.289 192.411 282.354 213.382 282 239.326V550.08C282 577.65 259.65 600 232.079 600H90V192V99.8395Z" fill="#001B38"/><path d="M201.597 241.2C201.597 312.776 259.621 370.8 331.197 370.8C402.773 370.8 460.797 312.776 460.797 241.2C460.797 169.624 402.773 111.6 331.197 111.6C259.621 111.6 201.597 169.624 201.597 241.2Z" fill="url(#devicon-frontapp-2-a)"/><path opacity="0.5" d="M201.597 241.2C201.597 312.776 259.621 370.8 331.197 370.8C402.773 370.8 460.797 312.776 460.797 241.2C460.797 169.624 402.773 111.6 331.197 111.6C259.621 111.6 201.597 169.624 201.597 241.2Z" fill="url(#devicon-frontapp-3-b)"/><defs><linearGradient id="devicon-frontapp-2-a" x1="-21626.4" y1="3356.52" x2="-2137.05" y2="22980.4" gradientUnits="userSpaceOnUse"><stop stopColor="#FF0057" stopOpacity="0.16"/><stop offset="0.861354" stopColor="#FF0057"/></linearGradient><linearGradient id="devicon-frontapp-3-b" x1="-21626.4" y1="3356.52" x2="-2137.05" y2="22980.4" gradientUnits="userSpaceOnUse"><stop stopColor="#FF0057" stopOpacity="0.16"/><stop offset="0.861354" stopColor="#FF0057"/></linearGradient></defs>
+    </>,
+  ],
+  [
+    "font",
+    <>
+      <path d="M213.001 241.5C213.001 306.946 266.055 360 331.501 360C396.946 360 450.001 306.946 450.001 241.5C450.001 176.054 396.946 123 331.501 123C266.055 123 213.001 176.054 213.001 241.5Z" fill="currentColor"/><path d="M189.841 0C134.701 0 90.001 44.6998 90.001 99.8395V600H232.08C259.651 600 282.001 577.65 282.001 550.08V361.453C234.929 342.03 201.801 295.684 201.801 241.6C201.801 170.024 259.825 112 331.401 112C385.408 112 431.699 145.035 451.171 192H460.081C487.651 192 510 169.65 510 142.08V0H189.841Z" fill="currentColor"/>
+    </>,
+  ],
+]);

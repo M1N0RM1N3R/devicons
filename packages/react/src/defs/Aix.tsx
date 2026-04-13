@@ -1,0 +1,18 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { ReactElement } from "react";
+import { IconType } from "../lib";
+
+export default new Map<IconType, ReactElement>([
+  [
+    "icon",
+    <>
+      <path d="M166.598 420.807L149.493 363.35H69.7779L52.6734 420.807H0L78.688 179.246H142.993L220.654 420.807H166.598ZM110.146 226.994H108.435L82.0899 318.721H136.818L110.146 226.994Z" fill="url(#devicon-aix-3-a)"/><path d="M244.606 420.807V378.926H275.392V221.074H244.606V179.193H358.172V221.074H327.386V378.926H358.172V420.807H244.606Z" fill="url(#devicon-aix-4-b)"/><path d="M600 420.807H539.787L488.123 331.847H487.097L436.809 420.807H380.706L457.339 295.851L384.467 179.193H445.011L491.537 260.876H492.564L539.77 179.193H595.873L522.322 296.89L600 420.807Z" fill="url(#devicon-aix-5-c)"/><defs><linearGradient id="devicon-aix-3-a" x1="1281.3" y1="24647.4" x2="61944.8" y2="2758.6" gradientUnits="userSpaceOnUse"><stop stopColor="#6FDC8C"/><stop offset="0.3049" stopColor="#6FDC8C"/><stop offset="0.9279" stopColor="#009D9A"/><stop offset="1" stopColor="#009D9A"/></linearGradient><linearGradient id="devicon-aix-4-b" x1="-880.143" y1="24652.6" x2="21202.2" y2="16684.8" gradientUnits="userSpaceOnUse"><stop stopColor="#6FDC8C"/><stop offset="0.3049" stopColor="#6FDC8C"/><stop offset="0.9279" stopColor="#009D9A"/><stop offset="1" stopColor="#009D9A"/></linearGradient><linearGradient id="devicon-aix-5-c" x1="-29587.6" y1="24652.6" x2="30408.7" y2="3004.57" gradientUnits="userSpaceOnUse"><stop stopColor="#6FDC8C"/><stop offset="0.3049" stopColor="#6FDC8C"/><stop offset="0.9279" stopColor="#009D9A"/><stop offset="1" stopColor="#009D9A"/></linearGradient></defs>
+    </>,
+  ],
+  [
+    "font",
+    <>
+      <path d="M166.598 420.807L149.493 363.35H69.7779L52.6734 420.807H0L78.688 179.246H142.993L220.654 420.807H166.598ZM110.146 226.994H108.435L82.0899 318.721H136.818L110.146 226.994Z" fill="currentColor"/><path d="M244.606 420.807V378.926H275.392V221.074H244.606V179.193H358.172V221.074H327.386V378.926H358.172V420.807H244.606Z" fill="currentColor"/><path d="M600 420.807H539.787L488.123 331.847H487.097L436.809 420.807H380.706L457.339 295.851L384.467 179.193H445.011L491.537 260.876H492.564L539.77 179.193H595.873L522.322 296.89L600 420.807Z" fill="currentColor"/>
+    </>,
+  ],
+]);

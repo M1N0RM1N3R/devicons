@@ -1,0 +1,18 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { ReactElement } from "react";
+import { IconType } from "../lib";
+
+export default new Map<IconType, ReactElement>([
+  [
+    "icon",
+    <>
+      <g clipPath="url(#devicon-html5-boilerplate-1-a)"><path d="M600 0H0V600H600V0Z" fill="#222222"/><path d="M268.14 82.6816L215.22 233.954L54.6862 234.398L184.788 330.542L138.036 485.774L269.46 392.726L404.424 491.51L355.02 330.098L483.804 233.954L323.712 234.398L268.14 82.6816Z" fill="#E08524"/><path d="M274.752 80.4746L328.116 105.613L372.659 227.341H328.556L274.752 80.4854" fill="#466770"/><path d="M366.42 333.371L419.123 359.255L546.671 266.635L493.968 238.568L366.42 333.371Z" fill="#304A51"/><path d="M366.348 333.275L419.123 359.14L469.019 520.48L414.445 492.725L366.348 333.281" fill="#466770"/><path d="M145.536 491.294L269.46 402.648L312.901 434.843L195.81 516.874L145.533 491.295" fill="#304A51"/></g><defs><clipPath id="devicon-html5-boilerplate-1-a"><rect width="600" height="600" fill="white"/></clipPath></defs>
+    </>,
+  ],
+  [
+    "font",
+    <>
+      <path d="M260.317 34.3867L195.779 218.871L0 219.412L158.665 336.665L101.649 525.978L261.927 412.501L426.523 532.974L366.272 336.123L523.331 218.871L328.09 219.412L260.317 34.3867Z" fill="currentColor"/><path d="M268.381 31.6953L333.462 62.3534L387.784 210.807H333.999L268.381 31.7085" fill="currentColor"/><path fillRule="evenodd" clipRule="evenodd" d="M444.484 371.658L600 258.729L535.726 224.5L380.234 340.072L380.087 340V340.007L438.744 534.458L505.3 568.306L444.484 371.658Z" fill="currentColor"/><path d="M110.796 532.711L261.927 424.604L314.906 463.867L172.107 563.908L110.793 532.712" fill="currentColor"/>
+    </>,
+  ],
+]);

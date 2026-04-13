@@ -1,0 +1,89 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generator output snapshots > reactGenerator matches snapshot > react-component 1`] = `
+"/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+import icons from "../defs/DeviconsSample";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props} icons={icons} />
+));
+
+I.displayName = "DeviconsSample";
+export { I as DeviconsSample };
+"
+`;
+
+exports[`generator output snapshots > reactGenerator matches snapshot > react-defs 1`] = `
+"/* GENERATED FILE - DO NOT EDIT */
+import React, { ReactElement } from "react";
+import { IconType } from "../lib";
+
+export default new Map<IconType, ReactElement>([
+  [
+    "icon",
+    <>
+      <path d="M3 3h18v18H3z" clipRule="evenodd"/>
+    </>,
+  ],
+  [
+    "font",
+    <>
+      <path d="M100 100h800v800H100z"/>
+    </>,
+  ],
+]);
+"
+`;
+
+exports[`generator output snapshots > svelteGenerator matches snapshot > svelte-component 1`] = `
+"<!-- GENERATED FILE - DO NOT EDIT -->
+<script lang="ts">
+  import Base from "../lib/Base.svelte";
+  import icons from "../defs/DeviconsSample";
+
+  const { ...rest } = $props();
+</script>
+
+<Base {...rest} {icons} />
+"
+`;
+
+exports[`generator output snapshots > svelteGenerator matches snapshot > svelte-defs 1`] = `
+"/* GENERATED FILE - DO NOT EDIT */
+import type { IconType } from "../lib/types";
+
+export default new Map<IconType, string>([
+  ["icon", \`<path d="M3 3h18v18H3z" clip-rule="evenodd"/>\`],
+  ["font", \`<path d="M100 100h800v800H100z"/>\`],
+]);
+"
+`;
+
+exports[`generator output snapshots > vueGenerator matches snapshot > vue-component 1`] = `
+"<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+import icons from "../defs/DeviconsSample";
+
+defineOptions({ name: "DeviconsSample" });
+</script>
+
+<template>
+  <Base v-bind="$attrs" :icons="icons" />
+</template>
+"
+`;
+
+exports[`generator output snapshots > vueGenerator matches snapshot > vue-defs 1`] = `
+"/* GENERATED FILE - DO NOT EDIT */
+import type { IconType } from "../lib/types";
+
+export default new Map<IconType, string>([
+  ["icon", \`<path d="M3 3h18v18H3z" clip-rule="evenodd"/>\`],
+  ["font", \`<path d="M100 100h800v800H100z"/>\`],
+]);
+"
+`;
