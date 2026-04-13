@@ -1,0 +1,97 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const items = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{
+  items.length > 0 && (
+    <nav
+      aria-label="On this page"
+      class="docs-toc sticky top-20 flex flex-col gap-3 pb-10"
+    >
+      <div class="flex items-center gap-2 px-3">
+        <span class="type-label">
+          On this page
+        </span>
+      </div>
+
+      <ul class="flex flex-col" data-toc>
+        {items.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              data-toc-link
+              data-toc-slug={h.slug}
+              class:list={[
+                "type-body-sm group relative flex items-center gap-2 px-3 py-1.5 transition-colors",
+                "text-text-muted hover:text-text",
+                h.depth === 3 && "pl-6",
+              ]}
+            >
+              <span
+                aria-hidden="true"
+                data-toc-indicator
+                class:list={[
+                  "absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-transparent transition-colors",
+                ]}
+              />
+              <span class="truncate">{h.text}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
+  if (links.length > 0) {
+    const slugs = new Set<string>();
+    links.forEach((l) => {
+      const s = l.dataset.tocSlug;
+      if (s) slugs.add(s);
+    });
+
+    const setActive = (slug: string | null) => {
+      links.forEach((l) => {
+        const isActive = l.dataset.tocSlug === slug;
+        l.classList.toggle("!text-accent", isActive);
+        const indicator = l.querySelector<HTMLElement>("[data-toc-indicator]");
+        if (indicator) {
+          indicator.classList.toggle("!bg-accent", isActive);
+        }
+      });
+    };
+
+    const headings = Array.from(slugs)
+      .map((slug) => document.getElementById(slug))
+      .filter((el): el is HTMLElement => !!el);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort(
+            (a, b) =>
+              a.target.getBoundingClientRect().top -
+              b.target.getBoundingClientRect().top,
+          );
+        if (visible[0]) {
+          setActive(visible[0].target.id);
+        }
+      },
+      { rootMargin: "-80px 0px -70% 0px", threshold: 0 },
+    );
+
+    headings.forEach((h) => observer.observe(h));
+
+    if (headings[0]) setActive(headings[0].id);
+  }
+</script>

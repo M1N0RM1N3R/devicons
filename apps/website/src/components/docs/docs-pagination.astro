@@ -1,0 +1,79 @@
+---
+import type { DocEntry } from "../../lib/docs";
+
+interface Props {
+  prev: DocEntry | null;
+  next: DocEntry | null;
+}
+
+const { prev, next } = Astro.props;
+---
+
+{
+  (prev || next) && (
+    <nav
+      aria-label="Docs navigation"
+      class="docs-pagination"
+    >
+      {prev ? (
+        <a
+          href={`/docs/${prev.id}`}
+          data-astro-prefetch
+          class="docs-pagination__card group"
+        >
+          <span class="type-meta group-hover:text-accent transition-colors">
+            &larr; Previous
+          </span>
+          <span class="type-h3">{prev.data.title}</span>
+        </a>
+      ) : (
+        <div />
+      )}
+      {next ? (
+        <a
+          href={`/docs/${next.id}`}
+          data-astro-prefetch
+          class="docs-pagination__card docs-pagination__card--next group"
+        >
+          <span class="type-meta group-hover:text-accent transition-colors">
+            Next &rarr;
+          </span>
+          <span class="type-h3">{next.data.title}</span>
+        </a>
+      ) : (
+        <div />
+      )}
+    </nav>
+  )
+}
+
+<style>
+  /* Use padding-top to open the gap (not margin-top). Padding can't
+     collapse with a preceding sibling's margin, and it stays inside
+     the scoped style so nothing upstream can override it. */
+  .docs-pagination {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin-top: var(--space-16);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--c-border);
+  }
+  @media (min-width: 640px) {
+    .docs-pagination { grid-template-columns: 1fr 1fr; }
+  }
+
+  .docs-pagination__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid var(--c-border);
+    transition: border-color 0.15s ease;
+  }
+  .docs-pagination__card:hover { border-color: var(--c-accent); }
+  .docs-pagination__card--next {
+    text-align: right;
+    grid-column-start: 2;
+  }
+</style>

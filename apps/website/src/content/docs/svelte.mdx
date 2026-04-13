@@ -1,0 +1,57 @@
+---
+title: "Svelte"
+description: "Tiny, reactive Devicons components for Svelte 4 and SvelteKit."
+order: 2
+category: "Packages"
+categoryOrder: 1
+---
+
+import Note from "../../components/docs/note.astro";
+
+`@devicons/svelte` ships native Svelte components. SvelteKit, Vite, and Astro integrations all work with zero config.
+
+<Note title="Why the `_` suffix?">
+Some icon names conflict with reserved words in JavaScript or within a framework. In order to use `Svelte` the export names are suffixed with an underscore, as in `import { _Svelte, SvelteIcon } from "@dev.icons/svelte";`;`. 
+</Note>
+
+## Install
+
+```bash
+npm install @devicons/svelte
+```
+
+## Usage
+
+```svelte
+<script lang="ts">
+  import { SvelteIcon, ReactIcon } from "@devicons/svelte";
+</script>
+
+<div class="flex gap-3">
+  <SvelteIcon size={48} />
+  <ReactIcon size={48} mono />
+</div>
+```
+
+## Props
+
+| Prop     | Type                | Default     | Description                                      |
+| -------- | ------------------- | ----------- | ------------------------------------------------ |
+| `size`   | `number \| string`  | `24`        | Width and height shortcut.                       |
+| `mono`   | `boolean`           | `false`     | Monochrome variant using `currentColor`.         |
+| `title`  | `string`            | `undefined` | Accessible label.                                |
+| `color`  | `string`            | `currentColor` | Fill override for monochrome variants.        |
+
+## SvelteKit
+
+No special config required. Import inside any `+page.svelte`, `+layout.svelte`, or component.
+
+```svelte
+<script lang="ts">
+  import { GithubIcon } from "@devicons/svelte";
+</script>
+
+<a href="https://github.com" aria-label="GitHub">
+  <GithubIcon size={24} mono />
+</a>
+```

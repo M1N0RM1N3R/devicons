@@ -1,0 +1,64 @@
+---
+title: "Vue"
+description: "Devicons as idiomatic Vue 3 components — composition API ready, SSR safe."
+order: 1
+category: "Packages"
+categoryOrder: 1
+---
+
+import Note from "../../components/docs/note.astro";
+
+`@dev.icons/vue` exports every icon as a Vue 3 component. Works with `<script setup>`, the Options API, Nuxt, and Vite SSR out of the box.
+
+<Note title="Why the `_` suffix?">
+Some icon names conflict with reserved words in JavaScript or within a framework. In order to use `Vue` or `Astro` their export names are suffixed with an underscore, as in `import { _Vue } from "@dev.icons/vue";`. 
+</Note>
+
+## Install
+
+```bash
+npm install @devicons/vue
+```
+
+## Usage
+
+```vue
+<script setup lang="ts">
+import { ReactIcon, VueIcon } from "@devicons/vue";
+</script>
+
+<template>
+  <div class="flex gap-3">
+    <VueIcon :size="48" />
+    <ReactIcon :size="48" mono />
+  </div>
+</template>
+```
+
+## Props
+
+| Prop     | Type                  | Default     | Description                                      |
+| -------- | --------------------- | ----------- | ------------------------------------------------ |
+| `size`   | `Number \| String`    | `24`        | Shortcut for `width` and `height`.               |
+| `mono`   | `Boolean`             | `false`     | Renders the monochrome variant.                  |
+| `title`  | `String`              | `undefined` | Adds an SVG `<title>` for accessibility.         |
+| `color`  | `String`              | `currentColor` | Overrides the fill for monochrome icons.      |
+
+## Nuxt
+
+Auto-import icons across your Nuxt app with `components.dirs`:
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ["@devicons/vue/nuxt"],
+});
+```
+
+## Tree-shaking
+
+Use named imports — they're ESM-first and fully tree-shakeable.
+
+```ts
+import { VueIcon } from "@devicons/vue";
+```

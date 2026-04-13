@@ -1,0 +1,133 @@
+---
+interface Props {
+  title?: string;
+  variant?: 'info' | 'tip' | 'warn';
+}
+
+const { title, variant = 'info' } = Astro.props;
+
+const kinds: Record<NonNullable<Props['variant']>, string> = {
+  info: 'Note',
+  tip: 'Tip',
+  warn: 'Warning',
+};
+
+const hasTitle = !!title;
+const kindLabel = kinds[variant];
+---
+
+<aside class="docs-note" data-variant={variant} role="note">
+  <header class="docs-note__header">
+    <span class="docs-note__tick" aria-hidden="true"></span>
+    <span class="docs-note__kind">{kindLabel}</span>
+    {hasTitle && <h4 class="docs-note__title">{title}</h4>}
+  </header>
+  <div class="docs-note__body"><slot /></div>
+</aside>
+
+<style>
+  /* All variant colour comes from --note-accent. No Tailwind JIT
+     lookup — so the Astro-MDX slot can't fall through the scanner. */
+  .docs-note {
+    --note-accent: var(--c-accent);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    border: 1px solid var(--c-border);
+    border-left: 3px solid var(--note-accent);
+    background: var(--c-surface);
+    padding: var(--space-4) var(--space-6);
+  }
+  .docs-note[data-variant='tip']  { --note-accent: var(--c-success); }
+  .docs-note[data-variant='warn'] { --note-accent: var(--c-destructive); }
+
+  .docs-note__header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .docs-note__tick {
+    display: inline-block;
+    width: 0.75rem;
+    height: 2px;
+    background: var(--note-accent);
+  }
+  .docs-note__kind {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--note-accent);
+    line-height: var(--leading-flat);
+  }
+  .docs-note__title {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: 700;
+    letter-spacing: var(--tracking-base);
+    line-height: var(--leading-tight);
+    color: var(--c-text);
+    margin: 0;
+    flex: 1 1 100%;
+  }
+
+  /* Body shares the prose rhythm so a <Note> reads like surrounding
+     paragraphs — same font, size, line-height, and spacing. */
+  .docs-note__body {
+    color: var(--c-text-secondary);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    line-height: var(--leading-prose);
+  }
+  .docs-note__body > * + * { margin-top: 1em; }
+  .docs-note__body > *:first-child { margin-top: 0; }
+  .docs-note__body > *:last-child  { margin-bottom: 0; }
+
+  .docs-note__body :global(p) { margin: 0; color: inherit; }
+  .docs-note__body :global(strong) { color: var(--c-text); font-weight: 600; }
+  .docs-note__body :global(a) {
+    color: var(--note-accent);
+    text-decoration: none;
+    border-bottom: 1px solid
+      color-mix(in oklab, var(--note-accent) 40%, transparent);
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .docs-note__body :global(a:hover) {
+    color: color-mix(in oklab, var(--note-accent) 80%, white);
+    border-bottom-color: currentColor;
+  }
+  .docs-note__body :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--c-bg);
+    color: var(--note-accent);
+    border: 1px solid var(--c-border);
+    padding: 0.1em 0.4em;
+    white-space: nowrap;
+  }
+  .docs-note__body :global(pre),
+  .docs-note__body :global(.astro-code) {
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: var(--leading-snug);
+    overflow-x: auto;
+  }
+  .docs-note__body :global(pre code) {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    white-space: pre;
+  }
+  .docs-note__body :global(ul),
+  .docs-note__body :global(ol) {
+    padding-left: 1.25em;
+    margin: 0;
+  }
+</style>

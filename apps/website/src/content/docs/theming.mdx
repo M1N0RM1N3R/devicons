@@ -1,0 +1,72 @@
+---
+title: "Theming"
+description: "Tint monochrome icons, override brand colors, and ship both light and dark variants."
+order: 0
+category: "Customization"
+categoryOrder: 3
+---
+
+Devicons ships two variants per icon: a full-color brand mark and a monochrome glyph that inherits `currentColor`. The monochrome variant is the canvas — paint it however you like.
+
+## Tint with `currentColor`
+
+Wrap the icon in any element with a text color and the monochrome variant picks it up automatically.
+
+```tsx
+<div className="text-accent">
+  <ReactIcon mono size={48} />
+</div>
+
+<button className="text-text-muted hover:text-accent transition-colors">
+  <GithubIcon mono size={20} />
+</button>
+```
+
+## Override with `color`
+
+Need a one-off color? Pass the `color` prop directly.
+
+```tsx
+<ReactIcon mono color="#ff4d00" size={48} />
+```
+
+## CSS custom properties
+
+Expose icons to your design token system.
+
+```css
+:root {
+  --icon-color: #ff4d00;
+}
+
+.icon {
+  color: var(--icon-color);
+}
+```
+
+```tsx
+<span className="icon">
+  <ReactIcon mono size={48} />
+</span>
+```
+
+## Dark-mode aware brand colors
+
+Some brands ship different marks for light vs. dark backgrounds — GitHub and Apple being the common suspects. Devicons exposes suffix variants:
+
+```tsx
+import { GithubIcon, GithubLightIcon } from "@devicons/react";
+
+function ThemedLogo() {
+  return (
+    <>
+      <GithubIcon className="dark:hidden" size={32} />
+      <GithubLightIcon className="hidden dark:block" size={32} />
+    </>
+  );
+}
+```
+
+## Brand guidelines
+
+For icons tied to strict brand guidelines (Slack, Figma, Google), we default to the guideline-approved color. Don't override those without checking the brand's public usage rules — most guidelines are linked on the icon's detail page.

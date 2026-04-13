@@ -1,0 +1,62 @@
+---
+title: "Quick Start"
+description: "Render your first icon in under a minute."
+order: 2
+category: "Getting Started"
+categoryOrder: 0
+badge: "new"
+---
+
+This guide assumes you have a React, Vue, or Svelte project already set up. If not, start with [Installation](/docs/installation).
+
+## 1. Install
+
+```bash
+npm install @devicons/react
+```
+
+## 2. Import and render
+
+```tsx
+import { ReactIcon, VueIcon, SvelteIcon } from "@devicons/react";
+
+export default function Stack() {
+  return (
+    <div className="flex gap-4">
+      <ReactIcon size={48} />
+      <VueIcon size={48} />
+      <SvelteIcon size={48} />
+    </div>
+  );
+}
+```
+
+Every icon is a named export. The component name is PascalCase + `Icon` — for example, `next-js` becomes `NextJsIcon`.
+
+## 3. Switch to monochrome
+
+Colored icons ship as the default. Swap to the monochrome variant with the `mono` prop — it inherits `currentColor` and respects any parent text color.
+
+```tsx
+<div className="text-accent">
+  <ReactIcon size={48} mono />
+</div>
+```
+
+## 4. Make it interactive
+
+Icons accept every SVG attribute — `onClick`, `aria-label`, `role`, you name it.
+
+```tsx
+<button
+  type="button"
+  aria-label="View on GitHub"
+  className="text-text-muted hover:text-accent transition-colors"
+>
+  <GithubIcon size={24} mono />
+</button>
+```
+
+## That's it
+
+You're shipping Devicons. Browse the [Icon Library](/) for the full catalog, or dive into the [React guide](/docs/react) for props, tree-shaking notes, and SSR tips.

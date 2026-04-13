@@ -51,7 +51,7 @@ const navLinks = [
         <span class="hidden sm:block">GitHub</span>
         <span
           data-stars
-          class="hidden items-center gap-1 px-1.5 py-0.5 bg-bg border border-border type-mono-sm text-accent">
+          class="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 bg-bg border border-border type-mono-sm text-accent">
           <svg
             width="12"
             height="12"
@@ -63,7 +63,11 @@ const navLinks = [
               points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
             ></polygon>
           </svg>
-          <span data-stars-value></span>
+          <span
+            data-stars-value
+            class="inline-block min-w-[2ch] tabular-nums"
+            aria-live="polite"
+            aria-busy="true">—</span>
         </span>
       </a>
 
@@ -165,37 +169,67 @@ const navLinks = [
 </header>
 
 <script>
-  const starsEl = document.querySelector<HTMLElement>('[data-stars]');
   const valueEl = document.querySelector<HTMLElement>('[data-stars-value]');
+  const CACHE_KEY = 'devicons:gh-stars';
+  const TTL_MS = 60 * 60 * 1000;
 
   function format(n: number): string {
     if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k`;
     return String(n);
   }
 
+  function render(count: number) {
+    if (!valueEl) return;
+    valueEl.textContent = format(count);
+    valueEl.removeAttribute('aria-busy');
+  }
+
+  function readCache(): { count: number; ts: number } | null {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (typeof parsed?.count === 'number' && typeof parsed?.ts === 'number') {
+        return parsed;
+      }
+    } catch {}
+    return null;
+  }
+
+  function writeCache(count: number) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ count, ts: Date.now() }));
+    } catch {}
+  }
+
   function fetchStars() {
     fetch('https://api.github.com/repos/vorillaz/devicons')
       .then(r => (r.ok ? r.json() : Promise.reject()))
       .then(data => {
-        if (typeof data?.stargazers_count === 'number' && starsEl && valueEl) {
-          valueEl.textContent = format(data.stargazers_count);
-          starsEl.classList.remove('hidden');
-          starsEl.classList.add('flex');
+        if (typeof data?.stargazers_count === 'number') {
+          writeCache(data.stargazers_count);
+          render(data.stargazers_count);
         }
       })
       .catch(() => {});
   }
 
-  const ric = (
-    window as unknown as {
-      requestIdleCallback?: (
-        cb: () => void,
-        opts?: { timeout: number },
-      ) => number;
-    }
-  ).requestIdleCallback;
-  if (ric) ric(fetchStars, { timeout: 2500 });
-  else setTimeout(fetchStars, 1500);
+  const cached = readCache();
+  if (cached) render(cached.count);
+
+  const fresh = cached && Date.now() - cached.ts < TTL_MS;
+  if (!fresh) {
+    const ric = (
+      window as unknown as {
+        requestIdleCallback?: (
+          cb: () => void,
+          opts?: { timeout: number },
+        ) => number;
+      }
+    ).requestIdleCallback;
+    if (ric) ric(fetchStars, { timeout: 2500 });
+    else setTimeout(fetchStars, 1500);
+  }
 </script>
 
 <script>

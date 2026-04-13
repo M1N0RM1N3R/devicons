@@ -1,0 +1,117 @@
+---
+import { getDocSections } from "../../lib/docs";
+
+interface Props {
+  currentSlug: string;
+  compact?: boolean;
+}
+
+const { currentSlug, compact = false } = Astro.props;
+const sections = await getDocSections();
+
+const resources: { label: string; href: string }[] = [
+  {
+    label: "Figma",
+    href: "https://www.figma.com/design/VIHlfpicLeTBD94u219cF9/Devicons",
+  },
+];
+---
+
+<nav
+  class:list={[
+    "docs-sidebar flex flex-col gap-6",
+    compact ? "py-6 px-3" : "pb-10 pr-6",
+  ]}
+  aria-label="Documentation"
+>
+  {
+    sections.map((section) => (
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center gap-2 px-3">
+          <span class="type-label">
+            {section.category}
+          </span>
+        </div>
+        <ul class="flex flex-col">
+          {section.entries.map((entry) => {
+            const active = entry.id === currentSlug;
+            const href = entry.id === "introduction" ? "/docs" : `/docs/${entry.id}`;
+            return (
+              <li>
+                <a
+                  href={href}
+                  data-astro-prefetch
+                  class:list={[
+                    "type-body-sm group relative flex items-center justify-between gap-3 px-3 py-1.5 transition-colors",
+                    active ? "text-accent" : "text-text-muted hover:text-text",
+                  ]}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <span
+                    aria-hidden="true"
+                    class:list={[
+                      "absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 transition-colors",
+                      active ? "bg-accent" : "bg-transparent",
+                    ]}
+                  />
+                  <span class="truncate">
+                    {entry.data.title}
+                  </span>
+                  {entry.data.badge && (
+                    <span
+                      class:list={[
+                        "font-mono text-[10px] font-medium uppercase tracking-[0.15em] px-1.5 py-0.5 border leading-none shrink-0",
+                        entry.data.badge === "new" &&
+                          "border-accent/40 text-accent bg-accent/10",
+                        entry.data.badge === "updated" &&
+                          "border-success/40 text-success bg-success/10",
+                        entry.data.badge === "beta" &&
+                          "border-border text-text-muted bg-surface",
+                      ]}
+                    >
+                      {entry.data.badge}
+                    </span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))
+  }
+
+  <div class="flex flex-col gap-2">
+    <div class="flex items-center gap-2 px-3">
+      <span class="type-label">Resources</span>
+    </div>
+    <ul class="flex flex-col">
+      {resources.map((resource) => (
+        <li>
+          <a
+            href={resource.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="type-body-sm group relative flex items-center justify-between gap-3 px-3 py-1.5 transition-colors text-text-muted hover:text-text"
+          >
+            <span class="truncate">{resource.label}</span>
+            <svg
+              aria-hidden="true"
+              width="12"
+              height="12"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              class="shrink-0 opacity-60 group-hover:opacity-100 transition-opacity"
+            >
+              <path d="M6 3h7v7" />
+              <path d="M13 3 6.5 9.5" />
+              <path d="M11 9v4H3V5h4" />
+            </svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
