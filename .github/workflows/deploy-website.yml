@@ -29,34 +29,31 @@ jobs:
       deployments: write
     env:
       CLOUDFLARE_PROJECT_NAME: devicons-website
-      CLOUDFLARE_PRODUCTION_BRANCH: master
-      CLOUDFLARE_STAGING_BRANCH: canary
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Resolve deployment target
+      - name: Resolve Cloudflare Pages branch
         id: target
         run: |
-          ref="${{ github.ref_name }}"
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             env="${{ github.event.inputs.environment }}"
-          elif [ "$ref" = "${{ env.CLOUDFLARE_PRODUCTION_BRANCH }}" ]; then
+          elif [ "${{ github.ref_name }}" = "main" ]; then
             env="production"
           else
             env="staging"
           fi
 
           if [ "$env" = "production" ]; then
-            branch="${{ env.CLOUDFLARE_PRODUCTION_BRANCH }}"
+            branch="main"
           else
-            branch="${{ env.CLOUDFLARE_STAGING_BRANCH }}"
+            branch="canary"
           fi
 
           echo "environment=$env" >> "$GITHUB_OUTPUT"
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
-          echo "Deploying to $env via Cloudflare branch $branch"
+          echo "Deploying $env via Cloudflare branch $branch"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -85,12 +82,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: >-
-            pages deploy apps/website/dist
-            --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }}
-            --branch=${{ steps.target.outputs.branch }}
-            --commit-hash=${{ github.sha }}
-            --commit-message=${{ github.event.head_commit.message || github.sha }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy apps/website/dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --branch=${{ steps.target.outputs.branch }}
 
       - name: Summary
         run: |
