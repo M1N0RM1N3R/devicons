@@ -2,6 +2,7 @@
   "name": "@dev.icons/repo",
   "version": "1.8.0",
   "private": true,
+  "packageManager": "pnpm@10.10.0",
   "description": "Devicons - A collection of icons for developers",
   "keywords": [],
   "scripts": {
