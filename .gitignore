@@ -13,6 +13,20 @@ dist/
 
 node_modules/
 .astro/
+
+# Generated framework components (produced by `pnpm generate:*`)
+packages/react/src/defs/*
+!packages/react/src/defs/.gitkeep
+packages/react/src/ssr/*
+!packages/react/src/ssr/.gitkeep
+packages/vue/src/defs/*
+!packages/vue/src/defs/.gitkeep
+packages/vue/src/icons/*
+!packages/vue/src/icons/.gitkeep
+packages/svelte/src/defs/*
+!packages/svelte/src/defs/.gitkeep
+packages/svelte/src/icons/*
+!packages/svelte/src/icons/.gitkeep
 dist/
 
 # logs

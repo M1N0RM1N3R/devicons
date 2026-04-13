@@ -14,7 +14,8 @@
     "generate:vue": "pnpm -F @dev.icons/vue generate",
     "generate:svelte": "pnpm -F @dev.icons/svelte generate",
     "test": "pnpm -r --parallel test",
-    "check": "pnpm -F @dev.icons/core check"
+    "check": "pnpm -F @dev.icons/core check",
+    "clean:generated": "node scripts/clean-generated.mjs"
   },
   "devDependencies": {
     "typescript": "^5.7.3",
