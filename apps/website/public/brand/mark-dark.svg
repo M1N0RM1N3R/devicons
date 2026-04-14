@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <!-- Corner-notch Block D mark — for dark backgrounds, transparent bg -->
+  <polygon points="0,0 128,0 128,128 16,128 0,112" fill="#ff4d00"/>
+  <text x="64" y="100" text-anchor="middle" font-family="system-ui,-apple-system,'Segoe UI',sans-serif" font-weight="900" font-size="100" letter-spacing="-4" fill="#000">D</text>
+</svg>
