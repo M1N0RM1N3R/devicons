@@ -4,11 +4,14 @@ import PageLayout from '../components/layout/page-layout.astro';
 const year = new Date().getFullYear();
 ---
 
-<PageLayout title="Legal — Devicons" description="License, terms, and privacy information for Devicons.">
+<PageLayout
+  title="Legal — Devicons"
+  description="License, terms, and privacy information for Devicons.">
   <div class="max-w-[1400px] mx-auto px-6 pt-14 pb-24">
     <header class="mb-10 flex flex-col gap-3 pb-8 border-b border-border">
       <p class="type-label flex items-center gap-3">
-        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
         Legal
       </p>
       <h1 class="type-h1">License and terms</h1>
@@ -17,15 +20,16 @@ const year = new Date().getFullYear();
     <div class="prose">
       <h2>License</h2>
       <p>
-        Devicons is released under the <a href="https://opensource.org/licenses/MIT">MIT License</a>.
-        You can use, copy, modify, merge, publish, distribute, sublicense, and sell copies of the
-        software without restriction, provided the copyright notice and permission notice are included
-        in all copies or substantial portions of the software.
+        Devicons is released under the <a
+          href="https://opensource.org/licenses/MIT">MIT License</a
+        >. You can use, copy, modify, merge, publish, distribute, sublicense,
+        and sell copies of the software without restriction, provided the
+        copyright notice and permission notice are included in all copies or
+        substantial portions of the software.
       </p>
 
       <pre><code>MIT License
 
-Copyright (c) {year} Theodore Vorillas
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -47,39 +51,68 @@ SOFTWARE.</code></pre>
 
       <h2>Trademarks and brand icons</h2>
       <p>
-        The icons in this collection depict logos and brand marks owned by their respective companies.
-        Devicons does not claim ownership of these marks. Including an icon in this package does not
-        grant you a trademark license from the brand owner.
+        The icons and logos in this collection depict logos and brand marks
+        owned by their respective companies. Devicons does not claim ownership
+        of these marks. Including an icon in this package does not grant you a
+        trademark license from the brand owner.
       </p>
       <p>
-        Before using a brand icon in your project, check that brand's usage guidelines. Most companies
-        publish them publicly. We link to official guidelines on each icon's detail page where available.
+        Before using a brand icon in your project, check that brand's usage
+        guidelines. Most companies publish them publicly. We link to official
+        guidelines on each icon's detail page where available.
+      </p>
+
+      <h2>Brand guidelines</h2>
+      <p>
+        We strive to follow each brand's official guidelines when providing an
+        icon. However, guidelines can change over time and may not always be
+        up-to-date in our documentation.
+      </p>
+      <p>
+        As we rely on community work to maintain this project some logos or
+        icons may not be up-to-date or the guidelines link for a brand may be
+        outdated. If you find that the guidelines are not accurate, please
+        submit an issue to the <a
+          href="https://github.com/vorillaz/devicons/issues"
+          >Devicons GitHub repository</a
+        >.
       </p>
 
       <h2>Privacy</h2>
       <p>
-        This website does not use cookies, analytics, or tracking scripts. No personal data is collected,
-        stored, or transmitted to third parties.
+        This website does not use cookies, analytics, or tracking scripts. No
+        personal data is collected, stored, or transmitted to third parties.
       </p>
       <p>
-        The GitHub star count shown in the navbar is fetched from the public GitHub API on the client side.
-        No request passes through our servers.
+        The GitHub star count shown in the navbar is fetched from the public
+        GitHub API on the client side. No request passes through our servers.
       </p>
 
       <h2>Third-party services</h2>
       <p>
-        When you load icons via CDN (cdn.devicons.dev or jsDelivr), those requests go directly to the CDN
-        provider. Refer to their respective privacy policies for details:
+        When you load icons via CDN (jsDelivr, npm or any other provider), those
+        requests go directly to the CDN provider. Refer to their respective
+        privacy policies for details:
       </p>
       <ul>
-        <li><a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net">jsDelivr privacy policy</a></li>
-        <li><a href="https://www.cloudflare.com/privacypolicy/">Cloudflare privacy policy</a></li>
+        <li>
+          <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net"
+            >jsDelivr privacy policy</a
+          >
+        </li>
+        <li>
+          <a href="https://www.cloudflare.com/privacypolicy/"
+            >Cloudflare privacy policy</a
+          >
+        </li>
       </ul>
 
       <h2>Contact</h2>
       <p>
-        For legal questions, reach out via <a href="https://github.com/vorillaz/devicons/issues">GitHub Issues</a>
-        or email <a href="mailto:theo@vorillas.com">theo@vorillas.com</a>.
+        For legal questions, reach out via <a
+          href="https://github.com/vorillaz/devicons/issues">GitHub Issues</a
+        >
+        or email <a href="mailto:info@vorillaz.com">info@vorillaz.com</a>.
       </p>
     </div>
   </div>
