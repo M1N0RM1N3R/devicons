@@ -47,7 +47,7 @@ const TRACE = [
           </p>
 
           <div class="mt-8 md:mt-10 flex flex-wrap items-center gap-3">
-            <a href="/" class="btn btn--primary btn--mono"> &larr; Home </a>
+            <a href="/" class="btn btn--primary btn--mono px-8"> &larr; Home </a>
             <a href="/docs" class="btn btn--ghost btn--mono"> Read the docs </a>
             <a href="/icons" class="btn btn--subtle btn--mono">
               Browse icons
@@ -151,6 +151,10 @@ const TRACE = [
   .notfound-card {
     position: relative;
     box-shadow: 8px 8px 0 0 var(--c-border);
+    transition: border-color 0.15s ease;
+  }
+  .notfound-card:hover {
+    border-color: var(--c-accent);
   }
   :global([data-theme='light']) .notfound-card {
     box-shadow: 8px 8px 0 0 var(--c-accent);

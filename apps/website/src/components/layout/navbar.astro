@@ -24,10 +24,16 @@ const navLinks = [
           <a
             href={link.href}
             class:list={[
-              'navbar-link transition-colors hidden sm:block',
+              'navbar-link transition-colors hidden sm:block relative',
               link.active ? 'text-accent' : 'text-text-muted hover:text-text',
             ]}>
             {link.label}
+            {link.active && (
+              <span
+                aria-hidden="true"
+                class="absolute bottom-0 left-0 right-0 h-[2px] bg-accent"
+              />
+            )}
           </a>
         ))
       }
