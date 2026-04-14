@@ -67,19 +67,20 @@ const initialDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(initialSvgD
     <div
       class="flex flex-col md:flex-row md:justify-between md:items-center gap-8 md:gap-12">
       <div class="flex-1 min-w-0">
-        <p class="hero-eyebrow type-label mb-4 sm:mb-5">
+        <p class="hero-eyebrow type-label mb-4 sm:mb-5 flex items-center gap-3">
+          <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
           {iconCount.toLocaleString()} Icons / MIT / Open Source
         </p>
         <h1 class="hero-title type-display">
           Logos & Icons for<br />people who ship.
         </h1>
         <div
-          class="hero-actions flex flex-wrap items-center gap-3 mt-6 sm:mt-8">
+          class="hero-actions flex flex-wrap items-center gap-3 mt-5 sm:mt-6">
           <a href="#icons" class="btn btn--primary btn--mono"> Browse Icons </a>
           <button
             type="button"
             data-copy={INSTALL_CMD}
-            class="hero-copy btn btn--ghost type-mono">
+            class="hero-copy type-mono text-text-muted hover:text-accent transition-colors cursor-pointer border-0 bg-transparent">
             <span data-label>$ {INSTALL_CMD}</span>
           </button>
         </div>

@@ -91,7 +91,7 @@
   --text-display:    clamp(3rem, 10vw, 8rem);
 
   /* Line-height — 6 locked values, semantic names. */
-  --leading-display: 0.9;
+  --leading-display: 0.85;
   --leading-flat:    1;
   --leading-tight:   1.2;
   --leading-snug:    1.4;

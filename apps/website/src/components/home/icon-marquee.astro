@@ -83,12 +83,37 @@ const TRACK = [...ICONS, ...ICONS];
     overflow: hidden;
   }
 
+  .marquee__frame::before,
+  .marquee__frame::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 48px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .marquee__frame::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--c-bg), transparent);
+  }
+
+  .marquee__frame::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--c-bg), transparent);
+  }
+
   .marquee__track {
     display: flex;
     flex: 0 0 auto;
     width: max-content;
     animation: scroll-infinite 60s linear infinite;
     will-change: transform;
+  }
+
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
   }
 
   .marquee__tile {
@@ -104,6 +129,11 @@ const TRACK = [...ICONS, ...ICONS];
     border-right: 1px solid var(--c-border);
     background: var(--c-bg);
     color: var(--c-text);
+    transition: border-color 0.15s ease;
+  }
+
+  .marquee__tile:hover {
+    border-color: var(--c-accent);
   }
 
   .marquee__index {
@@ -120,6 +150,11 @@ const TRACK = [...ICONS, ...ICONS];
     height: 40px;
     object-fit: contain;
     display: block;
+    transition: transform 0.15s ease;
+  }
+
+  .marquee__tile:hover .marquee__icon {
+    transform: scale(1.05);
   }
 
   .marquee__label {
