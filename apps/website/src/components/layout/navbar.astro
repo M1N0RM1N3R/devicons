@@ -14,8 +14,13 @@ const navLinks = [
     class="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between">
     <a
       href="/"
-      class="type-brand text-text hover:text-accent transition-colors">
-      DEVICONS
+      class="flex items-center gap-2.5 group transition-colors"
+      aria-label="DEVICONS home">
+      <svg class="navbar-logo-mark" width="22" height="22" viewBox="0 0 128 128" aria-hidden="true">
+        <polygon points="0,0 128,0 128,128 16,128 0,112" fill="currentColor"/>
+        <text x="64" y="100" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-weight="900" font-size="100" letter-spacing="-4" fill="var(--c-bg)">D</text>
+      </svg>
+      <span class="type-brand text-text group-hover:text-accent transition-colors">DEVICONS</span>
     </a>
 
     <nav class="flex items-center gap-6">
@@ -173,6 +178,16 @@ const navLinks = [
     </aside>
   </div>
 </header>
+
+<style>
+  .navbar-logo-mark {
+    color: var(--c-accent);
+    transition: color 0.15s ease;
+  }
+  .group:hover .navbar-logo-mark {
+    color: var(--c-accent-hover);
+  }
+</style>
 
 <script>
   const valueEl = document.querySelector<HTMLElement>('[data-stars-value]');
