@@ -203,19 +203,12 @@ const navLinks = [
 </style>
 
 <script>
-  const valueEl = document.querySelector<HTMLElement>('[data-stars-value]');
   const CACHE_KEY = 'devicons:gh-stars';
   const TTL_MS = 60 * 60 * 1000;
 
   function format(n: number): string {
     if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k`;
     return String(n);
-  }
-
-  function render(count: number) {
-    if (!valueEl) return;
-    valueEl.textContent = format(count);
-    valueEl.removeAttribute('aria-busy');
   }
 
   function readCache(): { count: number; ts: number } | null {
@@ -239,37 +232,52 @@ const navLinks = [
     } catch {}
   }
 
-  function fetchStars() {
-    fetch('https://api.github.com/repos/vorillaz/devicons')
-      .then(r => (r.ok ? r.json() : Promise.reject()))
-      .then(data => {
-        if (typeof data?.stargazers_count === 'number') {
-          writeCache(data.stargazers_count);
-          render(data.stargazers_count);
+  function initStars() {
+    const valueEl = document.querySelector<HTMLElement>('[data-stars-value]');
+    if (!valueEl) return;
+
+    function render(count: number) {
+      valueEl!.textContent = format(count);
+      valueEl!.removeAttribute('aria-busy');
+    }
+
+    function fetchStars() {
+      fetch('https://api.github.com/repos/vorillaz/devicons')
+        .then(r => (r.ok ? r.json() : Promise.reject()))
+        .then(data => {
+          if (typeof data?.stargazers_count === 'number') {
+            writeCache(data.stargazers_count);
+            render(data.stargazers_count);
+          }
+        })
+        .catch(() => {});
+    }
+
+    const cached = readCache();
+    if (cached) render(cached.count);
+
+    const fresh = cached && Date.now() - cached.ts < TTL_MS;
+    if (!fresh) {
+      const ric = (
+        window as unknown as {
+          requestIdleCallback?: (
+            cb: () => void,
+            opts?: { timeout: number },
+          ) => number;
         }
-      })
-      .catch(() => {});
+      ).requestIdleCallback;
+      if (ric) ric(fetchStars, { timeout: 2500 });
+      else setTimeout(fetchStars, 1500);
+    }
   }
 
-  const cached = readCache();
-  if (cached) render(cached.count);
-
-  const fresh = cached && Date.now() - cached.ts < TTL_MS;
-  if (!fresh) {
-    const ric = (
-      window as unknown as {
-        requestIdleCallback?: (
-          cb: () => void,
-          opts?: { timeout: number },
-        ) => number;
-      }
-    ).requestIdleCallback;
-    if (ric) ric(fetchStars, { timeout: 2500 });
-    else setTimeout(fetchStars, 1500);
-  }
+  // Run on initial load and after every view transition
+  document.addEventListener('astro:page-load', initStars);
 </script>
 
 <script>
   import { setupMobileMenu } from '../../lib/mobile-menu';
-  setupMobileMenu({ key: 'mobile-menu', breakpoint: '(min-width: 640px)' });
+  document.addEventListener('astro:page-load', () => {
+    setupMobileMenu({ key: 'mobile-menu', breakpoint: '(min-width: 640px)' });
+  });
 </script>
