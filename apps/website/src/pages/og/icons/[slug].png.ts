@@ -23,9 +23,9 @@ export const GET: APIRoute = async ({ props }) => {
   const { entry } = props as { entry: Awaited<ReturnType<typeof getCollection>>[number] };
   const { name, description, icons: iconFiles, tags } = entry.data;
 
-  // Load up to 3 icon variants as images
+  // Load up to 2 icon variants as images
   const iconImages = iconFiles
-    .slice(0, 3)
+    .slice(0, 2)
     .map((slug: string) => loadSvgAsDataUri(slug))
     .filter(Boolean) as string[];
 
