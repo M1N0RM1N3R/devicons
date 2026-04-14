@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useQueryState, parseAsString } from 'nuqs';
 import {
   Drawer,
@@ -75,8 +75,48 @@ interface SearchDrawerProps {
   allIcons: IconEntry[];
 }
 
+function scrubVaulResidue() {
+  const targets = [document.documentElement, document.body];
+  for (const el of targets) {
+    for (const attr of Array.from(el.attributes)) {
+      if (attr.name.startsWith('data-vaul-')) el.removeAttribute(attr.name);
+    }
+    el.style.removeProperty('position');
+    el.style.removeProperty('top');
+    el.style.removeProperty('left');
+    el.style.removeProperty('right');
+    el.style.removeProperty('padding-right');
+    el.style.removeProperty('overflow');
+    el.style.removeProperty('transform');
+    el.style.removeProperty('transform-origin');
+    el.style.removeProperty('transition');
+    el.style.removeProperty('border-radius');
+    el.style.removeProperty('overflow-x');
+    el.style.removeProperty('overflow-y');
+    el.style.removeProperty('background-color');
+  }
+}
+
 export function SearchDrawer({ allIcons }: SearchDrawerProps) {
   const [iconParam, setIcon] = useQueryState('icon', parseAsString);
+  const [mountKey, setMountKey] = useState(0);
+
+  useEffect(() => {
+    const onBeforeSwap = () => {
+      setIcon(null);
+      scrubVaulResidue();
+    };
+    const onAfterSwap = () => {
+      scrubVaulResidue();
+      setMountKey(k => k + 1);
+    };
+    document.addEventListener('astro:before-swap', onBeforeSwap);
+    document.addEventListener('astro:after-swap', onAfterSwap);
+    return () => {
+      document.removeEventListener('astro:before-swap', onBeforeSwap);
+      document.removeEventListener('astro:after-swap', onAfterSwap);
+    };
+  }, [setIcon]);
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -90,7 +130,7 @@ export function SearchDrawer({ allIcons }: SearchDrawerProps) {
     : null;
 
   return (
-    <Drawer open={!!iconParam} onOpenChange={handleOpenChange}>
+    <Drawer key={mountKey} open={!!iconParam} onOpenChange={handleOpenChange}>
       <DrawerContent className="bg-bg border-t border-border max-h-[95vh] sm:max-h-[85vh]">
         <div className="sr-only">
           <DrawerHeader>
