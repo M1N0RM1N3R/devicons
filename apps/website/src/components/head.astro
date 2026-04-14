@@ -1,12 +1,7 @@
 ---
 import "../styles/global.css";
-import "@fontsource-variable/bricolage-grotesque/wght.css";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
-import "@fontsource/ibm-plex-mono/600.css";
-import "@fontsource/ibm-plex-mono/700.css";
-import displayFontUrl from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
-import monoFontUrl from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url";
+import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
 import { SITE_TITLE } from "../consts";
 
 interface Props {
@@ -27,12 +22,26 @@ const { title, description, image } = Astro.props;
   })();
 </script>
 
+<!-- Preserve theme across view transitions -->
+<script is:inline>
+  document.addEventListener("astro:before-swap", function(e) {
+    var t = localStorage.getItem("theme");
+    if (t === "light") e.newDocument.documentElement.setAttribute("data-theme", "light");
+  });
+</script>
+
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="preload" as="font" type="font/woff2" href={displayFontUrl} crossorigin="anonymous" />
-<link rel="preload" as="font" type="font/woff2" href={monoFontUrl} crossorigin="anonymous" />
+
+<!-- Fonts via Astro font system (preloaded, locally cached) -->
+<Font cssVariable="--font-display" preload />
+<Font cssVariable="--font-mono" preload />
+
+<!-- View transitions for smooth page navigation -->
+<ClientRouter fallback="swap" />
+
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link
   rel="alternate"

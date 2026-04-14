@@ -73,7 +73,8 @@
 }
 
 @theme {
-  /* Fonts */
+  /* Fonts — Astro's font system injects --font-display and --font-mono on :root.
+     These declarations register the tokens with Tailwind for utility generation. */
   --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
