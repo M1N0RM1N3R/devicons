@@ -1,6 +1,6 @@
 {
   "name": "@dev.icons/codegen",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Internal shared code generator for devicons framework packages",
   "type": "module",
   "private": true,

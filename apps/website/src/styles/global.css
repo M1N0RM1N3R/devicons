@@ -394,6 +394,7 @@ html {
   }
 
   .btn--primary {
+    border-color: var(--c-accent);
     background: var(--c-accent);
     color: var(--c-accent-fg);
   }
@@ -406,6 +407,7 @@ html {
     background: var(--c-surface);
     color: var(--c-text);
   }
+
   .btn--ghost:hover {
     border-color: var(--c-accent);
     color: var(--c-accent);

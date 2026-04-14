@@ -154,34 +154,38 @@ const year = new Date().getFullYear();
 </style>
 
 <script>
-  const btn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
-  const optDark = document.querySelector<HTMLElement>('[data-theme-opt="dark"]');
-  const optLight = document.querySelector<HTMLElement>('[data-theme-opt="light"]');
+  function initThemeToggle() {
+    const btn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+    const optDark = document.querySelector<HTMLElement>('[data-theme-opt="dark"]');
+    const optLight = document.querySelector<HTMLElement>('[data-theme-opt="light"]');
 
-  function applyTheme(theme: "light" | "dark") {
-    if (theme === "light") {
-      document.documentElement.setAttribute("data-theme", "light");
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-    }
-    if (optDark && optLight) {
-      if (theme === "dark") {
-        optDark.setAttribute("data-active", "");
-        optLight.removeAttribute("data-active");
+    function applyTheme(theme: "light" | "dark") {
+      if (theme === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
       } else {
-        optLight.setAttribute("data-active", "");
-        optDark.removeAttribute("data-active");
+        document.documentElement.removeAttribute("data-theme");
+      }
+      if (optDark && optLight) {
+        if (theme === "dark") {
+          optDark.setAttribute("data-active", "");
+          optLight.removeAttribute("data-active");
+        } else {
+          optLight.setAttribute("data-active", "");
+          optDark.removeAttribute("data-active");
+        }
       }
     }
+
+    const initial = (localStorage.getItem("theme") as "light" | "dark" | null) === "light" ? "light" : "dark";
+    applyTheme(initial);
+
+    btn?.addEventListener("click", () => {
+      const current = localStorage.getItem("theme") === "light" ? "light" : "dark";
+      const next = current === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", next);
+      applyTheme(next);
+    });
   }
 
-  const initial = (localStorage.getItem("theme") as "light" | "dark" | null) === "light" ? "light" : "dark";
-  applyTheme(initial);
-
-  btn?.addEventListener("click", () => {
-    const current = localStorage.getItem("theme") === "light" ? "light" : "dark";
-    const next = current === "dark" ? "light" : "dark";
-    localStorage.setItem("theme", next);
-    applyTheme(next);
-  });
+  document.addEventListener("astro:page-load", initThemeToggle);
 </script>

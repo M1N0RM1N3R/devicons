@@ -1,6 +1,6 @@
 {
   "name": "@dev.icons/react",
-  "version": "1.8.0",
+  "version": "0.0.0",
   "description": "Devicons React - The React package for Devicons",
   "keywords": [],
   "main": "./dist/index.cjs",

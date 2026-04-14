@@ -93,7 +93,7 @@ const { prev, next } = await getDocNav(id);
 
       <script>
         import { setupCodeCopy } from '../lib/code-copy';
-        setupCodeCopy();
+        document.addEventListener('astro:page-load', () => setupCodeCopy());
       </script>
 
       {/* Right TOC */}

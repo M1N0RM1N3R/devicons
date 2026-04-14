@@ -86,9 +86,11 @@ const { currentSlug } = Astro.props;
 
 <script>
   import { setupMobileMenu } from '../../lib/mobile-menu';
-  setupMobileMenu({
-    key: 'docs-nav',
-    breakpoint: '(min-width: 768px)',
-    closeOnPanelLinkClick: true,
+  document.addEventListener('astro:page-load', () => {
+    setupMobileMenu({
+      key: 'docs-nav',
+      breakpoint: '(min-width: 768px)',
+      closeOnPanelLinkClick: true,
+    });
   });
 </script>

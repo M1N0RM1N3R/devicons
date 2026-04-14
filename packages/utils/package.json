@@ -1,7 +1,7 @@
 {
   "name": "@dev.icons/utils",
   "description": "Utility functions for the Devicons project",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "type": "module",
   "private": true,
   "main": "./src/index.ts",
