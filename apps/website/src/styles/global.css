@@ -772,6 +772,7 @@ body *:not(canvas):not(svg *) {
   border: 1px solid var(--c-border);
   border-left: 3px solid var(--c-accent);
   padding: 1rem 1.25rem;
+  overflow-x: auto;
   font-size: 0.8125rem;
   line-height: var(--leading-snug);
   font-family: var(--font-mono);
@@ -929,8 +930,8 @@ body *:not(canvas):not(svg *) {
    colored square (preview background picker). Border tracks active
    state instead of background fill. */
 .tabs__swatch {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
   background: transparent;
   border: 1px solid var(--c-border);

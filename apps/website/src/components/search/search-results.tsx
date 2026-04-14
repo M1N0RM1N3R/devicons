@@ -107,17 +107,19 @@ export function SearchSection({
       <div className="sticky top-14 z-40 bg-bg border-b border-border">
         <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center gap-6">
           <h2 className="type-h2 shrink-0 hidden sm:block">Icons</h2>
-          <SearchInput
-            defaultValue={query ?? ''}
-            onValueChange={setQuery}
-            placeholder="Search ..."
-          />
+          <div className="flex items-center gap-4 flex-1">
+            <SearchInput
+              defaultValue={query ?? ''}
+              onValueChange={setQuery}
+              placeholder="Search ..."
+            />
 
-          <p className="type-mono-sm shrink-0 hidden md:block">
-            {isLoading ? '...' : `${results.length} results`}
-          </p>
+            <p className="type-mono-sm shrink-0 hidden md:block">
+              {isLoading ? '...' : `${results.length} results`}
+            </p>
+          </div>
 
-          <div className="flex gap-1 shrink-0">
+          <div role="tablist" className="flex gap-1 shrink-0 tab-group">
             {(['dark', 'light', 'grid'] as const).map(b => (
               <button
                 key={b}
@@ -125,14 +127,7 @@ export function SearchSection({
                 onClick={() => setBg(b)}
                 aria-label={`${b} background`}
                 aria-pressed={bg === b}
-                className={clsx(
-                  'cursor-pointer w-6 h-6 rounded border transition-colors',
-                  bg === b ? 'border-accent' : 'border-border',
-                  b === 'dark' && 'bg-surface',
-                  b === 'light' && 'bg-white',
-                  b === 'grid' &&
-                    'bg-[repeating-conic-gradient(#262626_0%_25%,#1a1a1a_0%_50%)] bg-[length:8px_8px]',
-                )}
+                className={clsx('tabs__swatch', `tabs__swatch--${b}`)}
               />
             ))}
           </div>
