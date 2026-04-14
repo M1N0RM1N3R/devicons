@@ -132,31 +132,19 @@ const TRACK = [...ICONS, ...ICONS];
     align-items: center;
     justify-items: center;
     padding: 10px 12px;
-    border-right: 1px solid var(--c-border);
+    border: 1px solid var(--c-border);
+    margin-left: -1px;
     background: var(--c-bg);
     color: var(--c-text);
-    transition: border-color 0.15s ease;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
   }
 
   .marquee__tile:hover {
     background: color-mix(in oklab, var(--c-accent) 4%, var(--c-bg));
     border-color: var(--c-accent);
-  }
-
-  .marquee__tile::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--c-accent);
-    opacity: 0;
-    transition: opacity 0.15s ease;
-  }
-
-  .marquee__tile:hover::before {
-    opacity: 1;
+    z-index: 1;
   }
 
   /* Copy button — revealed on tile hover, top-right corner. */
