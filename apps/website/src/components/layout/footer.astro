@@ -50,23 +50,17 @@ const year = new Date().getFullYear();
             type="button"
             data-theme-toggle
             aria-label="Toggle theme"
-            class="type-body-sm flex items-center gap-2 text-text-muted hover:text-text transition-colors cursor-pointer"
+            class="theme-toggle"
           >
-            <svg data-sun width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true">
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-            <svg data-moon width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true" class="hidden">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-            <span class="type-mono-sm" data-theme-label>Light</span>
+            <span class="theme-toggle__option" data-theme-opt="dark">
+              <span class="theme-toggle__swatch theme-toggle__swatch--dark" aria-hidden="true"></span>
+              <span>DARK</span>
+            </span>
+            <span class="theme-toggle__sep" aria-hidden="true">/</span>
+            <span class="theme-toggle__option" data-theme-opt="light">
+              <span class="theme-toggle__swatch theme-toggle__swatch--light" aria-hidden="true"></span>
+              <span>LIGHT</span>
+            </span>
           </button>
         </div>
       </div>
@@ -81,6 +75,63 @@ const year = new Date().getFullYear();
     overflow: hidden;
     user-select: none;
   }
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--c-text-muted);
+    transition: border-color 0.15s ease;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--c-accent);
+  }
+
+  .theme-toggle__option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .theme-toggle__option[data-active] {
+    color: var(--c-accent);
+    background: color-mix(in oklab, var(--c-accent) 8%, transparent);
+  }
+
+  .theme-toggle__sep {
+    color: var(--c-border);
+    padding: 0;
+    font-weight: 400;
+  }
+
+  .theme-toggle__swatch {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--c-border);
+    flex-shrink: 0;
+  }
+
+  .theme-toggle__swatch--dark {
+    background: #000;
+  }
+
+  .theme-toggle__swatch--light {
+    background: #fff;
+  }
+
   .footer-brand-mark::before {
     content: "DEVICONS";
     display: block;
@@ -98,9 +149,8 @@ const year = new Date().getFullYear();
 
 <script>
   const btn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
-  const sun = document.querySelector<HTMLElement>("[data-sun]");
-  const moon = document.querySelector<HTMLElement>("[data-moon]");
-  const label = document.querySelector<HTMLElement>("[data-theme-label]");
+  const optDark = document.querySelector<HTMLElement>('[data-theme-opt="dark"]');
+  const optLight = document.querySelector<HTMLElement>('[data-theme-opt="light"]');
 
   function applyTheme(theme: "light" | "dark") {
     if (theme === "light") {
@@ -108,10 +158,14 @@ const year = new Date().getFullYear();
     } else {
       document.documentElement.removeAttribute("data-theme");
     }
-    if (sun && moon && label) {
-      sun.classList.toggle("hidden", theme === "light");
-      moon.classList.toggle("hidden", theme === "dark");
-      label.textContent = theme === "dark" ? "Light" : "Dark";
+    if (optDark && optLight) {
+      if (theme === "dark") {
+        optDark.setAttribute("data-active", "");
+        optLight.removeAttribute("data-active");
+      } else {
+        optLight.setAttribute("data-active", "");
+        optDark.removeAttribute("data-active");
+      }
     }
   }
 
