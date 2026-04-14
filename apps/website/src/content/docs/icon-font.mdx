@@ -14,18 +14,35 @@ import Note from "../../components/docs/note.astro";
 Every class is namespaced under `devicon-`. That's on purpose: a bare `.react` or `.vue` selector would collide with just about every stylesheet in the wild, so we reach for the `devicon-` prefix to stay out of the way. Use the parent `.devicon` class to opt into the font, then `.devicon-<slug>` to pick a glyph — e.g. `devicon-react`, `devicon-next-js`.
 </Note>
 
+<Note variant="info" title="Version numbering">
+The font package uses a higher version number (`1.x`) than the framework packages. This is intentional — the icon font existed before the framework wrappers and carries its own versioning history for backwards compatibility. Don't worry about the mismatch; the icon content is identical across all packages at any given release.
+</Note>
+
 ## Install
 
 ```bash
 npm install @devicons/font
 ```
 
-Or link from a CDN:
+## CDN
+
+Pick whichever CDN you prefer — both serve the same stylesheet.
+
+Devicons CDN:
 
 ```html
 <link
   rel="stylesheet"
   href="https://cdn.devicons.dev/font/devicons.css"
+/>
+```
+
+jsDelivr:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/devicons@1.8.0/css/devicons.min.css"
 />
 ```
 
