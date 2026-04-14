@@ -16,11 +16,29 @@ const navLinks = [
       href="/"
       class="flex items-center gap-2.5 group transition-colors"
       aria-label="DEVICONS home">
-      <svg class="navbar-logo-mark" width="22" height="22" viewBox="0 0 128 128" aria-hidden="true">
-        <polygon points="0,0 128,0 128,128 16,128 0,112" fill="currentColor"/>
-        <text x="64" y="100" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-weight="900" font-size="100" letter-spacing="-4" fill="var(--c-bg)">D</text>
+      <svg
+        class="navbar-logo-mark"
+        width="22"
+        height="22"
+        viewBox="0 0 128 128"
+        aria-hidden="true">
+        <polygon points="0,0 128,0 128,128 16,128 0,112" fill="currentColor"
+        ></polygon>
+        <text
+          x="64"
+          y="100"
+          text-anchor="middle"
+          font-family="system-ui,-apple-system,sans-serif"
+          font-weight="900"
+          font-size="100"
+          letter-spacing="-4"
+          fill="var(--c-bg)">D</text
+        >
       </svg>
-      <span class="type-brand text-text group-hover:text-accent transition-colors">DEVICONS</span>
+      <span
+        class="type-brand text-text group-hover:text-accent transition-colors"
+        >DEVICONS</span
+      >
     </a>
 
     <nav class="flex items-center gap-6">
@@ -33,12 +51,6 @@ const navLinks = [
               link.active ? 'text-accent' : 'text-text-muted hover:text-text',
             ]}>
             {link.label}
-            {link.active && (
-              <span
-                aria-hidden="true"
-                class="absolute bottom-0 left-0 right-0 h-[2px] bg-accent"
-              />
-            )}
           </a>
         ))
       }
@@ -78,7 +90,8 @@ const navLinks = [
             data-stars-value
             class="inline-block min-w-[2ch] tabular-nums"
             aria-live="polite"
-            aria-busy="true">—</span>
+            aria-busy="true">....</span
+          >
         </span>
       </a>
 
@@ -219,7 +232,10 @@ const navLinks = [
 
   function writeCache(count: number) {
     try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ count, ts: Date.now() }));
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ count, ts: Date.now() }),
+      );
     } catch {}
   }
 
