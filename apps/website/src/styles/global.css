@@ -591,8 +591,7 @@ body *:not(canvas):not(svg *) {
 .prose h2 {
   font-size: var(--text-lg);
   line-height: var(--leading-tight);
-  padding-top: 1.5em;
-  border-top: 1px solid var(--c-border);
+
   display: flex;
   align-items: baseline;
   gap: 0.75em;
@@ -609,8 +608,6 @@ body *:not(canvas):not(svg *) {
 
 .prose h3 {
   font-size: var(--text-md);
-  margin-top: 2em;
-  letter-spacing: var(--tracking-base);
   line-height: var(--leading-tight);
   display: flex;
   align-items: baseline;
@@ -627,7 +624,6 @@ body *:not(canvas):not(svg *) {
 }
 .prose h4 {
   font-size: var(--text-base);
-  margin-top: 1.75em;
   letter-spacing: var(--tracking-base);
   line-height: var(--leading-tight);
 }
@@ -776,10 +772,10 @@ body *:not(canvas):not(svg *) {
   border: 1px solid var(--c-border);
   border-left: 3px solid var(--c-accent);
   padding: 1rem 1.25rem;
-  overflow-x: auto;
   font-size: 0.8125rem;
   line-height: var(--leading-snug);
   font-family: var(--font-mono);
+  overflow-x: scroll !important;
 }
 .prose pre code,
 .prose .astro-code code {

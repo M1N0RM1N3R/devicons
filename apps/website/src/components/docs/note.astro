@@ -39,8 +39,12 @@ const kindLabel = kinds[variant];
     background: var(--c-surface);
     padding: var(--space-4) var(--space-6);
   }
-  .docs-note[data-variant='tip']  { --note-accent: var(--c-success); }
-  .docs-note[data-variant='warn'] { --note-accent: var(--c-destructive); }
+  .docs-note[data-variant='tip'] {
+    --note-accent: var(--c-success);
+  }
+  .docs-note[data-variant='warn'] {
+    --note-accent: var(--c-destructive);
+  }
 
   .docs-note__header {
     display: flex;
@@ -82,18 +86,32 @@ const kindLabel = kinds[variant];
     font-size: var(--text-sm);
     line-height: var(--leading-prose);
   }
-  .docs-note__body > * + * { margin-top: 1em; }
-  .docs-note__body > *:first-child { margin-top: 0; }
-  .docs-note__body > *:last-child  { margin-bottom: 0; }
+  .docs-note__body > * + * {
+    margin-top: 1em;
+  }
+  .docs-note__body > *:first-child {
+    margin-top: 0;
+  }
+  .docs-note__body > *:last-child {
+    margin-bottom: 0;
+  }
 
-  .docs-note__body :global(p) { margin: 0; color: inherit; }
-  .docs-note__body :global(strong) { color: var(--c-text); font-weight: 600; }
+  .docs-note__body :global(p) {
+    margin: 0;
+    color: inherit;
+  }
+  .docs-note__body :global(strong) {
+    color: var(--c-text);
+    font-weight: 600;
+  }
   .docs-note__body :global(a) {
     color: var(--note-accent);
     text-decoration: none;
     border-bottom: 1px solid
       color-mix(in oklab, var(--note-accent) 40%, transparent);
-    transition: border-color 0.15s ease, color 0.15s ease;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
   }
   .docs-note__body :global(a:hover) {
     color: color-mix(in oklab, var(--note-accent) 80%, white);
@@ -116,7 +134,7 @@ const kindLabel = kinds[variant];
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     line-height: var(--leading-snug);
-    overflow-x: auto;
+    overflow-x: scroll;
   }
   .docs-note__body :global(pre code) {
     background: transparent;
