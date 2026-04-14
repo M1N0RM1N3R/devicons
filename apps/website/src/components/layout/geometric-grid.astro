@@ -1,0 +1,51 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["geometric-grid__wrap", className]} aria-hidden="true">
+  <div class="geometric-grid__lines"></div>
+  <div class="geometric-grid__backdrop"></div>
+</div>
+
+<style>
+  .geometric-grid__wrap {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    --c-grid: 230, 230, 230;
+  }
+  :global([data-theme='light']) .geometric-grid__wrap {
+    --c-grid: 23, 23, 23;
+  }
+
+  .geometric-grid__lines {
+    position: absolute;
+    inset: 0;
+    --grid-line: rgba(var(--c-grid), 0.06);
+    --grid-major: rgba(var(--c-grid), 0.06);
+    background:
+      linear-gradient(0deg, var(--grid-line) 1px, transparent 1px) 0 0 / 48px 48px,
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 48px 48px,
+      linear-gradient(0deg, var(--grid-major) 1px, transparent 1px) 0 0 / 320px 320px,
+      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px) 0 0 / 320px 320px;
+    mask-image: linear-gradient(180deg, transparent 0%, black 12%, black 48%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 12%, black 48%, transparent 100%);
+  }
+  :global([data-theme='light']) .geometric-grid__lines {
+    --grid-line: rgba(var(--c-grid), 0.07);
+    --grid-major: rgba(var(--c-grid), 0.15);
+  }
+
+  .geometric-grid__backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 72% 55%, rgba(255, 77, 0, 0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 18% 78%, rgba(255, 107, 43, 0.05) 0%, transparent 55%),
+      linear-gradient(180deg, rgba(var(--c-overlay), 0.55) 0%, transparent 30%, transparent 70%, rgba(var(--c-overlay), 0.65) 100%);
+  }
+</style>

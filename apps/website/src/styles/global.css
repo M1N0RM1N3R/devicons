@@ -1013,3 +1013,10 @@ body *:not(canvas):not(svg *) {
 .docs-nav[data-state="open"] .docs-nav__panel {
   transform: translateX(0);
 }
+
+/* Shared infinite scroll — used by marquee strips and ticker bands.
+   Pair with width:max-content + duplicated content for seamless loop. */
+@keyframes scroll-infinite {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}

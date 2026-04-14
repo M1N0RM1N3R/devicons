@@ -1,6 +1,7 @@
 ---
 import fs from 'node:fs';
 import path from 'node:path';
+import GeometricGrid from '../layout/geometric-grid.astro';
 
 interface Props {
   iconCount: number;
@@ -59,8 +60,7 @@ const initialDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(initialSvgD
 ---
 
 <section class="hero relative flex flex-col overflow-hidden">
-  <div class="hero-backdrop" aria-hidden="true"></div>
-  <div class="hero-grid" aria-hidden="true"></div>
+  <GeometricGrid />
 
   <div
     class="hero-content relative z-10 flex-1 flex flex-col justify-center px-4 sm:px-6 max-w-[1400px] mx-auto w-full">
@@ -123,77 +123,6 @@ const initialDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(initialSvgD
     .hero {
       min-height: calc(100dvh - 56px);
     }
-  }
-
-  /* Brutalist grid. Pure geometric lines with a directional gradient
-        wash — gives the hero something to refract through while staying
-        visually austere. */
-  .hero-grid {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    --grid-line: rgba(var(--c-grid), 0.06);
-    --grid-major: rgba(var(--c-grid), 0.06);
-    background:
-      /* minor 64px lines */
-      linear-gradient(0deg, var(--grid-line) 1px, transparent 1px) 0 0 / 48px
-        48px,
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 48px
-        48px,
-      /* major 320px lines (every 5th cell) */
-      linear-gradient(0deg, var(--grid-major) 1px, transparent 1px) 0 0 / 320px
-        320px,
-      linear-gradient(90deg, var(--grid-major) 1px, transparent 1px) 0 0 / 320px
-        320px;
-    mask-image: linear-gradient(
-      180deg,
-      transparent 0%,
-      black 12%,
-      black 48%,
-      transparent 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      180deg,
-      transparent 0%,
-      black 12%,
-      black 48%,
-      transparent 100%
-    );
-  }
-
-  .hero-backdrop {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(
-        ellipse 70% 50% at 72% 55%,
-        rgba(255, 77, 0, 0.1) 0%,
-        transparent 60%
-      ),
-      radial-gradient(
-        ellipse 55% 45% at 18% 78%,
-        rgba(255, 107, 43, 0.05) 0%,
-        transparent 55%
-      ),
-      linear-gradient(
-        180deg,
-        rgba(var(--c-overlay), 0.55) 0%,
-        transparent 30%,
-        transparent 70%,
-        rgba(var(--c-overlay), 0.65) 100%
-      );
-  }
-
-  .hero {
-    --c-grid: 230, 230, 230;
-  }
-  :global([data-theme='light']) .hero {
-    --c-grid: 23, 23, 23;
-  }
-  :global([data-theme='light']) .hero-grid {
-    --grid-line: rgba(var(--c-grid), 0.07);
-    --grid-major: rgba(var(--c-grid), 0.15);
   }
 
   .hero-eyebrow,

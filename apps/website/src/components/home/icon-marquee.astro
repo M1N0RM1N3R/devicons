@@ -87,17 +87,8 @@ const TRACK = [...ICONS, ...ICONS];
     display: flex;
     flex: 0 0 auto;
     width: max-content;
-    animation: marquee-scroll 60s linear infinite;
+    animation: scroll-infinite 60s linear infinite;
     will-change: transform;
-  }
-
-  @keyframes marquee-scroll {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(-50%, 0, 0);
-    }
   }
 
   .marquee__tile {
