@@ -1,6 +1,6 @@
 ---
 title: "Svelte"
-description: "Tiny, reactive Devicons components for Svelte 4 and SvelteKit."
+description: "Native Svelte components for every Devicons icon. SvelteKit compatible."
 order: 2
 category: "Packages"
 categoryOrder: 1
@@ -8,10 +8,10 @@ categoryOrder: 1
 
 import Note from "../../components/docs/note.astro";
 
-`@devicons/svelte` ships native Svelte components. SvelteKit, Vite, and Astro integrations all work with zero config.
+`@devicons/svelte` ships native Svelte components. SvelteKit, Vite, and Astro integrations all work without extra config.
 
-<Note title="Why the `_` suffix?">
-Some icon names conflict with reserved words in JavaScript or within a framework. In order to use `Svelte` the export names are suffixed with an underscore, as in `import { _Svelte, SvelteIcon } from "@dev.icons/svelte";`;`. 
+<Note title="Why the underscore suffix?">
+Some icon names collide with reserved words. When that happens, the export is suffixed with an underscore: `import { _Svelte } from "@devicons/svelte";`
 </Note>
 
 ## Install
@@ -35,16 +35,16 @@ npm install @devicons/svelte
 
 ## Props
 
-| Prop     | Type                | Default     | Description                                      |
-| -------- | ------------------- | ----------- | ------------------------------------------------ |
-| `size`   | `number \| string`  | `24`        | Width and height shortcut.                       |
-| `mono`   | `boolean`           | `false`     | Monochrome variant using `currentColor`.         |
-| `title`  | `string`            | `undefined` | Accessible label.                                |
-| `color`  | `string`            | `currentColor` | Fill override for monochrome variants.        |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `number \| string` | `24` | Width and height shortcut |
+| `mono` | `boolean` | `false` | Monochrome variant using `currentColor` |
+| `title` | `string` | `undefined` | Accessible label |
+| `color` | `string` | `currentColor` | Fill override for monochrome variants |
 
 ## SvelteKit
 
-No special config required. Import inside any `+page.svelte`, `+layout.svelte`, or component.
+No special config needed. Import inside any `+page.svelte`, `+layout.svelte`, or component file.
 
 ```svelte
 <script lang="ts">

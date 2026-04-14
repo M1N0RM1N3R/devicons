@@ -1,13 +1,12 @@
 ---
-title: "Quick Start"
+title: "Quick start"
 description: "Render your first icon in under a minute."
 order: 2
 category: "Getting Started"
 categoryOrder: 0
-badge: "new"
 ---
 
-This guide assumes you have a React, Vue, or Svelte project already set up. If not, start with [Installation](/docs/installation).
+This guide assumes you already have a React, Vue, or Svelte project running. If not, start with [Installation](/docs/installation).
 
 ## 1. Install
 
@@ -31,11 +30,11 @@ export default function Stack() {
 }
 ```
 
-Every icon is a named export. The component name is PascalCase + `Icon` — for example, `next-js` becomes `NextJsIcon`.
+Every icon is a named export. The component name is PascalCase + `Icon`, so `next-js` becomes `NextJsIcon`.
 
 ## 3. Switch to monochrome
 
-Colored icons ship as the default. Swap to the monochrome variant with the `mono` prop — it inherits `currentColor` and respects any parent text color.
+Full-color icons are the default. Add the `mono` prop to get a single-color variant that inherits `currentColor`.
 
 ```tsx
 <div className="text-accent">
@@ -45,7 +44,7 @@ Colored icons ship as the default. Swap to the monochrome variant with the `mono
 
 ## 4. Make it interactive
 
-Icons accept every SVG attribute — `onClick`, `aria-label`, `role`, you name it.
+Icons accept every SVG attribute: `onClick`, `aria-label`, `role`, and so on.
 
 ```tsx
 <button
@@ -59,4 +58,4 @@ Icons accept every SVG attribute — `onClick`, `aria-label`, `role`, you name i
 
 ## That's it
 
-You're shipping Devicons. Browse the [Icon Library](/) for the full catalog, or dive into the [React guide](/docs/react) for props, tree-shaking notes, and SSR tips.
+You're shipping Devicons. Browse the [icon library](/search) for the full catalog, or read the [React guide](/docs/react) for props, tree-shaking, and SSR.

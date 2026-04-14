@@ -1,16 +1,16 @@
 ---
 title: "Theming"
-description: "Tint monochrome icons, override brand colors, and ship both light and dark variants."
+description: "Tint monochrome icons, override brand colors, and handle light and dark variants."
 order: 0
 category: "Customization"
 categoryOrder: 3
 ---
 
-Devicons ships two variants per icon: a full-color brand mark and a monochrome glyph that inherits `currentColor`. The monochrome variant is the canvas — paint it however you like.
+Devicons ships two variants per icon: a full-color brand mark and a monochrome glyph that inherits `currentColor`. The monochrome variant is the one you style.
 
-## Tint with `currentColor`
+## Tint with currentColor
 
-Wrap the icon in any element with a text color and the monochrome variant picks it up automatically.
+Wrap the icon in an element with a text color. The monochrome variant picks it up.
 
 ```tsx
 <div className="text-accent">
@@ -22,9 +22,9 @@ Wrap the icon in any element with a text color and the monochrome variant picks 
 </button>
 ```
 
-## Override with `color`
+## Override with the color prop
 
-Need a one-off color? Pass the `color` prop directly.
+For a one-off color, pass it directly:
 
 ```tsx
 <ReactIcon mono color="#ff4d00" size={48} />
@@ -32,7 +32,7 @@ Need a one-off color? Pass the `color` prop directly.
 
 ## CSS custom properties
 
-Expose icons to your design token system.
+Hook icons into your design token system:
 
 ```css
 :root {
@@ -50,9 +50,9 @@ Expose icons to your design token system.
 </span>
 ```
 
-## Dark-mode aware brand colors
+## Dark mode brand colors
 
-Some brands ship different marks for light vs. dark backgrounds — GitHub and Apple being the common suspects. Devicons exposes suffix variants:
+Some brands ship different marks for light vs. dark backgrounds. GitHub and Apple are the usual ones. Devicons exposes suffix variants for these:
 
 ```tsx
 import { GithubIcon, GithubLightIcon } from "@devicons/react";
@@ -69,4 +69,4 @@ function ThemedLogo() {
 
 ## Brand guidelines
 
-For icons tied to strict brand guidelines (Slack, Figma, Google), we default to the guideline-approved color. Don't override those without checking the brand's public usage rules — most guidelines are linked on the icon's detail page.
+Icons tied to strict brand guidelines (Slack, Figma, Google) default to the guideline-approved color. Check the brand's public usage rules before overriding. Most guidelines are linked on the icon's detail page.

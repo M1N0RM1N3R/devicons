@@ -1,6 +1,6 @@
 ---
 title: "Contributing"
-description: "Add a missing icon, improve an existing glyph, or help us refine the grid."
+description: "Add a missing icon, improve an existing glyph, or help refine the grid."
 order: 0
 category: "Community"
 categoryOrder: 4
@@ -10,9 +10,9 @@ Devicons is community-built. Every icon, metadata entry, and tooling improvement
 
 ## Before you open a PR
 
-1. **Search first.** Check the [icon catalog](/icons) and open issues to avoid duplicates.
-2. **Follow the grid.** Icons are drawn on a 24×24 grid with a 1.5px stroke by default. Larger marks use 2px.
-3. **Check brand guidelines.** If the icon represents a company or product, link the guideline you followed.
+1. Search first. Check the [icon library](/search) and open issues to avoid duplicates.
+2. Follow the grid. Icons are drawn on a 24x24 grid with a 1.5px stroke by default. Larger marks use 2px.
+3. Check brand guidelines. If the icon represents a company or product, link the guideline you followed.
 
 ## Adding an icon
 
@@ -36,16 +36,16 @@ pnpm build
 
 ## Improving an existing icon
 
-- Preserve the original icon IDs (they're public API).
-- Match the visual weight of nearby icons — the new version should sit cleanly next to its siblings.
+- Preserve the original icon IDs. They're public API.
+- Match the visual weight of nearby icons. The new version should sit cleanly next to its siblings.
 - Test both the colored and monochrome variants before opening the PR.
 
 ## Tooling
 
-- **Formatting** — `pnpm format` runs Prettier + SVGO.
-- **Preview** — `pnpm dev` spins up this website locally with your changes live.
-- **Screenshot diff** — `pnpm test:visual` catches unintended regressions across the grid.
+- `pnpm format` runs Prettier + SVGO
+- `pnpm dev` starts this website locally with your changes
+- `pnpm test:visual` catches regressions across the grid
 
 ## Code of conduct
 
-Be kind. Assume good intent. Celebrate contributors whose first PR is just fixing a typo — those matter.
+Be kind. Assume good intent. Celebrate first-time contributors, even if their PR is just fixing a typo.

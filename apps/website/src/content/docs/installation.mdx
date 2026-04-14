@@ -1,12 +1,12 @@
 ---
 title: "Installation"
-description: "Install Devicons in seconds — pick the package that matches your stack."
+description: "Pick the package that matches your stack and install it."
 order: 1
 category: "Getting Started"
 categoryOrder: 0
 ---
 
-Devicons ships as framework-native packages plus raw assets. Install the flavor that matches your project.
+Devicons ships as framework-native packages plus raw assets. Install whichever one matches your project.
 
 ## Package managers
 
@@ -24,11 +24,11 @@ npm install @devicons/svelte
 npm install @devicons/font
 ```
 
-`pnpm`, `yarn`, and `bun` work identically — swap `npm install` for your preferred tool.
+`pnpm`, `yarn`, and `bun` all work the same way. Swap `npm install` for your preferred tool.
 
 ## CDN
 
-Drop the icon font straight into any HTML page — no build step required.
+Drop the icon font into any HTML page with no build step:
 
 ```html
 <link
@@ -41,13 +41,13 @@ Drop the icon font straight into any HTML page — no build step required.
 
 ## Requirements
 
-- **Node.js** 18.17+ (20.x LTS recommended)
-- **React** 18+ / **Vue** 3.3+ / **Svelte** 4+
-- Any bundler that understands ESM — Vite, Webpack, Rollup, esbuild, Turbopack.
+- Node.js 18.17+ (20.x LTS recommended)
+- React 18+ / Vue 3.3+ / Svelte 4+
+- Any bundler that handles ESM: Vite, Webpack, Rollup, esbuild, Turbopack
 
 ## Verify
 
-After install, import an icon and render it:
+Import an icon and render it:
 
 ```tsx
 import { ReactIcon } from "@devicons/react";
@@ -57,4 +57,4 @@ export default function Logo() {
 }
 ```
 
-If the icon renders, you're set. If not, check the [Troubleshooting](/docs/troubleshooting) guide.
+If the icon shows up, you're good. Head to the [React guide](/docs/react) for props, tree-shaking, and SSR details.

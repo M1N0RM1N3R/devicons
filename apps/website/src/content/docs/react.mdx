@@ -1,6 +1,6 @@
 ---
 title: "React"
-description: "Use Devicons as first-class React components — tree-shakeable, typed, SSR-ready."
+description: "Tree-shakeable, typed React components for every Devicons icon."
 order: 0
 category: "Packages"
 categoryOrder: 1
@@ -8,10 +8,10 @@ categoryOrder: 1
 
 import Note from "../../components/docs/note.astro";
 
-`@devicons/react` ships every icon as a named export. All components are fully typed, tree-shakeable, and zero-runtime.
+`@devicons/react` ships every icon as a named export. Components are typed, tree-shakeable, and have no runtime dependencies.
 
-<Note title="Why the `_` suffix?">
-Some icon names conflict with reserved words in JavaScript or within a framework. In order to use `React` the export names are suffixed with an underscore, as in `import { _React } from "@dev.icons/react";`. 
+<Note title="Why the underscore suffix?">
+Some icon names collide with reserved words. When that happens, the export is suffixed with an underscore: `import { _React } from "@devicons/react";`
 </Note>
 
 ## Install
@@ -32,32 +32,32 @@ export function Logo() {
 
 ## Props
 
-Every icon accepts the standard SVG props plus these extras:
+Every icon accepts standard SVG props plus these:
 
-| Prop      | Type                    | Default     | Description                                              |
-| --------- | ----------------------- | ----------- | -------------------------------------------------------- |
-| `size`    | `number \| string`      | `24`        | Sets both `width` and `height`.                          |
-| `mono`    | `boolean`               | `false`     | Renders the monochrome variant using `currentColor`.     |
-| `title`   | `string`                | `undefined` | Accessible name. Rendered as an SVG `<title>` element.   |
-| `color`   | `string`                | `currentColor` | Override color for monochrome variants.               |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `number \| string` | `24` | Sets both `width` and `height` |
+| `mono` | `boolean` | `false` | Monochrome variant using `currentColor` |
+| `title` | `string` | `undefined` | Accessible name rendered as `<title>` |
+| `color` | `string` | `currentColor` | Override color for monochrome variants |
 
-Any other prop — `className`, `onClick`, `aria-*`, `data-*` — is forwarded to the root `<svg>` element.
+Anything else (`className`, `onClick`, `aria-*`, `data-*`) is forwarded to the root `<svg>`.
 
 ## Tree-shaking
 
-Named imports are the secret. Avoid wildcard imports — they defeat tree-shaking in most bundlers.
+Use named imports. Wildcard imports pull in the entire catalog and defeat tree-shaking in most bundlers.
 
 ```tsx
-// Good — only ReactIcon lands in your bundle
+// Good: only ReactIcon lands in your bundle
 import { ReactIcon } from "@devicons/react";
 
-// Avoid — pulls the whole catalog
+// Bad: pulls everything
 import * as Devicons from "@devicons/react";
 ```
 
-## SSR & React Server Components
+## SSR and React Server Components
 
-All icons are pure — no `useState`, no `useEffect`. They work inside React Server Components, Next.js `app/` routes, Remix loaders, and any SSR setup with zero config.
+All icons are pure components with no `useState` or `useEffect`. They work in React Server Components, Next.js `app/` routes, Remix loaders, and any SSR setup without extra config.
 
 ```tsx
 // app/page.tsx
@@ -70,13 +70,13 @@ export default function Page() {
 
 ## Accessibility
 
-Icons are decorative by default (`aria-hidden="true"`). When an icon conveys meaning, pass a `title`:
+Icons are decorative by default (`aria-hidden="true"`). When an icon carries meaning, pass a `title`:
 
 ```tsx
 <ReactIcon title="React" size={24} />
 ```
 
-For icon-only buttons, prefer `aria-label` on the button itself:
+For icon-only buttons, put the label on the button instead:
 
 ```tsx
 <button aria-label="Open React docs">

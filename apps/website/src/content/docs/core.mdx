@@ -1,6 +1,6 @@
 ---
 title: "Core"
-description: "The base package — raw SVGs, metadata, and build utilities that power every other Devicons package."
+description: "Raw SVGs, metadata, and build utilities. The base package behind every Devicons wrapper."
 order: 4
 category: "Packages"
 categoryOrder: 1
@@ -9,12 +9,12 @@ badge: "new"
 
 import Note from "../../components/docs/note.astro";
 
-`@devicons/core` is the foundation. It holds every SVG source file, the icon metadata catalog, and the build tools that the framework packages (`react`, `vue`, `svelte`, `font`) consume at compile time.
+`@devicons/core` holds every SVG source file, the icon metadata catalog, and the build tools that the framework packages (`react`, `vue`, `svelte`, `font`) consume at compile time.
 
-You probably don't need to install it directly — the framework packages pull it in as a dependency. But if you're building your own tooling, writing a plugin, or just want raw SVGs without a framework wrapper, this is the package.
+You probably don't need to install it directly. The framework packages pull it in as a dependency. But if you're building your own tooling, writing a plugin, or just want raw SVGs without a framework wrapper, this is the one.
 
 <Note variant="info" title="Direct export">
-Core re-exports every SVG as a plain string. There's no framework runtime, no virtual DOM, no reactivity — just the markup. If you need an `<svg>` element in a non-framework context (email templates, server-rendered HTML, build scripts), import from core.
+Core re-exports every SVG as a plain string. No framework runtime, no virtual DOM, no reactivity. If you need `<svg>` markup in a non-framework context (email templates, server-rendered HTML, build scripts), import from core.
 </Note>
 
 ## Install
@@ -27,9 +27,9 @@ npm install @devicons/core
 
 The package exports three things:
 
-1. **SVG strings** — every icon as a named export containing raw SVG markup.
-2. **Metadata** — a JSON catalog with icon names, slugs, tags, and variant info.
-3. **Build utilities** — helpers used internally by the framework packages to generate typed components from SVG sources.
+1. SVG strings: every icon as a named export containing raw SVG markup
+2. Metadata: a JSON catalog with icon names, slugs, tags, and variant info
+3. Build utilities: helpers the framework packages use internally to generate typed components
 
 ## Usage
 
@@ -38,25 +38,25 @@ import { react, vue, svelte } from "@devicons/core";
 
 // Each export is a plain SVG string
 console.log(react);
-// → '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">...</svg>'
+// '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">...</svg>'
 ```
 
-You can also access the metadata catalog:
+Access the metadata catalog:
 
 ```ts
 import { metadata } from "@devicons/core";
 
 // Array of icon entries with name, slug, tags, variants
 console.log(metadata[0]);
-// → { name: "React", slug: "react", tags: ["frontend", "ui"], ... }
+// { name: "React", slug: "react", tags: ["frontend", "ui"], ... }
 ```
 
 ## When to use core
 
-- You want SVGs without any framework dependency.
-- You're building a custom icon component for a framework we don't ship yet.
-- You need programmatic access to the icon catalog (search, filtering, code generation).
-- You're writing a bundler plugin, Figma plugin, or CLI tool that consumes the icons.
+- You want SVGs without any framework dependency
+- You're building a custom icon component for a framework we don't ship yet
+- You need programmatic access to the icon catalog for search, filtering, or code generation
+- You're writing a bundler plugin, Figma plugin, or CLI tool
 
 ## Exports
 
