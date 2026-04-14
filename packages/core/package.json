@@ -4,7 +4,6 @@
   "description": "Devicons Core - The core package for Devicons",
   "type": "module",
   "keywords": [],
-  "private": true,
   "scripts": {
     "export-to-raw": "tsx scripts/export-to-raw.ts",
     "to-font": "tsx scripts/to-font.ts",
