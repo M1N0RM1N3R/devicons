@@ -29,7 +29,8 @@ const { prev, next } = await getDocNav(id);
 
 <PageLayout
   title={`${title} — Devicons Docs`}
-  description={description ?? `${title} — Devicons documentation.`}>
+  description={description ?? `${title} — Devicons documentation.`}
+  image={`/og/docs/${isIndex ? 'index' : id}.png`}>
   <div class="max-w-[1400px] mx-auto px-6">
     <DocsMobileNav currentSlug={id} />
     <div

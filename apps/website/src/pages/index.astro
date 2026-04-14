@@ -10,7 +10,7 @@ const icons = await getCollection("icons");
 const iconCount = icons.length;
 ---
 
-<PageLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+<PageLayout title={SITE_TITLE} description={SITE_DESCRIPTION} image="/og/home.png">
   <HeroSection iconCount={iconCount} />
   <IconMarquee />
   <div class="h-[120px]" aria-hidden="true"></div>
