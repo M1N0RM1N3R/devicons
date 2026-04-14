@@ -41,6 +41,12 @@ const TRACK = [...ICONS, ...ICONS];
               height="56"
             />
             <span class="marquee__label type-mono">{icon.label}</span>
+            <button
+              type="button"
+              class="marquee__copy copy-btn"
+              aria-label={`Copy ${icon.label} SVG`}
+              data-svg-src={`/devicons/icons/${icon.file}.svg`}
+            >SVG</button>
           </div>
         ))
       }
@@ -133,7 +139,45 @@ const TRACK = [...ICONS, ...ICONS];
   }
 
   .marquee__tile:hover {
+    background: color-mix(in oklab, var(--c-accent) 4%, var(--c-bg));
     border-color: var(--c-accent);
+  }
+
+  .marquee__tile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--c-accent);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .marquee__tile:hover::before {
+    opacity: 1;
+  }
+
+  /* Copy button — revealed on tile hover, top-right corner. */
+  .marquee__copy {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 3;
+    min-width: 40px;
+    height: 24px;
+    font-size: 9px;
+    opacity: 0;
+    transition:
+      opacity 0.15s ease,
+      color 0.15s ease,
+      background 0.15s ease,
+      border-color 0.15s ease;
+  }
+
+  .marquee__tile:hover .marquee__copy {
+    opacity: 1;
   }
 
   .marquee__index {
@@ -150,6 +194,8 @@ const TRACK = [...ICONS, ...ICONS];
     height: 40px;
     object-fit: contain;
     display: block;
+    position: relative;
+    z-index: 2;
     transition: transform 0.15s ease;
   }
 
@@ -179,9 +225,56 @@ const TRACK = [...ICONS, ...ICONS];
     }
   }
 
+  /* Hide copy button on small screens — tiles are too compact. */
+  @media (max-width: 767px) {
+    .marquee__copy {
+      display: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .marquee__track {
       animation: none;
     }
   }
 </style>
+
+<script>
+  const svgCache = new Map<string, string>();
+
+  document.querySelectorAll<HTMLButtonElement>('.marquee__copy').forEach((btn) => {
+    const src = btn.dataset.svgSrc;
+    if (!src) return;
+
+    let resetId: number | undefined;
+
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+
+      try {
+        let svg = svgCache.get(src);
+        if (!svg) {
+          const res = await fetch(src);
+          if (!res.ok) throw new Error(`${res.status}`);
+          svg = await res.text();
+          svgCache.set(src, svg);
+        }
+
+        await navigator.clipboard.writeText(svg);
+        btn.dataset.state = 'copied';
+        btn.textContent = 'OK';
+        if (resetId) window.clearTimeout(resetId);
+        resetId = window.setTimeout(() => {
+          delete btn.dataset.state;
+          btn.textContent = 'SVG';
+        }, 1500);
+      } catch {
+        btn.textContent = 'ERR';
+        if (resetId) window.clearTimeout(resetId);
+        resetId = window.setTimeout(() => {
+          btn.textContent = 'SVG';
+        }, 1500);
+      }
+    });
+  });
+</script>
