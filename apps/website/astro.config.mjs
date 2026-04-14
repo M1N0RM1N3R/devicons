@@ -30,28 +30,26 @@ export default defineConfig({
       wrap: false,
     },
   },
-  experimental: {
-    fonts: [
-      {
-        provider: fontProviders.fontsource(),
-        name: 'Bricolage Grotesque Variable',
-        cssVariable: '--font-display',
-        weights: ['200 900'],
-        styles: ['normal'],
-        subsets: ['latin'],
-        fallbacks: ['system-ui', 'sans-serif'],
-      },
-      {
-        provider: fontProviders.fontsource(),
-        name: 'IBM Plex Mono',
-        cssVariable: '--font-mono',
-        weights: [400, 500, 600, 700],
-        styles: ['normal'],
-        subsets: ['latin'],
-        fallbacks: ['ui-monospace', 'monospace'],
-      },
-    ],
-  },
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Bricolage Grotesque Variable',
+      cssVariable: '--font-display',
+      weights: ['200 900'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['system-ui', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: 'IBM Plex Mono',
+      cssVariable: '--font-mono',
+      weights: [400, 500, 600, 700],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['ui-monospace', 'monospace'],
+    },
+  ],
   integrations: [mdx(), sitemap(), react(), svelte()],
 
   vite: {
