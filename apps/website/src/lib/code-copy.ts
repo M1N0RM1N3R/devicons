@@ -5,10 +5,10 @@
 export function setupCodeCopy() {
   const blocks = document.querySelectorAll<HTMLPreElement>(".prose pre");
   blocks.forEach((pre) => {
-    if (pre.querySelector(".code-copy")) return;
+    if (pre.querySelector(".copy-btn")) return;
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "code-copy";
+    btn.className = "copy-btn";
     btn.setAttribute("aria-label", "Copy code to clipboard");
     btn.textContent = "COPY";
     pre.appendChild(btn);

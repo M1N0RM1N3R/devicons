@@ -95,7 +95,7 @@ function Snippet({ snippet }: { snippet: Snippet }) {
           onClick={handleCopy}
           aria-label={`Copy ${snippet.label.toLowerCase()} snippet`}
           data-state={copied ? 'copied' : undefined}
-          className="install-snippet__copy"
+          className="copy-btn"
         >
           {copied ? 'OK' : 'COPY'}
         </button>
@@ -116,14 +116,14 @@ export function InstallTabs({ icons, className }: InstallTabsProps) {
         className="install-tabs__bar"
       >
         <span className="install-tabs__eyebrow">Usage</span>
-        <div className="install-tabs__list">
+        <div className="tab-group">
           {TABS.map(t => (
             <button
               key={t.id}
               role="tab"
               aria-selected={tab === t.id}
               onClick={() => setTab(t.id)}
-              className="install-tabs__tab"
+              className="tab-item"
             >
               {t.label}
             </button>
