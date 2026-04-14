@@ -739,8 +739,8 @@ body *:not(canvas):not(svg *) {
    the "OK" state inverts to accent fill so the affirmative is loud. */
 .copy-btn {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -1px;
+  right: -1px;
   z-index: 1;
   display: inline-flex;
   align-items: center;
