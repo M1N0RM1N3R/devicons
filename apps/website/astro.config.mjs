@@ -53,7 +53,7 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      filter: (page) =>
+      filter: page =>
         !page.includes('/og/') &&
         !page.includes('/search-index') &&
         !page.endsWith('/404') &&

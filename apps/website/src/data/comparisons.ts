@@ -18,7 +18,6 @@ export const COMPARISONS: Comparison[] = [
   { a: 'nextjs', b: 'nuxt', category: 'meta-framework' },
   { a: 'nextjs', b: 'astro', category: 'meta-framework' },
   { a: 'nextjs', b: 'remix', category: 'meta-framework' },
-  { a: 'astro', b: 'gatsby', category: 'meta-framework' },
   { a: 'vite', b: 'webpack', category: 'bundler' },
   { a: 'postgresql', b: 'mysql', category: 'relational database' },
   { a: 'postgresql', b: 'mongodb', category: 'database' },
