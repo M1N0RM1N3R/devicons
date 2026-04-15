@@ -8,7 +8,10 @@ export interface IconListItem {
   iconFile: string;
   tags: string[];
   popular: boolean;
+  recommended: boolean;
   mainColor?: string;
+  badInDark: boolean;
+  badInLight: boolean;
 }
 
 export const toListItem = (entry: IconEntry): IconListItem => ({
@@ -17,7 +20,10 @@ export const toListItem = (entry: IconEntry): IconListItem => ({
   iconFile: entry.data.icons[0] ?? entry.id,
   tags: entry.data.tags,
   popular: entry.data.popular === true,
+  recommended: entry.data.recommended === true,
   mainColor: entry.data.mainColor,
+  badInDark: entry.data.badInDark === true,
+  badInLight: entry.data.badInLight === true,
 });
 
 export async function getActiveIcons(): Promise<IconEntry[]> {

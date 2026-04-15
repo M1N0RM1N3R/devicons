@@ -16,15 +16,13 @@ const bgStyles: Record<Background, string> = {
   grid: 'bg-[length:20px_20px] bg-surface',
 };
 
+const BACKDROP_COLORS: Record<'dark' | 'light', string> = {
+  dark: '#f5f5f5',
+  light: '#0a0a0a',
+};
+
 const PopularIcon = () => (
-  <svg
-    width="12"
-    height="12"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    className="text-accent">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-  </svg>
+  <span aria-label="Popular icon" className="inline-block w-1 h-1 bg-accent" />
 );
 
 const IconCard = memo(
@@ -41,17 +39,27 @@ const IconCard = memo(
       onClick={() => onIconClick(icon.id)}
       className="group relative -ml-px -mt-px flex flex-col items-center gap-3 p-4 border border-border bg-bg hover:bg-surface transition-colors cursor-pointer text-left w-full hover:border-accent hover:z-10 focus:z-10 focus-visible:z-10 focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent">
       {icon.popular && (
-        <span className="absolute top-2 right-2">
+        <span className="absolute top-0 right-2">
           <PopularIcon />
         </span>
       )}
       <div
         className={clsx(
-          'w-12 h-12 flex items-center justify-center rounded p-1.5',
+          'w-12 h-12 flex items-center justify-center rounded p-1.5 relative overflow-hidden',
           bgStyles[bg],
           bg === 'grid' &&
             'bg-[repeating-conic-gradient(#262626_0%_25%,#1a1a1a_0%_50%)]',
         )}>
+        {((bg === 'dark' && icon.badInDark) ||
+          (bg === 'light' && icon.badInLight)) && (
+          <span
+            aria-hidden="true"
+            className="absolute inset-[10%] rounded pointer-events-none"
+            style={{
+              background: BACKDROP_COLORS[bg as 'dark' | 'light'],
+            }}
+          />
+        )}
         {icon.icons[0] && (
           <img
             src={`/devicons/icons/${icon.icons[0]}.svg`}
@@ -60,7 +68,7 @@ const IconCard = memo(
             height={48}
             loading="lazy"
             decoding="async"
-            className="w-full h-full object-contain"
+            className="relative z-10 w-full h-full object-contain"
           />
         )}
       </div>
@@ -104,7 +112,7 @@ export function SearchSection({
   return (
     <section id="icons" className="min-h-screen">
       {/* Sticky search bar */}
-      <div className="sticky top-14 z-40 bg-bg border-b border-border">
+      <div className="sticky top-14 z-30 bg-bg border-b border-border">
         <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center gap-6">
           <h2 className="type-h2 shrink-0 hidden sm:block">Icons</h2>
           <div className="flex items-center gap-4 flex-1">

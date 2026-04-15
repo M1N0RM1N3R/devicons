@@ -9,6 +9,8 @@ export interface IconEntry {
   tags: string[];
   deprecated: boolean;
   popular: boolean;
+  badInDark?: boolean;
+  badInLight?: boolean;
   deprecatedOn?: string;
   version?: string;
   aliases?: string[];
@@ -89,13 +91,28 @@ export function useSearch(query: string | null) {
 
     const needle = query.trim().toLowerCase();
     const exact: IconEntry[] = [];
+    const aliasExact: IconEntry[] = [];
+    const startsWith: IconEntry[] = [];
     const rest: IconEntry[] = [];
     for (const icon of ranked) {
-      if (icon.name.toLowerCase() === needle) exact.push(icon);
-      else rest.push(icon);
+      const name = icon.name.toLowerCase();
+      const id = icon.id.toLowerCase();
+      if (name === needle || id === needle) {
+        exact.push(icon);
+      } else if (icon.aliases?.some((a) => a.toLowerCase() === needle)) {
+        aliasExact.push(icon);
+      } else if (name.startsWith(needle) || id.startsWith(needle)) {
+        startsWith.push(icon);
+      } else {
+        rest.push(icon);
+      }
     }
-    exact.sort((a, b) => a.name.localeCompare(b.name));
-    return [...exact, ...rest];
+    const byName = (a: IconEntry, b: IconEntry) =>
+      a.name.localeCompare(b.name);
+    exact.sort(byName);
+    aliasExact.sort(byName);
+    startsWith.sort(byName);
+    return [...exact, ...aliasExact, ...startsWith, ...rest];
   })();
 
   return { results, allIcons, isLoading, isError };

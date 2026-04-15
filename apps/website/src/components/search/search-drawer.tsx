@@ -60,6 +60,8 @@ function DrawerBody({ icon }: { icon: IconEntry }) {
           name={icon.name}
           variant={variant}
           bg={bg}
+          badInDark={icon.badInDark}
+          badInLight={icon.badInLight}
           gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4"
           tilePaddingClassName="p-4 sm:p-6"
           iconMaxClassName=""

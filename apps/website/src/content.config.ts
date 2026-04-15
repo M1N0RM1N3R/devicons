@@ -14,6 +14,7 @@ const icons = defineCollection({
     aliases: z.array(z.string()).optional(),
     //
     popular: z.boolean().optional().default(false),
+    recommended: z.boolean().optional().default(false),
     tags: z.array(z.string()),
     license: z.string().optional(),
     website: z.url().optional(),

@@ -1,16 +1,16 @@
 ---
-import PageLayout from "../../../components/layout/page-layout.astro";
-import Breadcrumbs from "../../../components/seo/breadcrumbs.astro";
-import IconGrid from "../../../components/icons/icon-grid.astro";
+import PageLayout from '../../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../../components/seo/breadcrumbs.astro';
+import IconGrid from '../../../components/icons/icon-grid.astro';
 import {
   getActiveIcons,
   getUniqueTags,
   toListItem,
   slugifyTag,
   formatTagLabel,
-} from "../../../lib/icons-query";
-import { SITE_TITLE } from "../../../consts";
-import { breadcrumbSchema, collectionPageSchema } from "../../../lib/seo";
+} from '../../../lib/icons-query';
+import { SITE_TITLE } from '../../../consts';
+import { breadcrumbSchema, collectionPageSchema } from '../../../lib/seo';
 
 export async function getStaticPaths() {
   const tags = await getUniqueTags();
@@ -21,15 +21,15 @@ export async function getStaticPaths() {
       rawTag: tag,
       count,
       icons: icons
-        .filter((i) => i.data.tags.includes(tag))
+        .filter(i => i.data.tags.includes(tag))
         .map(toListItem)
         .sort((a, b) =>
-          a.name.localeCompare(b.name, undefined, { sensitivity: "base" }),
+          a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
         ),
       relatedTags: tags
-        .filter((t) => t.tag !== tag)
+        .filter(t => t.tag !== tag)
         .slice(0, 12)
-        .map((t) => ({ ...t, slug: slugifyTag(t.tag) })),
+        .map(t => ({ ...t, slug: slugifyTag(t.tag) })),
     },
   }));
 }
@@ -42,20 +42,20 @@ const description = `Browse ${count} ${label.toLowerCase()} icons and logos. Fre
 
 const firstFew = icons
   .slice(0, 6)
-  .map((i) => i.name)
-  .join(", ");
+  .map(i => i.name)
+  .join(', ');
 
 const jsonLd = [
   breadcrumbSchema([
-    { name: "Home", url: "/" },
-    { name: "Icons", url: "/icons" },
+    { name: 'Home', url: '/' },
+    { name: 'Icons', url: '/icons' },
     { name: label, url: `/icons/tag/${slugifyTag(rawTag)}` },
   ]),
   collectionPageSchema({
     name: `${label} Icons`,
     description,
     url: `/icons/tag/${slugifyTag(rawTag)}`,
-    items: icons.map((i) => ({ name: i.name, url: `/icons/${i.slug}` })),
+    items: icons.map(i => ({ name: i.name, url: `/icons/${i.slug}` })),
   }),
 ];
 ---
@@ -67,28 +67,29 @@ const jsonLd = [
     `${label} icons`,
     `${label} logos`,
     `${label} svg`,
-    "developer icons",
+    'developer icons',
   ]}
-  jsonLd={jsonLd}
->
+  jsonLd={jsonLd}>
   <div class="max-w-[1400px] mx-auto px-6 pt-10">
     <Breadcrumbs
       items={[
-        { name: "Home", url: "/" },
-        { name: "Icons", url: "/icons" },
+        { name: 'Home', url: '/' },
+        { name: 'Icons', url: '/icons' },
         { name: label },
       ]}
     />
 
     <header class="mt-6 mb-10 pb-8 border-b border-border">
       <p class="type-label mb-4 flex items-center gap-3">
-        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
-        {count} {count === 1 ? "icon" : "icons"}
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
+        {count}
+        {count === 1 ? 'icon' : 'icons'}
       </p>
       <h1 class="type-h1">{label} icons</h1>
       <p class="type-body-lg mt-3 max-w-[64ch]">
         {count} free {label.toLowerCase()} logos, including {firstFew}
-        {icons.length > 6 ? ", and more" : ""}. Download optimized SVGs or drop
+        {icons.length > 6 ? ', and more' : ''}. Download optimized SVGs or drop
         them into your React, Vue, or Svelte app.
       </p>
     </header>
@@ -97,21 +98,25 @@ const jsonLd = [
 
     <aside class="mt-16 pt-8 border-t border-border">
       <h2 class="type-label mb-4 flex items-center gap-3">
-        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
         Other tags
       </h2>
       <ul class="flex flex-wrap gap-2">
-        {relatedTags.map((t) => (
-          <li>
-            <a
-              href={`/icons/tag/${t.slug}`}
-              class="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider border border-border hover:border-accent hover:text-accent transition-colors"
-            >
-              {formatTagLabel(t.tag)} <span class="text-text-muted">{t.count}</span>
-            </a>
-          </li>
-        ))}
+        {
+          relatedTags.map(t => (
+            <li>
+              <a
+                href={`/icons/tag/${t.slug}`}
+                class="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider border border-border hover:border-accent hover:text-accent transition-colors">
+                {formatTagLabel(t.tag)}{' '}
+                <span class="text-text-muted">{t.count}</span>
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </aside>
+    <div class="mt-12"></div>
   </div>
 </PageLayout>

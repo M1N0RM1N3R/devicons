@@ -1,23 +1,23 @@
 ---
-import PageLayout from "../../components/layout/page-layout.astro";
-import Breadcrumbs from "../../components/seo/breadcrumbs.astro";
-import IconGrid from "../../components/icons/icon-grid.astro";
+import PageLayout from '../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../components/seo/breadcrumbs.astro';
+import IconGrid from '../../components/icons/icon-grid.astro';
 import {
   getIconsSortedByName,
   getUniqueTags,
   formatTagLabel,
   slugifyTag,
-} from "../../lib/icons-query";
-import { SITE_TITLE } from "../../consts";
-import { breadcrumbSchema, collectionPageSchema } from "../../lib/seo";
+} from '../../lib/icons-query';
+import { SITE_TITLE } from '../../consts';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/seo';
 
 const icons = await getIconsSortedByName();
 const tags = (await getUniqueTags()).slice(0, 20);
 
 const groups = new Map<string, typeof icons>();
 for (const icon of icons) {
-  const first = icon.name[0]?.toUpperCase() ?? "#";
-  const key = /[A-Z]/.test(first) ? first : "#";
+  const first = icon.name[0]?.toUpperCase() ?? '#';
+  const key = /[A-Z]/.test(first) ? first : '#';
   const arr = groups.get(key) ?? [];
   arr.push(icon);
   groups.set(key, arr);
@@ -29,68 +29,72 @@ const description = `Browse all ${icons.length} free developer icons. Optimized 
 
 const jsonLd = [
   breadcrumbSchema([
-    { name: "Home", url: "/" },
-    { name: "Icons", url: "/icons" },
+    { name: 'Home', url: '/' },
+    { name: 'Icons', url: '/icons' },
   ]),
   collectionPageSchema({
-    name: "All Devicons",
+    name: 'All Devicons',
     description,
-    url: "/icons",
-    items: icons.slice(0, 100).map((i) => ({ name: i.name, url: `/icons/${i.slug}` })),
+    url: '/icons',
+    items: icons
+      .slice(0, 100)
+      .map(i => ({ name: i.name, url: `/icons/${i.slug}` })),
   }),
 ];
 ---
 
 <PageLayout title={title} description={description} jsonLd={jsonLd}>
   <div class="max-w-[1400px] mx-auto px-6 pt-10">
-    <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Icons" }]} />
+    <Breadcrumbs items={[{ name: 'Home', url: '/' }, { name: 'Icons' }]} />
 
     <header class="mt-6 mb-10 pb-8 border-b border-border">
-      <p class="type-label mb-4 flex items-center gap-3">
-        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
-        {icons.length} icons
-      </p>
       <h1 class="type-h1">All developer icons</h1>
       <p class="type-body-lg mt-3 max-w-[64ch]">
-        Every logo in the Devicons library — optimized SVGs and React, Vue, and Svelte
-        components. Free under the MIT license.
+        Every logo in the Devicons library — optimized SVGs and React, Vue, and
+        Svelte components. Free under the MIT license.
       </p>
 
       <nav aria-label="Jump to letter" class="mt-6 flex flex-wrap gap-2">
-        {letters.map((letter) => (
-          <a
-            href={`#letter-${letter}`}
-            class="font-mono text-[11px] font-semibold uppercase tracking-wider px-2 py-1 border border-border hover:border-accent hover:text-accent transition-colors"
-          >
-            {letter}
-          </a>
-        ))}
+        {
+          letters.map(letter => (
+            <a
+              href={`#letter-${letter}`}
+              class="font-mono text-[11px] font-semibold uppercase tracking-wider px-2 py-1 border border-border hover:border-accent hover:text-accent transition-colors">
+              {letter}
+            </a>
+          ))
+        }
       </nav>
     </header>
 
-    {letters.map((letter) => (
-      <section id={`letter-${letter}`} class="mb-12 scroll-mt-20">
-        <h2 class="type-h3 mb-4 font-mono">{letter}</h2>
-        <IconGrid items={groups.get(letter) ?? []} />
-      </section>
-    ))}
+    {
+      letters.map(letter => (
+        <section id={`letter-${letter}`} class="mb-12 scroll-mt-20">
+          <h2 class="type-h3 mb-4 font-mono">{letter}</h2>
+          <IconGrid items={groups.get(letter) ?? []} />
+        </section>
+      ))
+    }
 
     <aside class="mt-16 pt-8 border-t border-border">
       <h2 class="type-label mb-4 flex items-center gap-3">
-        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
         Browse by tag
       </h2>
       <ul class="flex flex-wrap gap-2">
-        {tags.map(({ tag, count }) => (
-          <li>
-            <a
-              href={`/icons/tag/${slugifyTag(tag)}`}
-              class="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider border border-border hover:border-accent hover:text-accent transition-colors"
-            >
-              {formatTagLabel(tag)} <span class="text-text-muted">{count}</span>
-            </a>
-          </li>
-        ))}
+        {
+          tags.map(({ tag, count }) => (
+            <li>
+              <a
+                href={`/icons/tag/${slugifyTag(tag)}`}
+                class="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider border border-border hover:border-accent hover:text-accent transition-colors">
+                {formatTagLabel(tag)}{' '}
+                <span class="text-text-muted">{count}</span>
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </aside>
   </div>

@@ -12,6 +12,8 @@ export const GET: APIRoute = async () => {
     tags: entry.data.tags,
     deprecated: entry.data.deprecated ?? false,
     popular: entry.data.popular ?? false,
+    badInDark: entry.data.badInDark ?? false,
+    badInLight: entry.data.badInLight ?? false,
     ...(entry.data.version && { version: entry.data.version }),
     ...(entry.data.aliases && { aliases: entry.data.aliases }),
   }));

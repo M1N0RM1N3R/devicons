@@ -1,6 +1,7 @@
 ---
 import PageLayout from "../../components/layout/page-layout.astro";
 import Breadcrumbs from "../../components/seo/breadcrumbs.astro";
+import IconRender from "../../components/icons/icon-render.astro";
 import { getActiveIcons } from "../../lib/icons-query";
 import { COMPARISONS, compareSlug } from "../../data/comparisons";
 import { SITE_TITLE } from "../../consts";
@@ -69,14 +70,13 @@ const cards = [
       {cards.map((card) => (
         <article class="p-6 border border-border flex flex-col gap-4">
           <div class="flex items-center gap-4">
-            <img
-              src={`/devicons/icons/${card.file}.svg`}
-              alt={`${card.data.name} logo`}
-              width="64"
-              height="64"
-              loading="lazy"
-              decoding="async"
-              class="w-16 h-16 object-contain"
+            <IconRender
+              iconFile={card.file}
+              name={card.data.name}
+              size={64}
+              badInDark={card.data.badInDark}
+              badInLight={card.data.badInLight}
+              className="w-16 h-16 shrink-0"
             />
             <div class="min-w-0">
               <h2 class="type-h2 truncate">{card.data.name}</h2>

@@ -1,11 +1,11 @@
 ---
-import { getCollection } from "astro:content";
-import PageLayout from "../../components/layout/page-layout.astro";
-import Breadcrumbs from "../../components/seo/breadcrumbs.astro";
-import { SITE_TITLE } from "../../consts";
-import { breadcrumbSchema, collectionPageSchema } from "../../lib/seo";
+import { getCollection } from 'astro:content';
+import PageLayout from '../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../components/seo/breadcrumbs.astro';
+import { SITE_TITLE } from '../../consts';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/seo';
 
-const packs = (await getCollection("packs")).sort(
+const packs = (await getCollection('packs')).sort(
   (a, b) => a.data.order - b.data.order,
 );
 
@@ -14,51 +14,56 @@ const description = `Hand-picked icon packs for common stacks — MERN, JAMstack
 
 const jsonLd = [
   breadcrumbSchema([
-    { name: "Home", url: "/" },
-    { name: "Packs", url: "/packs" },
+    { name: 'Home', url: '/' },
+    { name: 'Packs', url: '/packs' },
   ]),
   collectionPageSchema({
-    name: "Devicons Packs",
+    name: 'Devicons Packs',
     description,
-    url: "/packs",
-    items: packs.map((p) => ({ name: p.data.title, url: `/packs/${p.id}` })),
+    url: '/packs',
+    items: packs.map(p => ({ name: p.data.title, url: `/packs/${p.id}` })),
   }),
 ];
 ---
 
 <PageLayout title={title} description={description} jsonLd={jsonLd}>
   <div class="max-w-[1400px] mx-auto px-6 pt-10">
-    <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Packs" }]} />
+    <Breadcrumbs items={[{ name: 'Home', url: '/' }, { name: 'Packs' }]} />
     <header class="mt-6 mb-10 pb-8 border-b border-border">
       <p class="type-label mb-4 flex items-center gap-3">
-        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
         {packs.length} packs
       </p>
       <h1 class="type-h1">Icon packs</h1>
       <p class="type-body-lg mt-3 max-w-[64ch]">
-        Hand-picked logo sets for the stacks you ship with — MERN, JAMstack, DevOps,
-        modern data, and more.
+        Hand-picked logo sets for the stacks you ship with — MERN, JAMstack,
+        DevOps, modern data, and more.
       </p>
     </header>
 
     <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {packs.map((pack) => (
-        <li>
-          <a
-            href={`/packs/${pack.id}`}
-            data-astro-prefetch
-            class="block p-6 border border-border hover:border-accent/60 transition-colors group"
-          >
-            <h2 class="type-h3 group-hover:text-accent transition-colors">
-              {pack.data.title}
-            </h2>
-            <p class="type-body-sm mt-2 text-text-muted">{pack.data.description}</p>
-            <p class="type-mono text-[10px] uppercase tracking-wider mt-3 text-text-muted">
-              {pack.data.iconIds.length} icons &rarr;
-            </p>
-          </a>
-        </li>
-      ))}
+      {
+        packs.map(pack => (
+          <li>
+            <a
+              href={`/packs/${pack.id}`}
+              data-astro-prefetch
+              class="block p-6 border border-border hover:border-accent/60 transition-colors group">
+              <h2 class="type-h3 group-hover:text-accent transition-colors">
+                {pack.data.title}
+              </h2>
+              <p class="type-body-sm mt-2 text-text-muted">
+                {pack.data.description}
+              </p>
+              <p class="type-mono text-[10px] uppercase tracking-wider mt-3 text-text-muted">
+                {pack.data.iconIds.length} icons &rarr;
+              </p>
+            </a>
+          </li>
+        ))
+      }
     </ul>
+    <div class="prose max-w-none mt-12"></div>
   </div>
 </PageLayout>

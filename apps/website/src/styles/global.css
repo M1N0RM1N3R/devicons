@@ -1097,3 +1097,127 @@ body *:not(canvas):not(svg *) {
     transform: translate3d(-50%, 0, 0);
   }
 }
+
+/* Icon render with theme-aware contrast backdrop. The wrapper carries the
+   data-bad-in-dark / data-bad-in-light flags from the icon's frontmatter; CSS
+   shows a solid inset card behind the logo only when the active theme would
+   otherwise swallow it (e.g. a black wordmark on a dark page). */
+.icon-render {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Backdrop extends outward from the logo so the logo keeps its rendered
+   size and the card frames it with breathing room. Parents need enough
+   padding to absorb the overflow. */
+.icon-render__backdrop {
+  display: none;
+  position: absolute;
+  inset: -18%;
+  border-radius: 0.5rem;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.icon-render > img,
+.icon-render > svg,
+.icon-render > picture {
+  position: relative;
+  z-index: 1;
+}
+
+.icon-render[data-bad-in-dark='true'] .icon-render__backdrop {
+  display: block;
+  background: #f5f5f5;
+}
+
+[data-theme='light']
+  .icon-render[data-bad-in-dark='true']:not([data-bad-in-light='true'])
+  .icon-render__backdrop {
+  display: none;
+}
+[data-theme='light']
+  .icon-render[data-bad-in-light='true']
+  .icon-render__backdrop {
+  display: block;
+  background: #0a0a0a;
+}
+
+/* Icon listing tile. The entire card inverts for icons flagged as bad on
+   the active theme — treated as a single brutalist slab, not a small
+   backdrop overlay. Label color follows the card bg for contrast. */
+/* Tile is the outer square. The inner frame is the colored slab that sits
+   behind the icon — transparent by default, inverted when the icon needs
+   contrast on the active theme. */
+.icon-grid-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  aspect-ratio: 1 / 1;
+  padding: 1rem;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.icon-grid-card:hover {
+  border-color: color-mix(in oklab, var(--c-accent) 60%, transparent);
+}
+.icon-grid-card__frame {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  padding: 10px;
+  border-radius: 0.5rem;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+.icon-grid-card__icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.icon-grid-card__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.icon-grid-card:hover .icon-grid-card__label {
+  color: var(--c-accent);
+}
+
+/* Default (dark) theme: light slab behind badInDark icons. */
+.icon-grid-card--bad-dark .icon-grid-card__frame {
+  background: #f5f5f5;
+}
+
+/* Light theme: drop the light slab when only badInDark was set. */
+[data-theme='light']
+  .icon-grid-card--bad-dark:not(.icon-grid-card--bad-light)
+  .icon-grid-card__frame {
+  background: transparent;
+}
+
+/* Light theme: dark slab behind badInLight icons. */
+[data-theme='light']
+  .icon-grid-card--bad-light
+  .icon-grid-card__frame {
+  background: #0a0a0a;
+}

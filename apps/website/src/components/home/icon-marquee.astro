@@ -1,52 +1,83 @@
 ---
 /*
-  Brutalist marquee: single infinite row of popular icons on monochrome
-  slab tiles, separated by 1px dividers. Mono labels + numeric index.
-  Hover pauses; per-tile hover flips to accent. Full-bleed, hard edges.
+  Brutalist marquee: single infinite row of flagship icons on hard-edged
+  slab tiles separated by 1px dividers. Big mono index, uppercase label,
+  hover inverts the entire tile to the accent color. No gradients, no
+  rounded corners, no decoration.
 */
+import { getCollection } from 'astro:content';
+import IconRender from '../icons/icon-render.astro';
 
-const ICONS = [
+interface MarqueeIcon {
+  file: string;
+  label: string;
+  slug?: string;
+  badInDark: boolean;
+  badInLight: boolean;
+}
+
+const SEED: Array<{ file: string; label: string; slug?: string }> = [
   { file: 'vite', label: 'Vite' },
-  { file: 'typescript-icon', label: 'TypeScript' },
-  { file: 'nextjs-icon', label: 'Next.js' },
-  { file: 'nodejs-icon', label: 'Node.js' },
+  { file: 'typescript-icon', label: 'TypeScript', slug: 'typescript' },
+  { file: 'nodejs-icon', label: 'Node.js', slug: 'nodejs' },
   { file: 'python', label: 'Python' },
-  { file: 'docker-icon', label: 'Docker' },
+  { file: 'docker-icon', label: 'Docker', slug: 'docker' },
   { file: 'visual-studio-code', label: 'VS Code' },
   { file: 'javascript', label: 'JavaScript' },
   { file: 'claude-code', label: 'Claude Code' },
   { file: 'chrome', label: 'Chrome' },
 ];
 
+const allIcons = await getCollection('icons');
+const flagsBySlug = new Map(
+  allIcons.map(i => [
+    i.id,
+    {
+      badInDark: i.data.badInDark === true,
+      badInLight: i.data.badInLight === true,
+    },
+  ]),
+);
+
+const ICONS: MarqueeIcon[] = SEED.map(s => {
+  const flags = flagsBySlug.get(s.slug ?? s.file) ?? {
+    badInDark: false,
+    badInLight: false,
+  };
+  return { ...s, ...flags };
+});
+
 // Duplicate the row so the translate-50% loop is seamless.
 const TRACK = [...ICONS, ...ICONS];
 ---
 
 <section class="marquee" aria-label="Popular icons included in the package">
+  <div class="marquee__rule" aria-hidden="true">
+    <span class="marquee__tag">// FLAGSHIPS</span>
+    <span class="marquee__count"
+      >{ICONS.length.toString().padStart(2, '0')}</span
+    >
+  </div>
   <div class="marquee__frame">
     <div class="marquee__track" data-marquee-track>
       {
         TRACK.map((icon, i) => (
-          <div class="marquee__tile" aria-hidden={i >= ICONS.length ? "true" : undefined}>
-            <span class="marquee__index type-mono">
+          <div
+            class="marquee__tile"
+            aria-hidden={i >= ICONS.length ? 'true' : undefined}>
+            <span class="marquee__index">
               {String((i % ICONS.length) + 1).padStart(2, '0')}
             </span>
-            <img
-              class="marquee__icon"
-              src={`/devicons/icons/${icon.file}.svg`}
-              alt={`${icon.label} logo`}
-              loading="lazy"
-              decoding="async"
-              width="56"
-              height="56"
+            <IconRender
+              iconFile={icon.file}
+              name={icon.label}
+              size={56}
+              badInDark={icon.badInDark}
+              badInLight={icon.badInLight}
+              className="marquee__icon"
+              imgClassName="w-full h-full object-contain"
             />
-            <span class="marquee__label type-mono">{icon.label}</span>
-            <button
-              type="button"
-              class="marquee__copy copy-btn"
-              aria-label={`Copy ${icon.label} SVG`}
-              data-svg-src={`/devicons/icons/${icon.file}.svg`}
-            >SVG</button>
+            <span class="marquee__label">{icon.label}</span>
           </div>
         ))
       }
@@ -64,26 +95,28 @@ const TRACK = [...ICONS, ...ICONS];
     isolation: isolate;
   }
 
-  /* Accent slab behind everything — a hard-edged ribbon so the eye
-     catches the marquee as a distinct brutalist stripe. */
-  .marquee::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 77, 0, 0.04) 30%,
-      rgba(255, 77, 0, 0.04) 70%,
-      transparent 100%
-    );
-    pointer-events: none;
-    z-index: 0;
+  .marquee__rule {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--c-border);
+    background: var(--c-bg);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+    line-height: 1;
+  }
+
+  .marquee__tag {
+    color: var(--c-accent);
   }
 
   .marquee__frame {
     position: relative;
-    z-index: 1;
     display: flex;
     width: 100%;
     overflow: hidden;
@@ -124,99 +157,71 @@ const TRACK = [...ICONS, ...ICONS];
 
   .marquee__tile {
     flex: 0 0 auto;
-    width: 130px;
-    height: 100px;
+    width: 160px;
+    height: 140px;
     position: relative;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    align-items: center;
-    justify-items: center;
-    padding: 10px 12px;
-    border: 1px solid var(--c-border);
-    margin-left: -1px;
+    padding: 14px;
+    border-right: 1px solid var(--c-border);
     background: var(--c-bg);
     color: var(--c-text);
     transition:
-      border-color 0.15s ease,
-      background 0.15s ease;
-  }
-
-  .marquee__tile:hover {
-    background: color-mix(in oklab, var(--c-accent) 4%, var(--c-bg));
-    border-color: var(--c-accent);
-    z-index: 1;
-  }
-
-  /* Copy button — revealed on tile hover, top-right corner. */
-  .marquee__copy {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 3;
-    min-width: 40px;
-    height: 24px;
-    font-size: 9px;
-    opacity: 0;
-    transition:
-      opacity 0.15s ease,
-      color 0.15s ease,
       background 0.15s ease,
-      border-color 0.15s ease;
-  }
-
-  .marquee__tile:hover .marquee__copy {
-    opacity: 1;
+      color 0.15s ease;
   }
 
   .marquee__index {
-    font-size: var(--text-micro);
-    letter-spacing: var(--tracking-caps);
-    color: var(--c-text-muted);
-    align-self: start;
     justify-self: start;
+    align-self: start;
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
     line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--c-text);
   }
 
   .marquee__icon {
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
     object-fit: contain;
     display: block;
-    position: relative;
-    z-index: 2;
-    transition: transform 0.15s ease;
-  }
-
-  .marquee__tile:hover .marquee__icon {
-    transform: scale(1.05);
+    justify-self: center;
+    align-self: center;
   }
 
   .marquee__label {
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-caps);
-    text-transform: uppercase;
-    color: var(--c-text-secondary);
-    align-self: end;
     justify-self: start;
+    align-self: end;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     line-height: 1;
+    color: var(--c-text);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   @media (min-width: 768px) {
     .marquee__tile {
       width: 220px;
-      height: 160px;
-      padding: 14px 16px;
+      height: 180px;
+      padding: 18px;
     }
     .marquee__icon {
-      width: 64px;
-      height: 64px;
+      width: 72px;
+      height: 72px;
     }
-  }
-
-  /* Hide copy button on small screens — tiles are too compact. */
-  @media (max-width: 767px) {
-    .marquee__copy {
-      display: none;
+    .marquee__index {
+      font-size: 28px;
+    }
+    .marquee__label {
+      font-size: 12px;
     }
   }
 
@@ -226,47 +231,3 @@ const TRACK = [...ICONS, ...ICONS];
     }
   }
 </style>
-
-<script>
-  const svgCache = new Map<string, string>();
-
-  function initMarqueeCopy() {
-    document.querySelectorAll<HTMLButtonElement>('.marquee__copy').forEach((btn) => {
-      const src = btn.dataset.svgSrc;
-      if (!src) return;
-
-      let resetId: number | undefined;
-
-      btn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-
-        try {
-          let svg = svgCache.get(src);
-          if (!svg) {
-            const res = await fetch(src);
-            if (!res.ok) throw new Error(`${res.status}`);
-            svg = await res.text();
-            svgCache.set(src, svg);
-          }
-
-          await navigator.clipboard.writeText(svg);
-          btn.dataset.state = 'copied';
-          btn.textContent = 'OK';
-          if (resetId) window.clearTimeout(resetId);
-          resetId = window.setTimeout(() => {
-            delete btn.dataset.state;
-            btn.textContent = 'SVG';
-          }, 1500);
-        } catch {
-          btn.textContent = 'ERR';
-          if (resetId) window.clearTimeout(resetId);
-          resetId = window.setTimeout(() => {
-            btn.textContent = 'SVG';
-          }, 1500);
-        }
-      });
-    });
-  }
-
-  document.addEventListener('astro:page-load', initMarqueeCopy);
-</script>

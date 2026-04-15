@@ -1,5 +1,6 @@
 ---
 import type { RelatedIcon } from "../../lib/related-icons";
+import IconRender from "../icons/icon-render.astro";
 
 interface Props {
   icons: RelatedIcon[];
@@ -24,14 +25,13 @@ if (icons.length === 0) return;
           data-astro-prefetch
           class="flex items-center gap-3 p-3 border border-border hover:border-accent/60 transition-colors group"
         >
-          <img
-            src={`/devicons/icons/${icon.iconFile}.svg`}
-            alt={`${icon.name} logo`}
-            width="32"
-            height="32"
-            loading="lazy"
-            decoding="async"
-            class="w-8 h-8 object-contain shrink-0"
+          <IconRender
+            iconFile={icon.iconFile}
+            name={icon.name}
+            size={32}
+            badInDark={icon.badInDark}
+            badInLight={icon.badInLight}
+            className="w-8 h-8 shrink-0"
           />
           <span class="type-mono text-xs uppercase tracking-wider truncate group-hover:text-accent transition-colors">
             {icon.name}

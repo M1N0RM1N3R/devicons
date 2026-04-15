@@ -7,6 +7,9 @@ export interface RelatedIcon {
   name: string;
   iconFile: string;
   score: number;
+  badInDark: boolean;
+  badInLight: boolean;
+  recommended: boolean;
 }
 
 export async function getRelatedIcons(
@@ -27,9 +30,19 @@ export async function getRelatedIcons(
       slug: entry.id,
       name: entry.data.name,
       iconFile: entry.data.icons[0] ?? entry.id,
-      score: overlap + (entry.data.popular ? 0.5 : 0),
+      score:
+        overlap +
+        (entry.data.popular ? 0.5 : 0) +
+        (entry.data.recommended ? 1 : 0),
+      badInDark: entry.data.badInDark === true,
+      badInLight: entry.data.badInLight === true,
+      recommended: entry.data.recommended === true,
     });
   }
-  scored.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+  scored.sort((a, b) => {
+    if (a.recommended !== b.recommended) return a.recommended ? -1 : 1;
+    if (b.score !== a.score) return b.score - a.score;
+    return a.name.localeCompare(b.name);
+  });
   return scored.slice(0, limit);
 }
