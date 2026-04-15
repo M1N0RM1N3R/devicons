@@ -101,7 +101,7 @@ Dist-tag: `latest`. Provenance: enabled.
 ```json
 {
   "$schema": "https://unpkg.com/@changesets/config/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "<org>/devicons" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "vorillaz/devicons" }],
   "commit": false,
   "access": "public",
   "baseBranch": "master",
@@ -184,7 +184,79 @@ Edits:
 | `devicons` accidentally bumped as part of Group 1 | `fixed` group explicitly excludes it; `publishConfig` and `name` are separate. |
 | Private package gets flagged `public` by accident | `"private": true` in manifests + `ignore` list in Changesets config = two layers. |
 
+## `@dev.icons/core` build fix
+
+Current state: `packages/core/scripts/build-all.ts` produces `dist/sprite/*` and `dist/font/*` (binary assets), generates framework packages' `src/`, and builds the `devicons` font package. It does **not** emit any library entry (no `dist/index.*`), so `@dev.icons/core` has nothing to import and isn't publishable as-is.
+
+Target shape for `@dev.icons/core` after fix:
+
+**Library entry.** Add `packages/core/src/index.ts` exposing the icon manifest as a pure data module — name, codepoint, and category per icon, plus TypeScript types. This module must not import from `@dev.icons/codegen` or `@dev.icons/utils` at runtime (both are private workspace packages and cannot be resolved by npm consumers). If any helper from those is needed at runtime, inline it or promote it from private to published (prefer inline — keeps the private packages private).
+
+**Build tooling.** Add [`tsup`](https://tsup.egoist.dev/) as a devDependency of `@dev.icons/core` (already the ecosystem norm for small TS libs). New build step compiles `src/index.ts` → `dist/index.mjs`, `dist/index.cjs`, `dist/index.d.ts`. Run with `noExternal: ['@dev.icons/utils', '@dev.icons/codegen']` as a defensive net so any accidental workspace import is inlined rather than leaked into published `package.json` runtime deps.
+
+**Manifest file.** Emit `dist/icons.json` during the build — canonical list of `{ name, codepoint, unicode, categories }` for every icon. Downstream tools consume this instead of scraping `export-files/`.
+
+**Assets.** Keep the existing `dist/sprite/sprite-symbol.svg` and `dist/font/devicons.{css,ttf,woff,woff2,eot}` outputs untouched.
+
+**`build-all.ts` update.** Add one more step (`core-lib`) that invokes `tsup` for the library entry and writes `dist/icons.json`. Order doesn't matter relative to sprite/font (no shared state).
+
+**Updated `packages/core/package.json`:**
+
+```jsonc
+{
+  "name": "@dev.icons/core",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./icons.json": "./dist/icons.json",
+    "./sprite": "./dist/sprite/sprite-symbol.svg",
+    "./font/css": "./dist/font/devicons.css",
+    "./font/woff2": "./dist/font/devicons.woff2",
+    "./font/woff": "./dist/font/devicons.woff",
+    "./font/ttf": "./dist/font/devicons.ttf",
+    "./font/eot": "./dist/font/devicons.eot"
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vorillaz/devicons.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/vorillaz/devicons#readme",
+  "bugs": { "url": "https://github.com/vorillaz/devicons/issues" },
+  "license": "MIT",
+  "keywords": ["icons", "devicons", "sprite", "font", "svg"]
+}
+```
+
+The existing `scripts` block is preserved; `build` continues to delegate to `build-all.ts`.
+
+**Framework packages (`@dev.icons/react`, `vue`, `svelte`).** Each currently has `@dev.icons/codegen` and `@dev.icons/utils` as devDependencies (used only at codegen time), which is fine — those don't end up in the published `package.json`'s runtime `dependencies`. The published artifact (`dist/`) is self-contained via vite bundling. Verify `files: ["dist"]` is set (already is for react/vue/svelte) and add the same `publishConfig`, `repository`, `homepage`, `bugs`, `license`, `keywords` block.
+
+**`devicons` (font package).** Already published at `1.8.0`; needs only `publishConfig.provenance: true` added and `repository`/`homepage` verified. No build change.
+
+## Preflight audit (before bootstrap PR)
+
+Run once, manually, and confirm clean:
+
+1. `pnpm -F @dev.icons/core build` produces `dist/index.{mjs,cjs,d.ts}`, `dist/icons.json`, `dist/sprite/*`, `dist/font/*`.
+2. `npm pack --dry-run` inside each publishable package — verify the tarball contains only what `files` lists and nothing from `src/` (except for font, which intentionally ships `src`).
+3. `npx publint` against each publishable package — fix any warnings before the bootstrap PR.
+4. `node -e "require('@dev.icons/core')"` from a throwaway `node_modules` install of the packed tarball — confirms the library entry resolves without workspace deps.
+
 ## Open questions for implementation
 
-- Exact GitHub org/repo slug for `@changesets/changelog-github` config (fill in when writing the plan).
-- Whether `packages/core` builds a `dist/` ready for publish today, or needs adjustment (audit during Preconditions step).
+_None. All decisions locked in; ready for `writing-plans`._
