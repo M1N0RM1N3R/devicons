@@ -8,7 +8,7 @@ categoryOrder: 1
 
 import Note from "../../components/docs/note.astro";
 
-`@devicons/font` is the no-framework option. One CSS file, 1,600+ glyphs. Drop it into legacy stacks, email templates, or a plain HTML page.
+`devicons` is the no-framework option. One CSS file, 1,600+ glyphs. Drop it into legacy stacks, email templates, or a plain HTML page.
 
 <Note title="Class prefix">
 Every class is namespaced under `devicon-`. A bare `.react` or `.vue` selector would collide with most stylesheets, so the prefix keeps things safe. Use `.devicon` to opt into the font, then `.devicon-<slug>` to pick a glyph, e.g. `devicon-react`, `devicon-next-js`.
@@ -24,27 +24,7 @@ The font package uses a higher version number (`>1.x`) than the framework packag
 npm install @devicons/font
 ```
 
-## CDN
-
-Both CDNs serve the same stylesheet. Pick whichever you prefer.
-
-Devicons CDN:
-
-```html
-<link
-  rel="stylesheet"
-  href="https://cdn.devicons.dev/font/devicons.css"
-/>
-```
-
-jsDelivr:
-
-```html
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/devicons@1.8.0/css/devicons.min.css"
-/>
-```
+Prefer a no-build workflow? See the [CDN guide](/docs/cdn) for stylesheet, sprite, and raw-SVG URLs.
 
 ## Usage
 
