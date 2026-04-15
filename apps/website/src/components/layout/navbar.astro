@@ -4,51 +4,58 @@ const pathname = Astro.url.pathname;
 const isDocs = pathname === '/docs' || pathname.startsWith('/docs/');
 const isIcons = pathname === '/search' || pathname.startsWith('/search/');
 const navLinks = [
-  { href: '/search', label: 'All Icons', active: isIcons },
+  { href: '/icons', label: 'All Icons', active: pathname === '/icons' },
+  { href: '/search', label: 'Search', active: isIcons },
   { href: '/docs', label: 'Docs', active: isDocs },
 ];
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-bg border-b border-border" transition:animate="none">
+<header
+  class="navbar-brutalist fixed top-0 left-0 right-0 z-50 bg-bg border-b-2 border-border"
+  transition:persist="navbar"
+  transition:animate="none">
   <div
-    class="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between">
+    class="max-w-[1400px] mx-auto h-14 flex items-stretch justify-between">
     <a
       href="/"
-      class="flex items-center gap-2.5 group transition-colors"
+      class="navbar-brand group"
       aria-label="DEVICONS home">
-      <svg
-        class="navbar-logo-mark"
-        width="22"
-        height="22"
-        viewBox="0 0 128 128"
-        aria-hidden="true">
-        <polygon points="0,0 128,0 128,128 16,128 0,112" fill="currentColor"
-        ></polygon>
-        <text
-          x="64"
-          y="100"
-          text-anchor="middle"
-          font-family="system-ui,-apple-system,sans-serif"
-          font-weight="900"
-          font-size="100"
-          letter-spacing="-4"
-          fill="var(--c-bg)">D</text
-        >
-      </svg>
-      <span
-        class="type-brand text-text group-hover:text-accent transition-colors"
-        >DEVICONS</span
-      >
+      <span class="navbar-brand__plate" aria-hidden="true">
+        <svg
+          class="navbar-logo-mark"
+          width="22"
+          height="22"
+          viewBox="0 0 128 128">
+          <polygon points="0,0 128,0 128,128 16,128 0,112" fill="currentColor"
+          ></polygon>
+          <text
+            x="64"
+            y="100"
+            text-anchor="middle"
+            font-family="system-ui,-apple-system,sans-serif"
+            font-weight="900"
+            font-size="100"
+            letter-spacing="-4"
+            fill="var(--c-bg)">D</text
+          >
+        </svg>
+      </span>
+      <span class="navbar-brand__text">
+        <span class="navbar-brand__name">DEVICONS</span>
+        <span class="navbar-brand__meta" aria-hidden="true">// v1</span>
+      </span>
     </a>
 
-    <nav class="flex items-center gap-6">
+    <nav class="navbar-nav">
       {
         navLinks.map(link => (
           <a
             href={link.href}
+            data-nav-link
+            data-match={link.href}
             class:list={[
-              'navbar-link transition-colors hidden sm:block relative',
-              link.active ? 'text-accent' : 'text-text-muted hover:text-text',
+              'navbar-link navbar-nav__item hidden sm:inline-flex',
+              link.active && 'is-active',
             ]}>
             {link.label}
           </a>
@@ -59,7 +66,7 @@ const navLinks = [
         target="_blank"
         rel="noopener noreferrer"
         aria-label="View Devicons on GitHub"
-        class="btn btn--ghost btn--mono btn--sm hidden sm:inline-flex">
+        class="btn btn--ghost btn--mono btn--sm hidden sm:inline-flex navbar-gh">
         <svg
           width="16"
           height="16"
@@ -101,7 +108,7 @@ const navLinks = [
         aria-label="Open menu"
         aria-controls="mobile-menu"
         aria-expanded="false"
-        class="sm:hidden inline-flex items-center justify-center w-9 h-9 border border-border bg-surface text-text hover:border-accent hover:text-accent transition-colors">
+        class="sm:hidden inline-flex items-center justify-center h-14 w-14 border-l-2 border-border bg-surface text-text hover:border-l-accent hover:text-accent transition-colors">
         <svg
           width="16"
           height="16"
@@ -159,10 +166,12 @@ const navLinks = [
           navLinks.map(link => (
             <a
               href={link.href}
+              data-nav-link-mobile
+              data-match={link.href}
               class:list={[
                 'navbar-link px-6 py-4 border-b border-border transition-colors',
                 link.active
-                  ? 'text-accent bg-surface'
+                  ? 'text-accent bg-surface is-active'
                   : 'text-text hover:text-accent hover:bg-surface',
               ]}>
               {link.label}
@@ -193,12 +202,147 @@ const navLinks = [
 </header>
 
 <style>
+  .navbar-brutalist {
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 11px,
+        color-mix(in oklab, var(--c-border) 35%, transparent) 11px 12px
+      ),
+      var(--c-bg);
+  }
+
+  .navbar-brand {
+    display: inline-flex;
+    align-items: stretch;
+    gap: 0;
+    border-right: 1px solid var(--c-border);
+    transition: color 0.15s ease;
+  }
+
+  .navbar-brand__plate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    border-right: 1px solid var(--c-border);
+    background: var(--c-surface);
+    transition: background 0.15s ease;
+  }
+
+  .navbar-brand:hover .navbar-brand__plate {
+    background: color-mix(in oklab, var(--c-accent) 10%, var(--c-surface));
+  }
+
+  .navbar-brand__text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+  }
+
+  .navbar-brand__name {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+    color: var(--c-text);
+    transition: color 0.15s ease;
+  }
+
+  .navbar-brand:hover .navbar-brand__name {
+    color: var(--c-accent);
+  }
+
+  .navbar-brand__meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .navbar-brand__meta {
+      display: inline;
+    }
+  }
+
   .navbar-logo-mark {
     color: var(--c-accent);
     transition: color 0.15s ease;
   }
   .group:hover .navbar-logo-mark {
     color: var(--c-accent-hover);
+  }
+
+  .navbar-nav {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .navbar-nav__item {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0 1rem;
+    border-left: 1px solid var(--c-border);
+    color: var(--c-text-muted);
+    transition:
+      color 0.12s ease,
+      background 0.12s ease;
+  }
+  @media (min-width: 640px) {
+    .navbar-nav__item {
+      display: inline-flex;
+    }
+  }
+
+  .navbar-nav__item:hover {
+    color: var(--c-text);
+    background: color-mix(in oklab, var(--c-accent) 6%, transparent);
+  }
+
+  .navbar-nav__item.is-active {
+    color: var(--c-accent);
+    background: color-mix(in oklab, var(--c-accent) 10%, transparent);
+  }
+
+  /* Brackets always occupy space so toggling active doesn't shift layout.
+     Transparent by default, colored when active. */
+  .navbar-nav__item::before,
+  .navbar-nav__item::after {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: transparent;
+    opacity: 0;
+    transition:
+      color 0.3s ease-out,
+      opacity 0.3s ease-out;
+  }
+  .navbar-nav__item.is-active::before,
+  .navbar-nav__item.is-active::after {
+    opacity: 1;
+  }
+  .navbar-nav__item::before {
+    content: '[';
+    margin-right: 0.25rem;
+  }
+  .navbar-nav__item::after {
+    content: ']';
+    margin-left: 0.25rem;
+  }
+  .navbar-nav__item.is-active::before,
+  .navbar-nav__item.is-active::after {
+    color: var(--c-accent);
+  }
+
+  .navbar-gh {
+    align-self: center;
+    margin: 0 0.75rem;
   }
 </style>
 
@@ -273,6 +417,52 @@ const navLinks = [
 
   // Run on initial load and after every view transition
   document.addEventListener('astro:page-load', initStars);
+</script>
+
+<script>
+  // The navbar persists across navigations, so the server-rendered
+  // `is-active` class is stuck on the first-visited page. Recompute it
+  // during the view-transition swap so the bracket fade lines up with
+  // the page fade instead of flashing after the transition finishes.
+  const matchesPath = (target: string, pathname: string) => {
+    if (target === '/') return pathname === '/';
+    if (target === '/search') {
+      return pathname === '/search' || pathname.startsWith('/search/');
+    }
+    if (target === '/docs') {
+      return pathname === '/docs' || pathname.startsWith('/docs/');
+    }
+    return pathname === target;
+  };
+
+  function syncActiveLink(pathname: string) {
+    document
+      .querySelectorAll<HTMLAnchorElement>(
+        '[data-nav-link], [data-nav-link-mobile]',
+      )
+      .forEach((a) => {
+        const target = a.dataset.match ?? a.getAttribute('href') ?? '';
+        a.classList.toggle('is-active', matchesPath(target, pathname));
+      });
+  }
+
+  // Initial paint on hard load.
+  syncActiveLink(window.location.pathname);
+
+  // Fire before the DOM swap so the bracket fade coordinates with the
+  // main-content fade — the user perceives one synchronized transition.
+  document.addEventListener(
+    'astro:before-preparation',
+    (e: Event & { to?: URL }) => {
+      if (e.to) syncActiveLink(e.to.pathname);
+    },
+  );
+
+  // Safety net in case the event above didn't carry a URL (older ClientRouter
+  // builds) — reconcile once the new document is live.
+  document.addEventListener('astro:after-swap', () =>
+    syncActiveLink(window.location.pathname),
+  );
 </script>
 
 <script>

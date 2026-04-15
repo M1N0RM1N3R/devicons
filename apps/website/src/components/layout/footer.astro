@@ -9,90 +9,67 @@ const year = new Date().getFullYear();
 const topTags = (await getUniqueTags()).slice(0, 8);
 ---
 
-<footer class="border-t border-border">
+<footer class="footer-brutalist border-t-2 border-border">
   <div class="footer-brand-mark" aria-hidden="true"></div>
 
-  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 pb-8 sm:pb-12">
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 py-10 sm:py-12 border-t border-border">
-      <div>
-        <p class="type-label mb-3">Browse</p>
-        <div class="flex flex-col gap-2">
-          <a
-            href="/icons"
-            class="type-body-sm hover:text-accent transition-colors">
-            All icons
-          </a>
-          <a
-            href="/icons/popular"
-            class="type-body-sm hover:text-accent transition-colors">
-            Popular
-          </a>
-          <a
-            href="/packs"
-            class="type-body-sm hover:text-accent transition-colors">
-            Packs
-          </a>
-          <a
-            href="/search"
-            class="type-body-sm hover:text-accent transition-colors">
-            Search
-          </a>
-        </div>
+  <div class="max-w-[1400px] mx-auto border-t-2 border-border">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-col__label">[ Browse ]</p>
+        <ul class="footer-links">
+          <li><a href="/icons">All icons</a></li>
+          <li><a href="/icons/popular">Popular</a></li>
+          <li><a href="/packs">Packs</a></li>
+          <li><a href="/search">Search</a></li>
+        </ul>
       </div>
 
-      <div>
-        <p class="type-label mb-3">Categories</p>
-        <div class="flex flex-col gap-2">
+      <div class="footer-col">
+        <p class="footer-col__label">[ Categories ]</p>
+        <ul class="footer-links">
           {
             topTags.map(({ tag }) => (
-              <a
-                href={`/icons/tag/${slugifyTag(tag)}`}
-                class="type-body-sm hover:text-accent transition-colors">
-                {formatTagLabel(tag)}
-              </a>
+              <li>
+                <a href={`/icons/tag/${slugifyTag(tag)}`}>
+                  {formatTagLabel(tag)}
+                </a>
+              </li>
             ))
           }
-        </div>
+        </ul>
       </div>
 
-      <div>
-        <p class="type-label mb-3">Links</p>
-        <div class="flex flex-col gap-2">
-          <a
-            href="https://github.com/nicholasgasior/devicons"
-            class="type-body-sm hover:text-accent transition-colors"
-            target="_blank"
-            rel="noopener noreferrer">
-            GitHub
-          </a>
-          <a
-            href="https://www.npmjs.com/package/@devicons/react"
-            class="type-body-sm hover:text-accent transition-colors"
-            target="_blank"
-            rel="noopener noreferrer">
-            npm
-          </a>
-          <a
-            href="/docs"
-            class="type-body-sm hover:text-accent transition-colors">
-            Documentation
-          </a>
-          <a
-            href="/legal"
-            class="type-body-sm hover:text-accent transition-colors">
-            Legal
-          </a>
-        </div>
+      <div class="footer-col">
+        <p class="footer-col__label">[ Links ]</p>
+        <ul class="footer-links">
+          <li>
+            <a
+              href="https://github.com/nicholasgasior/devicons"
+              target="_blank"
+              rel="noopener noreferrer">GitHub ↗</a>
+          </li>
+          <li>
+            <a
+              href="https://www.npmjs.com/package/@devicons/react"
+              target="_blank"
+              rel="noopener noreferrer">npm ↗</a>
+          </li>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/legal">Legal</a></li>
+        </ul>
       </div>
 
-      <div>
-        <p class="type-label mb-3">Project</p>
-        <p class="type-body-sm">
+      <div class="footer-col">
+        <p class="footer-col__label">[ Project ]</p>
+        <p class="footer-col__body">
           Open source. Crisp and clear icons for developers.
         </p>
-        <p class="type-body-sm text-text-muted mt-2">{year} Devicons</p>
-        <div class="mt-3">
+        <div class="footer-col__meta">
+          <span>© {year}</span>
+          <span class="footer-col__rule" aria-hidden="true"></span>
+          <span>DEVICONS</span>
+        </div>
+        <div class="mt-4">
           <button
             type="button"
             data-theme-toggle
@@ -115,10 +92,25 @@ const topTags = (await getUniqueTags()).slice(0, 8);
         </div>
       </div>
     </div>
+
+    <div class="footer-bottom">
+      <span class="footer-bottom__tag">// END_OF_FILE</span>
+      <span class="footer-bottom__coord">001 / 001</span>
+    </div>
   </div>
 </footer>
 
 <style>
+  .footer-brutalist {
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 11px,
+        color-mix(in oklab, var(--c-border) 35%, transparent) 11px 12px
+      ),
+      var(--c-bg);
+  }
+
   .footer-brand-mark {
     position: relative;
     padding: 2rem 0;
@@ -129,6 +121,155 @@ const topTags = (await getUniqueTags()).slice(0, 8);
     .footer-brand-mark {
       padding: 4rem 0;
     }
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .footer-col {
+    padding: 1.75rem 1.25rem;
+    border-bottom: 1px solid var(--c-border);
+    background: var(--c-bg);
+  }
+  @media (min-width: 640px) {
+    .footer-col {
+      padding: 2rem 1.5rem;
+      border-right: 1px solid var(--c-border);
+    }
+    .footer-col:nth-child(2n) {
+      border-right: 0;
+    }
+  }
+  @media (min-width: 1024px) {
+    .footer-col {
+      border-bottom: 0;
+      border-right: 1px solid var(--c-border);
+    }
+    .footer-col:nth-child(2n) {
+      border-right: 1px solid var(--c-border);
+    }
+    .footer-col:last-child {
+      border-right: 0;
+    }
+  }
+
+  .footer-col__label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--c-text);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed var(--c-border);
+  }
+
+  .footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer-links li {
+    border-bottom: 1px solid
+      color-mix(in oklab, var(--c-border) 60%, transparent);
+  }
+  .footer-links li:last-child {
+    border-bottom: 0;
+  }
+
+  .footer-links a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--c-text-secondary);
+    text-transform: lowercase;
+    transition:
+      color 0.12s ease,
+      background 0.12s ease,
+      padding 0.12s ease;
+  }
+
+  .footer-links a::before {
+    content: '›';
+    color: var(--c-text-muted);
+    font-weight: 700;
+    transition: color 0.12s ease;
+  }
+
+  .footer-links a:hover {
+    color: var(--c-accent);
+    background: color-mix(in oklab, var(--c-accent) 6%, transparent);
+    padding-left: 0.5rem;
+  }
+
+  .footer-links a:hover::before {
+    color: var(--c-accent);
+  }
+
+  .footer-col__body {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--c-text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-col__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
+  }
+
+  .footer-col__rule {
+    display: inline-block;
+    width: 1px;
+    height: 10px;
+    background: var(--c-border);
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 2px solid var(--c-border);
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+    background: var(--c-surface);
   }
   .theme-toggle {
     display: inline-flex;
