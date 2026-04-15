@@ -87,6 +87,11 @@ jobs:
           # output (dist/) and the Pages Functions (functions/og/icons/...)
           # that render OG images on demand at the edge.
           workingDirectory: apps/website
+          # Wrangler is pre-installed via pnpm (see apps/website/package.json)
+          # so the action skips its own npm-based install which otherwise
+          # re-runs every package's postinstall script and breaks the build.
+          packageManager: pnpm
+          wranglerVersion: "4.83.0"
           command: pages deploy dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --branch=${{ steps.target.outputs.branch }}
 
       - name: Summary

@@ -50,6 +50,7 @@
     "to-vfile": "8.0.0",
     "tsx": "^4.19.2",
     "vfile-matter": "5.0.1",
-    "vite-plugin-svgr": "4"
+    "vite-plugin-svgr": "4",
+    "wrangler": "^4.83.0"
   }
 }
