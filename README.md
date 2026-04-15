@@ -1,7 +1,10 @@
 <p align="center">
   <a href="https://devicons.io">
-    <img src="https://raw.githubusercontent.com/vorillaz/devicons/canary/apps/website/public/brand/lockup-dark.svg#gh-dark-mode-only" alt="Devicons" width="320" />
-    <img src="https://raw.githubusercontent.com/vorillaz/devicons/canary/apps/website/public/brand/lockup-light.svg#gh-light-mode-only" alt="Devicons" width="320" />
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/vorillaz/devicons/canary/apps/website/public/brand/lockup-dark.svg" />
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/vorillaz/devicons/canary/apps/website/public/brand/lockup-light.svg" />
+      <img src="https://raw.githubusercontent.com/vorillaz/devicons/canary/apps/website/public/brand/lockup-light.svg" alt="Devicons" width="320" />
+    </picture>
   </a>
 </p>
 
