@@ -7,9 +7,16 @@ import {
 interface IconPreviewProps {
   icons: string[];
   name: string;
+  badInDark?: boolean;
+  badInLight?: boolean;
 }
 
-export function IconPreview({ icons, name }: IconPreviewProps) {
+export function IconPreview({
+  icons,
+  name,
+  badInDark,
+  badInLight,
+}: IconPreviewProps) {
   const { variant, setVariant, bg, setBg } = useIconPreviewState();
 
   return (
@@ -20,7 +27,14 @@ export function IconPreview({ icons, name }: IconPreviewProps) {
         bg={bg}
         onBgChange={setBg}
       />
-      <IconPreviewGrid icons={icons} name={name} variant={variant} bg={bg} />
+      <IconPreviewGrid
+        icons={icons}
+        name={name}
+        variant={variant}
+        bg={bg}
+        badInDark={badInDark}
+        badInLight={badInLight}
+      />
     </div>
   );
 }

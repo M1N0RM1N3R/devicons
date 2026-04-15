@@ -3,6 +3,8 @@ export interface IconGridItem {
   slug: string;
   name: string;
   iconFile: string;
+  badInDark?: boolean;
+  badInLight?: boolean;
 }
 
 interface Props {
@@ -22,20 +24,24 @@ const { items, emptyMessage = "No icons found." } = Astro.props;
         <a
           href={`/icons/${icon.slug}`}
           data-astro-prefetch
-          class="flex flex-col items-center gap-2 p-4 border border-border hover:border-accent/60 transition-colors group aspect-square justify-center"
+          class:list={[
+            "icon-grid-card",
+            icon.badInDark && "icon-grid-card--bad-dark",
+            icon.badInLight && "icon-grid-card--bad-light",
+          ]}
         >
-          <img
-            src={`/devicons/icons/${icon.iconFile}.svg`}
-            alt={`${icon.name} logo`}
-            width="48"
-            height="48"
-            loading="lazy"
-            decoding="async"
-            class="w-12 h-12 object-contain"
-          />
-          <span class="type-mono text-[10px] uppercase tracking-wider truncate w-full text-center text-text-muted group-hover:text-accent transition-colors">
-            {icon.name}
+          <span class="icon-grid-card__frame">
+            <img
+              src={`/devicons/icons/${icon.iconFile}.svg`}
+              alt={`${icon.name} logo`}
+              width="48"
+              height="48"
+              loading="lazy"
+              decoding="async"
+              class="icon-grid-card__icon"
+            />
           </span>
+          <span class="icon-grid-card__label">{icon.name}</span>
         </a>
       </li>
     ))}

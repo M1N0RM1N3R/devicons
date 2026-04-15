@@ -64,37 +64,68 @@ interface IconPreviewGridProps {
   name: string;
   variant: IconVariant;
   bg: IconBackground;
+  badInDark?: boolean;
+  badInLight?: boolean;
   gridClassName?: string;
   tilePaddingClassName?: string;
   iconMaxClassName?: string;
 }
+
+// Brutalist backdrop card — a solid inset rectangle sits behind the logo on
+// tiles where the background would otherwise swallow it (e.g. a black Vercel
+// mark on a dark tile). Flat fill, hard edges, sized so the logo rests on it
+// like a product shot on a card.
+const BACKDROP_COLORS: Record<'dark' | 'light', string> = {
+  dark: '#f5f5f5',
+  light: '#0a0a0a',
+};
 
 export function IconPreviewGrid({
   icons,
   name,
   variant,
   bg,
+  badInDark,
+  badInLight,
   gridClassName = 'grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4',
   tilePaddingClassName = 'p-6 sm:p-8',
   iconMaxClassName = 'max-w-[120px] max-h-[120px]',
 }: IconPreviewGridProps) {
+  const needsBackdrop =
+    variant === 'icon' &&
+    ((bg === 'dark' && badInDark) || (bg === 'light' && badInLight));
+  const backdropColor =
+    needsBackdrop && (bg === 'dark' || bg === 'light')
+      ? BACKDROP_COLORS[bg]
+      : null;
+
   return (
     <div className={gridClassName}>
       {icons.map(iconFile => (
         <div key={iconFile} className="flex flex-col">
           <div
             className={clsx(
-              'aspect-square flex items-center justify-center rounded-xl border border-border',
+              'aspect-square flex items-center justify-center rounded-xl border border-border relative overflow-hidden',
               tilePaddingClassName,
               bgStyles[bg],
               bg === 'grid' &&
                 'bg-[repeating-conic-gradient(#262626_0%_25%,#1a1a1a_0%_50%)]',
             )}>
+            {backdropColor && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-[10%] rounded-lg pointer-events-none"
+                style={{ background: backdropColor }}
+              />
+            )}
             {variant === 'font' ? (
               <div
                 role="img"
                 aria-label={`${name} logo (${iconFile})`}
-                className={clsx('w-full h-full bg-accent', iconMaxClassName)}
+                className={clsx(
+                  'relative z-10 w-full h-full bg-accent',
+                  iconMaxClassName,
+                )}
                 style={{
                   maskImage: `url(/devicons/font/${iconFile}.svg)`,
                   WebkitMaskImage: `url(/devicons/font/${iconFile}.svg)`,
@@ -111,7 +142,7 @@ export function IconPreviewGrid({
                 src={`/devicons/icons/${iconFile}.svg`}
                 alt={`${name} logo (${iconFile})`}
                 className={clsx(
-                  'w-full h-full object-contain',
+                  'relative z-10 w-full h-full object-contain',
                   iconMaxClassName,
                 )}
               />

@@ -1,0 +1,42 @@
+---
+import { clsx } from "clsx";
+
+interface Props {
+  iconFile: string;
+  name: string;
+  size?: number;
+  badInDark?: boolean;
+  badInLight?: boolean;
+  className?: string;
+  imgClassName?: string;
+  loading?: "lazy" | "eager";
+}
+
+const {
+  iconFile,
+  name,
+  size = 48,
+  badInDark = false,
+  badInLight = false,
+  className,
+  imgClassName = "w-full h-full object-contain",
+  loading = "lazy",
+} = Astro.props;
+---
+
+<span
+  class:list={["icon-render", className]}
+  data-bad-in-dark={badInDark ? "true" : undefined}
+  data-bad-in-light={badInLight ? "true" : undefined}
+>
+  <span aria-hidden="true" class="icon-render__backdrop"></span>
+  <img
+    src={`/devicons/icons/${iconFile}.svg`}
+    alt={`${name} logo`}
+    width={size}
+    height={size}
+    loading={loading}
+    decoding="async"
+    class={clsx(imgClassName)}
+  />
+</span>
