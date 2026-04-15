@@ -8,17 +8,9 @@
   </a>
 </p>
 
-# devicons
+# @dev.icons/figma
 
-Icon font, CSS, and SVG sprite for developers.
+Figma plugin for [Devicons](https://devicons.io).
 
 - Website: https://devicons.io
-- Documentation: https://devicons.io/docs/icon-font
-
-## Install
-
-```sh
-npm install devicons
-```
-
-See the [icon font docs](https://devicons.io/docs/icon-font) for usage.
+- Documentation: https://devicons.io/docs/introduction
