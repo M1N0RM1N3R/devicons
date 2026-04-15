@@ -83,7 +83,11 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          command: pages deploy apps/website/dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --branch=${{ steps.target.outputs.branch }}
+          # Run wrangler from apps/website so it picks up both the static
+          # output (dist/) and the Pages Functions (functions/og/icons/...)
+          # that render OG images on demand at the edge.
+          workingDirectory: apps/website
+          command: pages deploy dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --branch=${{ steps.target.outputs.branch }}
 
       - name: Summary
         run: |

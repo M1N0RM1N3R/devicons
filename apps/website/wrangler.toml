@@ -1,0 +1,13 @@
+# Cloudflare Pages + Functions configuration.
+# Picked up by `wrangler pages deploy` when run from this directory.
+#
+# `nodejs_compat` is required by satori (Buffer usage) and @resvg/resvg-wasm
+# for the on-demand OG renderer at functions/og/icons/[slug].png.ts.
+#
+# The project itself is `devicons-website` on Cloudflare Pages — creation /
+# linking happens through the CI workflow using the Pages API.
+
+name = "devicons-website"
+pages_build_output_dir = "./dist"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
