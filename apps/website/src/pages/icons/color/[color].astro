@@ -1,0 +1,100 @@
+---
+import PageLayout from "../../../components/layout/page-layout.astro";
+import Breadcrumbs from "../../../components/seo/breadcrumbs.astro";
+import IconGrid from "../../../components/icons/icon-grid.astro";
+import { getActiveIcons, toListItem } from "../../../lib/icons-query";
+import { COLOR_BUCKETS, bucketForHex } from "../../../lib/colors";
+import { SITE_TITLE } from "../../../consts";
+import { breadcrumbSchema, collectionPageSchema } from "../../../lib/seo";
+
+export async function getStaticPaths() {
+  const icons = await getActiveIcons();
+  return COLOR_BUCKETS.map((bucket) => {
+    const matched = icons
+      .filter((i) => bucketForHex(i.data.mainColor) === bucket.slug)
+      .map(toListItem)
+      .sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { sensitivity: "base" }),
+      );
+    return {
+      params: { color: bucket.slug },
+      props: { bucket, icons: matched },
+    };
+  }).filter((p) => p.props.icons.length > 0);
+}
+
+const { bucket, icons } = Astro.props;
+
+const title = `${bucket.label} Icons — ${icons.length} developer logos | ${SITE_TITLE}`;
+const description = `Developer icons with a primary ${bucket.label.toLowerCase()} brand color. ${icons.length} free SVG logos — MIT licensed.`;
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Icons", url: "/icons" },
+    { name: `${bucket.label} icons`, url: `/icons/color/${bucket.slug}` },
+  ]),
+  collectionPageSchema({
+    name: `${bucket.label} Developer Icons`,
+    description,
+    url: `/icons/color/${bucket.slug}`,
+    items: icons.map((i) => ({ name: i.name, url: `/icons/${i.slug}` })),
+  }),
+];
+
+const otherBuckets = COLOR_BUCKETS.filter((b) => b.slug !== bucket.slug);
+---
+
+<PageLayout title={title} description={description} jsonLd={jsonLd}>
+  <div class="max-w-[1400px] mx-auto px-6 pt-10">
+    <Breadcrumbs
+      items={[
+        { name: "Home", url: "/" },
+        { name: "Icons", url: "/icons" },
+        { name: `${bucket.label} color` },
+      ]}
+    />
+
+    <header class="mt-6 mb-10 pb-8 border-b border-border">
+      <p class="type-label mb-4 flex items-center gap-3">
+        <span
+          aria-hidden="true"
+          class="inline-block w-3 h-3 border border-border"
+          style={`background-color: ${bucket.hex}`}
+        ></span>
+        {bucket.label}
+      </p>
+      <h1 class="type-h1">{bucket.label} developer icons</h1>
+      <p class="type-body-lg mt-3 max-w-[64ch]">
+        Browse {icons.length} developer logos with a {bucket.label.toLowerCase()} brand
+        color. Free SVGs plus React, Vue, and Svelte components.
+      </p>
+    </header>
+
+    <IconGrid items={icons} />
+
+    <aside class="mt-16 pt-8 border-t border-border">
+      <h2 class="type-label mb-4 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        Other colors
+      </h2>
+      <ul class="flex flex-wrap gap-2">
+        {otherBuckets.map((b) => (
+          <li>
+            <a
+              href={`/icons/color/${b.slug}`}
+              class="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider border border-border hover:border-accent hover:text-accent transition-colors"
+            >
+              <span
+                aria-hidden="true"
+                class="inline-block w-3 h-3 border border-border"
+                style={`background-color: ${b.hex}`}
+              ></span>
+              {b.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  </div>
+</PageLayout>

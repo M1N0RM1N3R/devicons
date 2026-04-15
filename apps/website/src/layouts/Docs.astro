@@ -5,7 +5,9 @@ import DocsSidebar from '../components/docs/docs-sidebar.astro';
 import DocsMobileNav from '../components/docs/docs-mobile-nav.astro';
 import DocsToc from '../components/docs/docs-toc.astro';
 import DocsPagination from '../components/docs/docs-pagination.astro';
+import Breadcrumbs from '../components/seo/breadcrumbs.astro';
 import { getDocNav } from '../lib/docs';
+import { breadcrumbSchema, techArticleSchema } from '../lib/seo';
 
 interface Props {
   id: string;
@@ -14,6 +16,8 @@ interface Props {
   badge?: 'new' | 'updated' | 'beta';
   headings: MarkdownHeading[];
   isIndex?: boolean;
+  category?: string;
+  extraJsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -23,14 +27,36 @@ const {
   badge,
   headings,
   isIndex = false,
+  category,
+  extraJsonLd,
 } = Astro.props;
 const { prev, next } = await getDocNav(id);
+
+const docSlug = isIndex ? '' : id;
+const breadcrumbItems = [
+  { name: 'Home', url: '/' },
+  { name: 'Docs', url: '/docs' },
+  ...(category && !isIndex ? [{ name: category }] : []),
+  ...(isIndex ? [] : [{ name: title, url: `/docs/${docSlug}` }]),
+];
+
+const jsonLd = [
+  breadcrumbSchema(breadcrumbItems),
+  techArticleSchema({ title, description, slug: docSlug }),
+  ...(extraJsonLd
+    ? Array.isArray(extraJsonLd)
+      ? extraJsonLd
+      : [extraJsonLd]
+    : []),
+];
 ---
 
 <PageLayout
   title={`${title} — Devicons Docs`}
   description={description ?? `${title} — Devicons documentation.`}
-  image={`/og/docs/${isIndex ? 'index' : id}.png`}>
+  image={`/og/docs/${isIndex ? 'index' : id}.png`}
+  ogType="article"
+  jsonLd={jsonLd}>
   <div class="max-w-[1400px] mx-auto px-6">
     <DocsMobileNav currentSlug={id} />
     <div
@@ -43,6 +69,11 @@ const { prev, next } = await getDocNav(id);
 
       {/* Main content */}
       <article class="min-w-0 pb-12 md:pb-14">
+        {!isIndex && (
+          <div class="mb-6">
+            <Breadcrumbs items={breadcrumbItems} />
+          </div>
+        )}
         <header class="mb-10 flex flex-col gap-3 pb-8 border-b border-border">
           <div class="flex flex-wrap items-center gap-3">
             {

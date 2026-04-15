@@ -5,12 +5,62 @@ import HeroSection from "../components/home/hero-section.astro";
 import IconMarquee from "../components/home/icon-marquee.astro";
 import { SearchIsland } from "../components/search/search-island";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import {
+  collectionPageSchema,
+  softwareApplicationSchema,
+  faqSchema,
+} from "../lib/seo";
 
 const icons = await getCollection("icons");
 const iconCount = icons.length;
+
+const popularIcons = icons
+  .filter((icon) => icon.data.popular)
+  .slice(0, 24)
+  .map((icon) => ({
+    name: icon.data.name,
+    url: `/icons/${icon.id}`,
+  }));
+
+const jsonLd = [
+  collectionPageSchema({
+    name: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    items: popularIcons,
+  }),
+  softwareApplicationSchema(),
+  faqSchema([
+    {
+      question: "Are Devicons free to use?",
+      answer:
+        "Yes. Devicons is open source and free forever. Use them in personal and commercial projects under the MIT license.",
+    },
+    {
+      question: "What formats do Devicons come in?",
+      answer:
+        "Every icon ships as an optimized SVG and is available as React, Vue, and Svelte components via the Devicons npm package.",
+    },
+    {
+      question: "How do I install Devicons?",
+      answer:
+        "Install with your package manager: `npm install @devicons/react` (or the Vue/Svelte variant). See the docs for framework-specific guides.",
+    },
+    {
+      question: "Can I request a new icon?",
+      answer:
+        "Yes. Open an issue or pull request on the Devicons GitHub repository and the maintainers will review it.",
+    },
+  ]),
+];
 ---
 
-<PageLayout title={SITE_TITLE} description={SITE_DESCRIPTION} image="/og/home.png">
+<PageLayout
+  title={SITE_TITLE}
+  description={SITE_DESCRIPTION}
+  image="/og/home.png"
+  jsonLd={jsonLd}
+>
   <HeroSection iconCount={iconCount} />
   <IconMarquee />
   <div class="h-[120px]" aria-hidden="true"></div>

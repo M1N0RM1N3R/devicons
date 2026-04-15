@@ -93,7 +93,7 @@ export function IconPreviewGrid({
             {variant === 'font' ? (
               <div
                 role="img"
-                aria-label={`${name} - ${iconFile}`}
+                aria-label={`${name} logo (${iconFile})`}
                 className={clsx('w-full h-full bg-accent', iconMaxClassName)}
                 style={{
                   maskImage: `url(/devicons/font/${iconFile}.svg)`,
@@ -109,7 +109,7 @@ export function IconPreviewGrid({
             ) : (
               <img
                 src={`/devicons/icons/${iconFile}.svg`}
-                alt={`${name} - ${iconFile}`}
+                alt={`${name} logo (${iconFile})`}
                 className={clsx(
                   'w-full h-full object-contain',
                   iconMaxClassName,

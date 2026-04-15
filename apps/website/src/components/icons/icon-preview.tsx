@@ -2,7 +2,7 @@ import {
   IconPreviewGrid,
   PreviewControls,
   useIconPreviewState,
-} from "./icon-preview-grid";
+} from './icon-preview-grid';
 
 interface IconPreviewProps {
   icons: string[];

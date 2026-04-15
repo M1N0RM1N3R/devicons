@@ -30,7 +30,7 @@ function DrawerBody({ icon }: { icon: IconEntry }) {
             href={`/icons/${icon.id}`}
             data-astro-prefetch
             className="font-mono text-xs font-semibold uppercase tracking-[0.18em] leading-none text-accent hover:text-accent-hover transition-colors shrink-0">
-            Full page →
+            Full page
           </a>
         </div>
         {icon.description && (

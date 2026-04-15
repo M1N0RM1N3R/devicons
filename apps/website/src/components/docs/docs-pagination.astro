@@ -1,5 +1,5 @@
 ---
-import type { DocEntry } from "../../lib/docs";
+import type { DocEntry } from '../../lib/docs';
 
 interface Props {
   prev: DocEntry | null;
@@ -11,16 +11,12 @@ const { prev, next } = Astro.props;
 
 {
   (prev || next) && (
-    <nav
-      aria-label="Docs navigation"
-      class="docs-pagination"
-    >
+    <nav aria-label="Docs navigation" class="docs-pagination">
       {prev ? (
         <a
           href={`/docs/${prev.id}`}
           data-astro-prefetch
-          class="docs-pagination__card group"
-        >
+          class="docs-pagination__card group">
           <span class="type-meta group-hover:text-accent transition-colors">
             &larr; Previous
           </span>
@@ -33,10 +29,9 @@ const { prev, next } = Astro.props;
         <a
           href={`/docs/${next.id}`}
           data-astro-prefetch
-          class="docs-pagination__card docs-pagination__card--next group"
-        >
+          class="docs-pagination__card docs-pagination__card--next group">
           <span class="type-meta group-hover:text-accent transition-colors">
-            Next &rarr;
+            Next
           </span>
           <span class="type-h3">{next.data.title}</span>
         </a>
@@ -60,7 +55,9 @@ const { prev, next } = Astro.props;
     border-top: 1px solid var(--c-border);
   }
   @media (min-width: 640px) {
-    .docs-pagination { grid-template-columns: 1fr 1fr; }
+    .docs-pagination {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   .docs-pagination__card {
@@ -71,7 +68,9 @@ const { prev, next } = Astro.props;
     border: 1px solid var(--c-border);
     transition: border-color 0.15s ease;
   }
-  .docs-pagination__card:hover { border-color: var(--c-accent); }
+  .docs-pagination__card:hover {
+    border-color: var(--c-accent);
+  }
   .docs-pagination__card--next {
     text-align: right;
     grid-column-start: 2;

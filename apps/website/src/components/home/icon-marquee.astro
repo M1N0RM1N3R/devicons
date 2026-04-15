@@ -27,14 +27,14 @@ const TRACK = [...ICONS, ...ICONS];
     <div class="marquee__track" data-marquee-track>
       {
         TRACK.map((icon, i) => (
-          <div class="marquee__tile" aria-hidden={i >= ICONS.length}>
+          <div class="marquee__tile" aria-hidden={i >= ICONS.length ? "true" : undefined}>
             <span class="marquee__index type-mono">
               {String((i % ICONS.length) + 1).padStart(2, '0')}
             </span>
             <img
               class="marquee__icon"
               src={`/devicons/icons/${icon.file}.svg`}
-              alt={icon.label}
+              alt={`${icon.label} logo`}
               loading="lazy"
               decoding="async"
               width="56"

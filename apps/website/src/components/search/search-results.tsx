@@ -180,7 +180,7 @@ export function SearchSection({
                 <a
                   href={`/search${query ? `?q=${encodeURIComponent(query)}` : ''}`}
                   className="font-mono text-xs font-semibold uppercase tracking-[0.18em] leading-none text-accent hover:text-accent-hover transition-colors shrink-0">
-                  View all →
+                  View all
                 </a>
               </div>
             )}

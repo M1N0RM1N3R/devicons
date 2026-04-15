@@ -3,14 +3,18 @@ import { getCollection } from 'astro:content';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 export async function GET(context) {
-	const posts = await getCollection('blog');
-	return rss({
-		title: SITE_TITLE,
-		description: SITE_DESCRIPTION,
-		site: context.site,
-		items: posts.map((post) => ({
-			...post.data,
-			link: `/blog/${post.id}/`,
-		})),
-	});
+  const docs = await getCollection('docs');
+  const sorted = [...docs].sort(
+    (a, b) => (a.data.order ?? 0) - (b.data.order ?? 0),
+  );
+  return rss({
+    title: `${SITE_TITLE} Docs`,
+    description: SITE_DESCRIPTION,
+    site: context.site,
+    items: sorted.map(entry => ({
+      title: entry.data.title,
+      description: entry.data.description ?? '',
+      link: `/docs/${entry.id}/`,
+    })),
+  });
 }

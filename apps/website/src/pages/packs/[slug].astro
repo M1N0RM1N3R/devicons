@@ -1,0 +1,77 @@
+---
+import { getCollection, render } from "astro:content";
+import PageLayout from "../../components/layout/page-layout.astro";
+import Breadcrumbs from "../../components/seo/breadcrumbs.astro";
+import IconGrid from "../../components/icons/icon-grid.astro";
+import { getActiveIcons, toListItem } from "../../lib/icons-query";
+import { SITE_TITLE } from "../../consts";
+import { breadcrumbSchema, collectionPageSchema } from "../../lib/seo";
+
+export async function getStaticPaths() {
+  const packs = await getCollection("packs");
+  const icons = await getActiveIcons();
+  const byId = new Map(icons.map((i) => [i.id, i]));
+  return packs.map((pack) => {
+    const resolved = pack.data.iconIds
+      .map((id) => byId.get(id))
+      .filter((i): i is NonNullable<typeof i> => Boolean(i))
+      .map(toListItem);
+    return {
+      params: { slug: pack.id },
+      props: { pack, icons: resolved },
+    };
+  });
+}
+
+const { pack, icons } = Astro.props;
+const { Content } = await render(pack);
+
+const title = `${pack.data.title} — ${icons.length} free SVG logos | ${SITE_TITLE}`;
+const description = pack.data.description;
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Packs", url: "/packs" },
+    { name: pack.data.title, url: `/packs/${pack.id}` },
+  ]),
+  collectionPageSchema({
+    name: pack.data.title,
+    description,
+    url: `/packs/${pack.id}`,
+    items: icons.map((i) => ({ name: i.name, url: `/icons/${i.slug}` })),
+  }),
+];
+---
+
+<PageLayout title={title} description={description} jsonLd={jsonLd}>
+  <div class="max-w-[1400px] mx-auto px-6 pt-10">
+    <Breadcrumbs
+      items={[
+        { name: "Home", url: "/" },
+        { name: "Packs", url: "/packs" },
+        { name: pack.data.title },
+      ]}
+    />
+
+    <header class="mt-6 mb-10 pb-8 border-b border-border">
+      <p class="type-label mb-4 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        {icons.length} icons
+      </p>
+      <h1 class="type-h1">{pack.data.title}</h1>
+      {pack.data.intro && (
+        <p class="type-body-lg mt-3 max-w-[64ch]">{pack.data.intro}</p>
+      )}
+    </header>
+
+    <IconGrid
+      items={icons}
+      emptyMessage="This pack has no matching icons in the library yet."
+    />
+
+    <div class="prose max-w-none mt-12">
+      <Content />
+    </div>
+  </div>
+</PageLayout>

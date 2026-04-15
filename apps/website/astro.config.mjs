@@ -50,7 +50,33 @@ export default defineConfig({
       fallbacks: ['ui-monospace', 'monospace'],
     },
   ],
-  integrations: [mdx(), sitemap(), react(), svelte()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) =>
+        !page.includes('/og/') &&
+        !page.includes('/search-index') &&
+        !page.endsWith('/404') &&
+        !page.endsWith('/404/'),
+      changefreq: 'weekly',
+      serialize(item) {
+        const url = item.url;
+        if (/\/(?:$|index)?$/.test(new URL(url).pathname)) {
+          item.priority = 1.0;
+          item.changefreq = 'daily';
+        } else if (url.includes('/docs')) {
+          item.priority = 0.8;
+        } else if (url.includes('/icons/')) {
+          item.priority = 0.7;
+        } else {
+          item.priority = 0.5;
+        }
+        return item;
+      },
+    }),
+    react(),
+    svelte(),
+  ],
 
   vite: {
     plugins: [

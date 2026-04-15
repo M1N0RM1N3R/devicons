@@ -1,7 +1,17 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import type { CollectionEntry } from 'astro:content';
+import PageLayout from '../components/layout/page-layout.astro';
+import { IconDetail } from '../components/icons/icon-detail';
+import Breadcrumbs from '../components/seo/breadcrumbs.astro';
+import RelatedIcons from '../components/seo/related-icons.astro';
+import { Badge } from '../components/ui/badge';
+import { Tag } from '../components/ui/tag';
+import { breadcrumbSchema, iconBrandSchema, iconImageSchema } from '../lib/seo';
+import { getRelatedIcons } from '../lib/related-icons';
+import { slugifyTag } from '../lib/icons-query';
+
 type IconNav = { slug: string; name: string } | null;
-type Props = CollectionEntry<"icons">["data"] & {
+type Props = CollectionEntry<'icons'>['data'] & {
   slug: string;
   prev: IconNav;
   next: IconNav;
@@ -15,30 +25,133 @@ const {
   deprecated,
   version,
   website,
+  license,
+  mainColor,
+  aliases,
   slug,
   prev,
   next,
 } = Astro.props;
-import PageLayout from "../components/layout/page-layout.astro";
-import { IconDetail } from "../components/icons/icon-detail";
+
+const title = `${name} Icon — Free SVG & Component | Devicons`;
+const metaDescription =
+  description ??
+  `Download the ${name} logo as an optimized SVG, or drop it into React, Vue, or Svelte. Free, open-source developer icon.`;
+
+const keywords = [
+  `${name} icon`,
+  `${name} logo`,
+  `${name} svg`,
+  ...(aliases ?? []),
+  ...(tags ?? []),
+  'developer icons',
+].filter(Boolean);
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Icons', url: '/icons' },
+    { name, url: `/icons/${slug}` },
+  ]),
+  iconBrandSchema({ name, description, slug, website, mainColor }),
+  iconImageSchema({ name, slug, license }),
+];
+
+const related = await getRelatedIcons(slug, tags, 8);
 ---
 
 <PageLayout
-  title={`${name} — Devicons`}
-  description={description ?? `${name} icon for developers`}
+  title={title}
+  description={metaDescription}
   image={`/og/icons/${slug}.png`}
->
-  <IconDetail
-    client:idle
-    name={name}
-    description={description}
-    icons={icons}
-    tags={tags}
-    deprecated={deprecated}
-    version={version}
-    website={website}
-    slug={slug}
-    prev={prev}
-    next={next}
-  />
+  keywords={keywords}
+  jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
+    <Breadcrumbs
+      items={[
+        { name: 'Home', url: '/' },
+        { name: 'Icons', url: '/icons' },
+        { name },
+      ]}
+    />
+
+    <header class="mt-6 mb-6 sm:mb-8">
+      <h1 class="type-display-sm">{name}</h1>
+      {
+        description && (
+          <p class="type-body-lg mt-3 max-w-[64ch]">{description}</p>
+        )
+      }
+
+      <div class="flex items-center gap-2 mt-3 sm:mt-4 flex-wrap">
+        {deprecated && <Badge variant="destructive">Deprecated</Badge>}
+        {version && <Badge variant="neutral">v{version}</Badge>}
+        <Badge variant="success">
+          {icons.length} variant{icons.length > 1 ? 's' : ''}
+        </Badge>
+        {
+          website && (
+            <a
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-xs font-semibold uppercase tracking-[0.18em] leading-none text-accent hover:text-accent-hover transition-colors break-all">
+              {website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+            </a>
+          )
+        }
+      </div>
+
+      {
+        tags.length > 0 && (
+          <div class="flex gap-2 mt-3 sm:mt-4 flex-wrap">
+            {tags.map((tag: string) => (
+              <Tag href={`/icons/tag/${slugifyTag(tag)}`}>{tag}</Tag>
+            ))}
+          </div>
+        )
+      }
+    </header>
+  </div>
+
+  <IconDetail client:idle name={name} icons={icons} slug={slug} />
+
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-8 sm:pb-12">
+    <RelatedIcons icons={related} />
+
+    {
+      (prev || next) && (
+        <nav
+          aria-label="Icon navigation"
+          class="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-border grid grid-cols-2 gap-3 sm:gap-4">
+          {prev ? (
+            <a
+              href={`/icons/${prev.slug}`}
+              data-astro-prefetch
+              class="group flex flex-col gap-2 p-4 border border-border hover:border-accent/60 transition-colors">
+              <span class="type-meta group-hover:text-accent transition-colors">
+                Previous
+              </span>
+              <span class="type-h3 truncate">{prev.name}</span>
+            </a>
+          ) : (
+            <span />
+          )}
+          {next ? (
+            <a
+              href={`/icons/${next.slug}`}
+              data-astro-prefetch
+              class="group flex flex-col gap-2 p-4 border border-border hover:border-accent/60 transition-colors text-right sm:col-start-2">
+              <span class="type-meta group-hover:text-accent transition-colors">
+                Next
+              </span>
+              <span class="type-h3 truncate">{next.name}</span>
+            </a>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )
+    }
+  </section>
 </PageLayout>

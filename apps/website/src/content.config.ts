@@ -20,6 +20,9 @@ const icons = defineCollection({
     brandGuidelines: z.url().optional(),
     mainColor: z.string().optional(),
     otherColors: z.array(z.string()).optional(),
+    //
+    badInDark: z.boolean().optional().default(false),
+    badInLight: z.boolean().optional().default(false),
   }),
 });
 
@@ -35,4 +38,15 @@ const docs = defineCollection({
   }),
 });
 
-export const collections = { icons, docs };
+const packs = defineCollection({
+  loader: glob({ base: "./src/content/packs", pattern: "**/*.{md,mdx}" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    intro: z.string().optional(),
+    iconIds: z.array(z.string()),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { icons, docs, packs };

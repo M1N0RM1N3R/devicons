@@ -7,15 +7,22 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  ogType?: "website" | "article";
+  noindex?: boolean;
+  keywords?: string[];
+  publishedTime?: string;
+  modifiedTime?: string;
+  author?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, image } = Astro.props;
+const props = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} image={image} />
+    <BaseHead {...props} />
   </head>
   <body class="bg-bg text-text">
     <Navbar />

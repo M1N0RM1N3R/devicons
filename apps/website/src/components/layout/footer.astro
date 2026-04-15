@@ -1,52 +1,93 @@
 ---
+import {
+  getUniqueTags,
+  slugifyTag,
+  formatTagLabel,
+} from '../../lib/icons-query';
+
 const year = new Date().getFullYear();
+const topTags = (await getUniqueTags()).slice(0, 8);
 ---
 
 <footer class="border-t border-border">
   <div class="footer-brand-mark" aria-hidden="true"></div>
 
-  <div class="max-w-[1400px] mx-auto px-6 pb-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 py-12 border-t border-border">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 pb-8 sm:pb-12">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 py-10 sm:py-12 border-t border-border">
       <div>
-        <p class="type-label mb-3">
-          Links
-        </p>
+        <p class="type-label mb-3">Browse</p>
+        <div class="flex flex-col gap-2">
+          <a
+            href="/icons"
+            class="type-body-sm hover:text-accent transition-colors">
+            All icons
+          </a>
+          <a
+            href="/icons/popular"
+            class="type-body-sm hover:text-accent transition-colors">
+            Popular
+          </a>
+          <a
+            href="/packs"
+            class="type-body-sm hover:text-accent transition-colors">
+            Packs
+          </a>
+          <a
+            href="/search"
+            class="type-body-sm hover:text-accent transition-colors">
+            Search
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <p class="type-label mb-3">Categories</p>
+        <div class="flex flex-col gap-2">
+          {
+            topTags.map(({ tag }) => (
+              <a
+                href={`/icons/tag/${slugifyTag(tag)}`}
+                class="type-body-sm hover:text-accent transition-colors">
+                {formatTagLabel(tag)}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <div>
+        <p class="type-label mb-3">Links</p>
         <div class="flex flex-col gap-2">
           <a
             href="https://github.com/nicholasgasior/devicons"
             class="type-body-sm hover:text-accent transition-colors"
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             GitHub
           </a>
           <a
             href="https://www.npmjs.com/package/@devicons/react"
             class="type-body-sm hover:text-accent transition-colors"
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             npm
           </a>
           <a
             href="/docs"
-            class="type-body-sm hover:text-accent transition-colors"
-          >
+            class="type-body-sm hover:text-accent transition-colors">
             Documentation
           </a>
           <a
             href="/legal"
-            class="type-body-sm hover:text-accent transition-colors"
-          >
+            class="type-body-sm hover:text-accent transition-colors">
             Legal
           </a>
         </div>
       </div>
 
       <div>
-        <p class="type-label mb-3">
-          Project
-        </p>
+        <p class="type-label mb-3">Project</p>
         <p class="type-body-sm">
           Open source. Crisp and clear icons for developers.
         </p>
@@ -56,15 +97,18 @@ const year = new Date().getFullYear();
             type="button"
             data-theme-toggle
             aria-label="Toggle theme"
-            class="theme-toggle"
-          >
+            class="theme-toggle">
             <span class="theme-toggle__option" data-theme-opt="dark">
-              <span class="theme-toggle__swatch theme-toggle__swatch--dark" aria-hidden="true"></span>
+              <span
+                class="theme-toggle__swatch theme-toggle__swatch--dark"
+                aria-hidden="true"></span>
               <span>DARK</span>
             </span>
             <span class="theme-toggle__sep" aria-hidden="true">/</span>
             <span class="theme-toggle__option" data-theme-opt="light">
-              <span class="theme-toggle__swatch theme-toggle__swatch--light" aria-hidden="true"></span>
+              <span
+                class="theme-toggle__swatch theme-toggle__swatch--light"
+                aria-hidden="true"></span>
               <span>LIGHT</span>
             </span>
           </button>
@@ -77,9 +121,14 @@ const year = new Date().getFullYear();
 <style>
   .footer-brand-mark {
     position: relative;
-    padding: 4rem 0;
+    padding: 2rem 0;
     overflow: hidden;
     user-select: none;
+  }
+  @media (min-width: 768px) {
+    .footer-brand-mark {
+      padding: 4rem 0;
+    }
   }
   .theme-toggle {
     display: inline-flex;
@@ -108,7 +157,9 @@ const year = new Date().getFullYear();
     align-items: center;
     gap: 6px;
     padding: 6px 10px;
-    transition: color 0.15s ease, background 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
   }
 
   .theme-toggle__option[data-active] {
@@ -139,7 +190,7 @@ const year = new Date().getFullYear();
   }
 
   .footer-brand-mark::before {
-    content: "DEVICONS";
+    content: 'DEVICONS';
     display: block;
     width: 100%;
     text-align: center;
@@ -155,37 +206,47 @@ const year = new Date().getFullYear();
 
 <script>
   function initThemeToggle() {
-    const btn = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
-    const optDark = document.querySelector<HTMLElement>('[data-theme-opt="dark"]');
-    const optLight = document.querySelector<HTMLElement>('[data-theme-opt="light"]');
+    const btn = document.querySelector<HTMLButtonElement>(
+      '[data-theme-toggle]',
+    );
+    const optDark = document.querySelector<HTMLElement>(
+      '[data-theme-opt="dark"]',
+    );
+    const optLight = document.querySelector<HTMLElement>(
+      '[data-theme-opt="light"]',
+    );
 
-    function applyTheme(theme: "light" | "dark") {
-      if (theme === "light") {
-        document.documentElement.setAttribute("data-theme", "light");
+    function applyTheme(theme: 'light' | 'dark') {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
       } else {
-        document.documentElement.removeAttribute("data-theme");
+        document.documentElement.removeAttribute('data-theme');
       }
       if (optDark && optLight) {
-        if (theme === "dark") {
-          optDark.setAttribute("data-active", "");
-          optLight.removeAttribute("data-active");
+        if (theme === 'dark') {
+          optDark.setAttribute('data-active', '');
+          optLight.removeAttribute('data-active');
         } else {
-          optLight.setAttribute("data-active", "");
-          optDark.removeAttribute("data-active");
+          optLight.setAttribute('data-active', '');
+          optDark.removeAttribute('data-active');
         }
       }
     }
 
-    const initial = (localStorage.getItem("theme") as "light" | "dark" | null) === "light" ? "light" : "dark";
+    const initial =
+      (localStorage.getItem('theme') as 'light' | 'dark' | null) === 'light'
+        ? 'light'
+        : 'dark';
     applyTheme(initial);
 
-    btn?.addEventListener("click", () => {
-      const current = localStorage.getItem("theme") === "light" ? "light" : "dark";
-      const next = current === "dark" ? "light" : "dark";
-      localStorage.setItem("theme", next);
+    btn?.addEventListener('click', () => {
+      const current =
+        localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
       applyTheme(next);
     });
   }
 
-  document.addEventListener("astro:page-load", initThemeToggle);
+  document.addEventListener('astro:page-load', initThemeToggle);
 </script>

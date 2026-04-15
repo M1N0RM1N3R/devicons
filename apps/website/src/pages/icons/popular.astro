@@ -1,0 +1,54 @@
+---
+import PageLayout from "../../components/layout/page-layout.astro";
+import Breadcrumbs from "../../components/seo/breadcrumbs.astro";
+import IconGrid from "../../components/icons/icon-grid.astro";
+import { getPopularIcons } from "../../lib/icons-query";
+import { SITE_TITLE } from "../../consts";
+import { breadcrumbSchema, collectionPageSchema } from "../../lib/seo";
+
+const icons = await getPopularIcons();
+
+const title = `Popular Developer Icons — ${icons.length} most-used logos | ${SITE_TITLE}`;
+const description = `The most popular developer icons: ${icons
+  .slice(0, 8)
+  .map((i) => i.name)
+  .join(", ")}, and more. Free SVG and framework components.`;
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Icons", url: "/icons" },
+    { name: "Popular", url: "/icons/popular" },
+  ]),
+  collectionPageSchema({
+    name: "Popular Developer Icons",
+    description,
+    url: "/icons/popular",
+    items: icons.map((i) => ({ name: i.name, url: `/icons/${i.slug}` })),
+  }),
+];
+---
+
+<PageLayout title={title} description={description} jsonLd={jsonLd}>
+  <div class="max-w-[1400px] mx-auto px-6 pt-10">
+    <Breadcrumbs
+      items={[
+        { name: "Home", url: "/" },
+        { name: "Icons", url: "/icons" },
+        { name: "Popular" },
+      ]}
+    />
+    <header class="mt-6 mb-10 pb-8 border-b border-border">
+      <p class="type-label mb-4 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        {icons.length} picks
+      </p>
+      <h1 class="type-h1">Popular developer icons</h1>
+      <p class="type-body-lg mt-3 max-w-[64ch]">
+        The logos developers reach for most — front-end frameworks, databases, cloud
+        providers, and the tools you ship with every day.
+      </p>
+    </header>
+    <IconGrid items={icons} />
+  </div>
+</PageLayout>
