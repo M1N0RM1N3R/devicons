@@ -1,10 +1,14 @@
 import { resolve } from "path";
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import dts from "vite-plugin-dts";
 import pkg from "./package.json";
 
 export default defineConfig({
-  plugins: [react({ jsxRuntime: "classic" })],
+  plugins: [
+    react({ jsxRuntime: "classic" }),
+    dts({ tsconfigPath: "./tsconfig.json", insertTypesEntry: true, copyDtsFiles: false }),
+  ],
   build: {
     target: "ES2017",
     lib: {

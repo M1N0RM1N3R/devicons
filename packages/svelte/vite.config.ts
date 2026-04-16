@@ -1,10 +1,14 @@
 import { resolve } from "path";
 import { defineConfig } from "vitest/config";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import dts from "vite-plugin-dts";
 import pkg from "./package.json";
 
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [
+    svelte(),
+    dts({ tsconfigPath: "./tsconfig.json", insertTypesEntry: true, copyDtsFiles: false }),
+  ],
   build: {
     target: "ES2017",
     lib: {

@@ -3,7 +3,28 @@
   "version": "0.0.0",
   "type": "module",
   "description": "Devicons Svelte - The Svelte package for Devicons",
-  "keywords": [],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vorillaz/devicons.git",
+    "directory": "packages/svelte"
+  },
+  "homepage": "https://github.com/vorillaz/devicons/tree/main/packages/svelte#readme",
+  "bugs": {
+    "url": "https://github.com/vorillaz/devicons/issues"
+  },
+  "license": "MIT",
+  "author": "Theodore Vorillas",
+  "keywords": [
+    "icons",
+    "devicons",
+    "svelte",
+    "svg",
+    "components"
+  ],
   "svelte": "./dist/index.mjs",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -11,9 +32,14 @@
   "exports": {
     ".": {
       "svelte": "./dist/index.mjs",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "files": [
@@ -21,7 +47,7 @@
   ],
   "scripts": {
     "generate": "tsx scripts/build.ts",
-    "build": "tsx scripts/build.ts && vite build",
+    "build": "tsx scripts/build.ts && vite build && tsx scripts/post-build.ts",
     "test": "vitest run",
     "example": "vite serve ./example"
   },
@@ -34,14 +60,15 @@
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.4",
-    "jsdom": "^25.0.1",
     "fast-glob": "3.3.3",
+    "jsdom": "^25.0.1",
     "prettier": "3.5.3",
     "prettier-plugin-svelte": "^3.3.3",
     "svelte": "^5.28.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vite": "5.4.1",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "3.1.3"
   }
 }
