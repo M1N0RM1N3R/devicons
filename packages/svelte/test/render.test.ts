@@ -26,9 +26,9 @@ describe("Base (svelte)", () => {
     expect(svg.getAttribute("transform")).toBe("scale(-1, 1)");
   });
 
-  it("type='font' switches body", () => {
+  it("mono switches to monochrome variant", () => {
     const { container } = render(Harness, {
-      props: { icons, type: "font" },
+      props: { icons, mono: true },
     });
     expect(container.innerHTML).toContain("body-font");
   });

@@ -14,7 +14,7 @@ const Base = forwardRef<SVGSVGElement, BaseProps>((props, ref) => {
     color: contextColor = 'currentColor',
     size: contextSize,
     mirrored: contextMirrored = false,
-    type: contextType = 'icon',
+    mono: contextMono = false,
     ...restContext
   } = useContext(IconContext);
 
@@ -31,7 +31,7 @@ const Base = forwardRef<SVGSVGElement, BaseProps>((props, ref) => {
       {...rest}>
       {!!alt && <title>{alt}</title>}
       {children}
-      {icons.get(contextType)}
+      {icons.get(contextMono ? "font" : "icon")}
     </svg>
   );
 });

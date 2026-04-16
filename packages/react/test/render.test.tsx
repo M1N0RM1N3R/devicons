@@ -35,8 +35,8 @@ describe("SSRBase", () => {
     );
   });
 
-  it("type='font' switches to font variant", () => {
-    const { getByTestId } = render(<SSRBase icons={icons} type="font" />);
+  it("mono switches to monochrome variant", () => {
+    const { getByTestId } = render(<SSRBase icons={icons} mono />);
     expect(getByTestId("body-font")).toBeTruthy();
   });
 

@@ -11,7 +11,7 @@ export interface IconProps
   color?: string;
   size?: string | number;
   mirrored?: boolean;
-  type?: IconType;
+  mono?: boolean;
 }
 
 export type IconType = "icon" | "font";
