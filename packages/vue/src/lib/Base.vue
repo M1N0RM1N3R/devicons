@@ -14,8 +14,8 @@ const context = inject(IconContextKey, defaultContext);
 const resolvedColor = computed(() => props.color ?? context.color ?? "currentColor");
 const resolvedSize = computed(() => props.size ?? context.size ?? "1em");
 const resolvedMirrored = computed(() => props.mirrored ?? context.mirrored ?? false);
-const resolvedType = computed(() => props.type ?? context.type ?? "icon");
-const iconContent = computed(() => props.icons.get(resolvedType.value) ?? "");
+const resolvedMono = computed(() => props.mono ?? context.mono ?? false);
+const iconContent = computed(() => props.icons.get(resolvedMono.value ? "font" : "icon") ?? "");
 </script>
 
 <template>

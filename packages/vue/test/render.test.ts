@@ -26,8 +26,8 @@ describe("Base (vue)", () => {
     expect(svg.getAttribute("transform")).toBe("scale(-1, 1)");
   });
 
-  it("type='font' switches body", () => {
-    const wrapper = mount(Base, { props: { icons, type: "font" } });
+  it("mono switches to monochrome variant", () => {
+    const wrapper = mount(Base, { props: { icons, mono: true } });
     expect(wrapper.html()).toContain("body-font");
   });
 

@@ -3,7 +3,6 @@ import { IconProps, IconType } from "./types";
 
 interface SsrBaseProps extends IconProps {
   icons: Map<IconType, ReactElement>;
-  type?: IconType;
 }
 
 const SSRBase = forwardRef<SVGSVGElement, SsrBaseProps>((props, ref) => {
@@ -13,7 +12,7 @@ const SSRBase = forwardRef<SVGSVGElement, SsrBaseProps>((props, ref) => {
     size = "1em",
     mirrored = false,
     children,
-    type = "icon",
+    mono = false,
     icons,
     ...restProps
   } = props;
@@ -31,7 +30,7 @@ const SSRBase = forwardRef<SVGSVGElement, SsrBaseProps>((props, ref) => {
     >
       {!!alt && <title>{alt}</title>}
       {children}
-      {icons.get(type)}
+      {icons.get(mono ? "font" : "icon")}
     </svg>
   );
 });

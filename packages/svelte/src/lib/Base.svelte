@@ -8,15 +8,15 @@
     children?: Snippet;
   }
 
-  const { alt, color, size, mirrored, type, icons, children, ...rest }: BaseProps = $props();
+  const { alt, color, size, mirrored, mono, icons, children, ...rest }: BaseProps = $props();
 
   const context = getIconContext();
 
   const resolvedColor = $derived(color ?? context.color ?? "currentColor");
   const resolvedSize = $derived(size ?? context.size ?? "1em");
   const resolvedMirrored = $derived(mirrored ?? context.mirrored ?? false);
-  const resolvedType = $derived(type ?? context.type ?? "icon");
-  const iconContent = $derived(icons.get(resolvedType) ?? "");
+  const resolvedMono = $derived(mono ?? context.mono ?? false);
+  const iconContent = $derived(icons.get(resolvedMono ? "font" : "icon") ?? "");
 </script>
 
 <svg
