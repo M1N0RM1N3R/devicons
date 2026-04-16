@@ -16,9 +16,20 @@
     "generate:svelte": "pnpm -F @dev.icons/svelte generate",
     "test": "pnpm -r --parallel test",
     "check": "pnpm -F @dev.icons/core check",
-    "clean:generated": "node scripts/clean-generated.mjs"
+    "clean:generated": "node scripts/clean-generated.mjs",
+    "release:dry": "DRY_RUN=true node scripts/release-group1.mjs",
+    "release:font:dry": "DRY_RUN=true pnpm exec semantic-release --dry-run --no-ci -e ./packages/font/release.config.cjs"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.1",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.3",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "semantic-release": "^24.2.0",
+    "semantic-release-monorepo": "^8.0.2",
     "typescript": "^5.7.3",
     "vitest": "3.1.3"
   }
