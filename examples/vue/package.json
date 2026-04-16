@@ -1,0 +1,23 @@
+{
+  "name": "@dev.icons/example-vue",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Devicons Vue example - all icons rendered via @dev.icons/vue components.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@dev.icons/core": "workspace:*",
+    "@dev.icons/vue": "workspace:*",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "typescript": "^5.7.3",
+    "vite": "5.4.1",
+    "vue-tsc": "^2.2.8"
+  }
+}
