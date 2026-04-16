@@ -30,7 +30,10 @@ const isCanary = branch === 'canary';
 
 const plugins = [
   ['@semantic-release/commit-analyzer', { preset: 'conventionalcommits' }],
-  ['@semantic-release/release-notes-generator', { preset: 'conventionalcommits' }],
+  [
+    '@semantic-release/release-notes-generator',
+    { preset: 'conventionalcommits' },
+  ],
   ...(isCanary
     ? []
     : [['@semantic-release/changelog', { changelogFile: 'CHANGELOG.md' }]]),
@@ -56,7 +59,7 @@ console.log(
 
 const result = await semanticRelease({
   tagFormat: 'v${version}',
-  branches: ['master', { name: 'canary', prerelease: 'canary' }],
+  branches: ['main', { name: 'canary', prerelease: 'canary' }],
   plugins,
   dryRun: DRY_RUN,
   ci: process.env.CI === 'true',

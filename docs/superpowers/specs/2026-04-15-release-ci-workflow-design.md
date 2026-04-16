@@ -6,10 +6,10 @@
 
 ## Goals
 
-1. Publish the public packages to npm automatically when conventional commits land on `master` or `canary` and touch the asset source (`packages/core/export-files/`).
+1. Publish the public packages to npm automatically when conventional commits land on `main` or `canary` and touch the asset source (`packages/core/export-files/`).
 2. Keep `devicons` (the icon font) on its own independent version track; keep the four framework packages (`core`, `react`, `vue`, `svelte`) in lockstep on a single shared version.
-3. Provide a `canary` channel on the `canary` branch with monotonic-within-window prerelease versions (`0.2.0-canary.1`, `0.2.0-canary.2`, …) on every qualifying push. The counter resets when a new stable ships on `master` and the next-stable window advances (e.g., after `v0.2.0` lands, the next canary becomes `0.3.0-canary.1`).
-4. Provide a stable `latest` channel on `master` with one commit-driven release per qualifying push.
+3. Provide a `canary` channel on the `canary` branch with monotonic-within-window prerelease versions (`0.2.0-canary.1`, `0.2.0-canary.2`, …) on every qualifying push. The counter resets when a new stable ships on `main` and the next-stable window advances (e.g., after `v0.2.0` lands, the next canary becomes `0.3.0-canary.1`).
+4. Provide a stable `latest` channel on `main` with one commit-driven release per qualifying push.
 5. Require zero per-PR changeset authoring from contributors. Bump type comes entirely from conventional-commit messages.
 6. Provide a first-class dry-run path that proves the next version, the changelog, and the npm tarball shape — locally and in CI — before anything publishes.
 
@@ -47,9 +47,9 @@ Plugin set (per release run):
 | --- | --- |
 | `@semantic-release/commit-analyzer` | Conventional-commits → bump type |
 | `@semantic-release/release-notes-generator` | Build release notes from commits |
-| `@semantic-release/changelog` | Write `CHANGELOG.md` (master only) |
+| `@semantic-release/changelog` | Write `CHANGELOG.md` (main only) |
 | `@semantic-release/npm` | Bump `package.json`, publish to npm with `--provenance` |
-| `@semantic-release/git` | Commit `CHANGELOG.md` back to `master` (master only) |
+| `@semantic-release/git` | Commit `CHANGELOG.md` back to `main` (main only) |
 | `@semantic-release/github` | Create GitHub Release |
 
 ## Conventional commits convention
@@ -74,7 +74,7 @@ Both release workflows use:
 ```yaml
 on:
   push:
-    branches: [master, canary]
+    branches: [main, canary]
     paths:
       - 'packages/core/export-files/**'
   workflow_dispatch:
@@ -99,7 +99,7 @@ There are two release jobs — **Group 1** and **font** — and they run in para
 4. `pnpm -F @dev.icons/core build` → produces `dist/index.{mjs,cjs,d.ts}`, `dist/icons.json`, `dist/sprite/*`, `dist/font/*` AND regenerates `react`/`vue`/`svelte` `src/`.
 5. `pnpm -F @dev.icons/react build && pnpm -F @dev.icons/vue build && pnpm -F @dev.icons/svelte build`.
 6. `node scripts/release-group1.mjs` — programmatically invokes `semantic-release` from `packages/core` (the **driver**). Behavior:
-   - On `master`: bump computed from conventional commits since last `v*` tag (excluding canary tags). On release-worthy bump, writes new version into `packages/core/package.json`, publishes `@dev.icons/core` to npm with `--tag latest --provenance`, mirrors that version into `react/vue/svelte` `package.json` and publishes each with the same flags. Pushes one git tag `v<version>`. Creates one GitHub Release. Commits root `CHANGELOG.md` back to `master` with `[skip ci]`.
+   - On `main`: bump computed from conventional commits since last `v*` tag (excluding canary tags). On release-worthy bump, writes new version into `packages/core/package.json`, publishes `@dev.icons/core` to npm with `--tag latest --provenance`, mirrors that version into `react/vue/svelte` `package.json` and publishes each with the same flags. Pushes one git tag `v<version>`. Creates one GitHub Release. Commits root `CHANGELOG.md` back to `main` with `[skip ci]`.
    - On `canary`: bump computed from commits since last `v*-canary.*` tag. On release-worthy bump, same flow but `--tag canary`, version is `<next-stable>-canary.<n>` (monotonic). Tag `v<version>` pushed. GitHub prerelease created. **No CHANGELOG commit, no commit-back to `canary` branch.**
    - On no release-worthy commits: script exits 0 cleanly. Mirror step is skipped.
 
@@ -116,7 +116,7 @@ The two jobs are independent — Group 1 may release without `devicons`, or vice
 
 ### Group 1 config — built at runtime inside `scripts/release-group1.mjs`
 
-Group 1 does **not** have a static `release.config.cjs` at the repo root. The plugin array is built at runtime inside `scripts/release-group1.mjs` so the master-only plugins (`@semantic-release/changelog`, `@semantic-release/git`) can be conditionally included. `@semantic-release/git` is **not** a no-op on prerelease branches by default — it runs unless we exclude it. Keeping the plugin list in one place (the script) avoids a config-drift bug where canary accidentally commits CHANGELOG back to `canary`.
+Group 1 does **not** have a static `release.config.cjs` at the repo root. The plugin array is built at runtime inside `scripts/release-group1.mjs` so the main-only plugins (`@semantic-release/changelog`, `@semantic-release/git`) can be conditionally included. `@semantic-release/git` is **not** a no-op on prerelease branches by default — it runs unless we exclude it. Keeping the plugin list in one place (the script) avoids a config-drift bug where canary accidentally commits CHANGELOG back to `canary`.
 
 The logical config is:
 
@@ -126,7 +126,7 @@ const isCanary = branch === 'canary';
 const config = {
   tagFormat: 'v${version}',
   branches: [
-    'master',
+    'main',
     { name: 'canary', prerelease: 'canary' }
   ],
   plugins: [
@@ -155,7 +155,7 @@ const config = {
 
 ### `packages/font/release.config.cjs`
 
-Same master-vs-canary conditional pattern: on `canary`, drop `@semantic-release/changelog` and `@semantic-release/git` so no commits go back to the `canary` branch.
+Same main-vs-canary conditional pattern: on `canary`, drop `@semantic-release/changelog` and `@semantic-release/git` so no commits go back to the `canary` branch.
 
 ```js
 // packages/font/release.config.cjs
@@ -168,7 +168,7 @@ module.exports = {
   ...monorepoConfig,
   tagFormat: 'devicons-v${version}',
   branches: [
-    'master',
+    'main',
     { name: 'canary', prerelease: 'canary' }
   ],
   // semantic-release-monorepo defaults commitPaths to the package directory.
@@ -227,7 +227,7 @@ const plugins = [
 
 const result = await semanticRelease({
   tagFormat: 'v${version}',
-  branches: ['master', { name: 'canary', prerelease: 'canary' }],
+  branches: ['main', { name: 'canary', prerelease: 'canary' }],
   plugins,
   dryRun: DRY_RUN,
   ci: process.env.CI === 'true', // true in GitHub Actions, false locally — lets `pnpm release:dry` work on dev machines
@@ -264,7 +264,7 @@ for (const pkg of ['react', 'vue', 'svelte']) {
 Notes:
 - **Single env var for dry-run: `DRY_RUN`.** Workflow sets it from `inputs.dry_run`. Script reads it, passes it to `semanticRelease({ dryRun })`, and appends `--dry-run` to each `pnpm publish`.
 - **npm auth handoff for the mirror loop:** `setup-node@v4` with `registry-url: 'https://registry.npmjs.org'` writes a repository `.npmrc` containing `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}`. `pnpm publish` inherits that `.npmrc` automatically — no additional auth setup needed. `@semantic-release/npm` uses the same mechanism for `@dev.icons/core`'s own publish.
-- `pnpm publish --no-git-checks` is required because semantic-release leaves the working tree dirty (modified `package.json`, `CHANGELOG.md` on master).
+- `pnpm publish --no-git-checks` is required because semantic-release leaves the working tree dirty (modified `package.json`, `CHANGELOG.md` on main).
 - `--provenance` requires `id-token: write` permission (granted at workflow level).
 - **Partial-publish observability:** the `try/catch` logs which mirror package failed, so an operator can manually finish any publishes that didn't reach npm. Full atomicity (all-or-none) is out of scope for v1.
 
@@ -275,7 +275,7 @@ semantic-release defaults the first release to `1.0.0`. We want Group 1 to start
 ### Group 1 — manual `0.1.0` publish
 
 1. Land all spec deliverables (workflows, configs, `release-group1.mjs`, `core` build fix, `package.json` hygiene) in a single PR. Do **not** add the workflow trigger paths yet (or land with `branches: []` placeholder).
-2. After merge, on a clean `master` checkout:
+2. After merge, on a clean `main` checkout:
    ```bash
    pnpm install --frozen-lockfile
    pnpm -F @dev.icons/core build
@@ -305,7 +305,7 @@ semantic-release defaults the first release to `1.0.0`. We want Group 1 to start
 
 ### `devicons` — seed tag for existing `1.8.0`
 
-1. Find the commit on `master` that corresponds to the published `1.8.0` (most recent commit if 1.8.0 was just published, otherwise `git log packages/font/package.json`).
+1. Find the commit on `main` that corresponds to the published `1.8.0` (most recent commit if 1.8.0 was just published, otherwise `git log packages/font/package.json`).
 2. `git tag devicons-v1.8.0 <sha> && git push origin devicons-v1.8.0`.
 3. From this point on, semantic-release-monorepo finds the seed tag and computes `1.9.0` for the next `feat(font):`-equivalent commit (where the path scope determines applicability, not the message scope).
 
@@ -383,14 +383,14 @@ The existing `scripts` block is preserved; `build` continues to delegate to `bui
 
 ### `.github/workflows/release.yml`
 
-Single workflow, two parallel jobs. Triggered on `push` to `master` or `canary` with the `paths` filter, plus `workflow_dispatch` for manual dry runs.
+Single workflow, two parallel jobs. Triggered on `push` to `main` or `canary` with the `paths` filter, plus `workflow_dispatch` for manual dry runs.
 
 ```yaml
 name: Release
 
 on:
   push:
-    branches: [master, canary]
+    branches: [main, canary]
     paths:
       - 'packages/core/export-files/**'
   workflow_dispatch:
@@ -517,7 +517,7 @@ Operator invokes `workflow_dispatch` with `dry_run: true`. The workflow:
 - Skips `pnpm publish` for the mirror packages (or substitutes `pnpm publish --dry-run`).
 - Reports the planned next version per release run in the job summary.
 
-This is the exit gate before flipping a real release. **Required before bootstrap PR merge** — the dry run on `master` must pass cleanly.
+This is the exit gate before flipping a real release. **Required before bootstrap PR merge** — the dry run on `main` must pass cleanly.
 
 ### 4. Bootstrap-specific dry-run drill
 
@@ -543,7 +543,7 @@ Inspect every reported tarball. Confirm no `src/` files (except font), no test f
   pull-requests: write  # semantic-release PR comments
   id-token: write       # npm provenance via OIDC
   ```
-- Branch protection: `master` and `canary` require status checks, but the release workflow itself runs after merge (not as a check). Allow `[skip ci]` on the CHANGELOG commit-back to avoid loops.
+- Branch protection: `main` and `canary` require status checks, but the release workflow itself runs after merge (not as a check). Allow `[skip ci]` on the CHANGELOG commit-back to avoid loops.
 
 ## Files added
 
@@ -552,7 +552,7 @@ Inspect every reported tarball. Confirm no `src/` files (except font), no test f
 packages/font/release.config.cjs            # devicons (scoped)
 scripts/release-group1.mjs                  # programmatic semantic-release + mirror
 docs/superpowers/specs/2026-04-15-release-ci-workflow-design.md  # this doc
-CHANGELOG.md                                # created by first master release
+CHANGELOG.md                                # created by first main release
 packages/font/CHANGELOG.md                  # created by first font release
 ```
 
@@ -572,13 +572,13 @@ Edits:
 | Risk | Mitigation |
 | --- | --- |
 | Mirror script publishes `react`/`vue`/`svelte` but `core` publish failed midway | semantic-release publishes `core` first; if it throws, the script process exits non-zero before reaching the mirror loop. To improve atomicity later, capture `nextRelease` from a `--dry-run` first, then publish all four in a strict order with rollback comments — out of scope for v1. |
-| Canary version sequence resets after a stable release lands on `master` | Expected behavior of semantic-release prerelease channels: after `0.2.0` ships on master, the next canary becomes `0.3.0-canary.1`. Document this in CONTRIBUTING. |
-| Non-conventional commit on `master` triggers nothing — release silently skipped | Acceptable. Operator can re-tag/re-publish via `workflow_dispatch`. Optional v2: add a check that warns when a push hits the path filter but contains zero conventional commits. |
+| Canary version sequence resets after a stable release lands on `main` | Expected behavior of semantic-release prerelease channels: after `0.2.0` ships on main, the next canary becomes `0.3.0-canary.1`. Document this in CONTRIBUTING. |
+| Non-conventional commit on `main` triggers nothing — release silently skipped | Acceptable. Operator can re-tag/re-publish via `workflow_dispatch`. Optional v2: add a check that warns when a push hits the path filter but contains zero conventional commits. |
 | `pnpm publish` from mirror script fails because working tree is dirty | `--no-git-checks` flag bypasses pnpm's clean-tree assertion. |
-| First-time canary release computes `1.0.0-canary.1` instead of `0.1.0-canary.1` because no `v*` tag exists | Bootstrap publishes `v0.1.0` from `master` first. Canary's first release reads that tag and produces `0.2.0-canary.1`. Do not run canary release before bootstrap. |
+| First-time canary release computes `1.0.0-canary.1` instead of `0.1.0-canary.1` because no `v*` tag exists | Bootstrap publishes `v0.1.0` from `main` first. Canary's first release reads that tag and produces `0.2.0-canary.1`. Do not run canary release before bootstrap. |
 | `semantic-release-monorepo`'s `commitPaths` doesn't include the upstream `packages/core/export-files/font/**` and misses font releases | Spec explicitly extends `commitPaths` (see `packages/font/release.config.cjs`). Verify in dry run. |
 | Provenance fails because `id-token: write` permission not granted | Workflow declares it at workflow level. Job-level `permissions:` would need to be repeated per job — keep at workflow level. |
-| `@semantic-release/git` push on `master` triggers another workflow run → loop | Commit message includes `[skip ci]`. GitHub Actions skips workflows on `[skip ci]` commits by default. |
+| `@semantic-release/git` push on `main` triggers another workflow run → loop | Commit message includes `[skip ci]`. GitHub Actions skips workflows on `[skip ci]` commits by default. |
 | Private packages accidentally get `private: false` and ship | `publishConfig.access` not set on private packages + dependency on root `pnpm` workspace ignoring private packages by default. Defense-in-depth: a CI step that runs `pnpm -r --filter "!./packages/utils" --filter "!./packages/codegen" --filter "!./packages/figma" exec true` before publish would catch accidental flips, but is out of scope for v1. |
 
 ## Preflight audit (before bootstrap PR merge)
@@ -592,7 +592,7 @@ Run once, manually, on a clean checkout of the bootstrap PR. **All must be green
 5. `pnpm dlx publint <each pkg>` (against the source dir) and `pnpm dlx publint <path-to-packed-tarball.tgz>` (against the packed artifact) both report zero errors. The tarball check catches issues the source-dir check misses (e.g., `exports` paths that only resolve post-build).
 6. `pnpm dlx @arethetypeswrong/cli --pack <each pkg>` reports zero errors.
 7. Install-the-tarball smoke test resolves the library entry of `@dev.icons/core` from a fresh `node_modules` without workspace deps.
-8. **Pre-bootstrap (no `v*` tag exists yet):** `DRY_RUN=true node scripts/release-group1.mjs` from `master` exits either with "No release." (if the bootstrap PR's commits aren't conventional) or with `nextRelease.version === '1.0.0'` (semantic-release's default first-release when no tag exists). **This is informational only** — bootstrap overrides this by manually publishing `0.1.0` and seeding the `v0.1.0` tag. The preflight passes either way; it just confirms the script runs without throwing.
+8. **Pre-bootstrap (no `v*` tag exists yet):** `DRY_RUN=true node scripts/release-group1.mjs` from `main` exits either with "No release." (if the bootstrap PR's commits aren't conventional) or with `nextRelease.version === '1.0.0'` (semantic-release's default first-release when no tag exists). **This is informational only** — bootstrap overrides this by manually publishing `0.1.0` and seeding the `v0.1.0` tag. The preflight passes either way; it just confirms the script runs without throwing.
 9. **Post-bootstrap re-run (after `v0.1.0` tag is pushed, before first auto-release):** `DRY_RUN=true node scripts/release-group1.mjs` reports `nextRelease.version === '0.2.0'` (next `feat:` commit since `v0.1.0`) or exits "No release." if no qualifying commits exist yet.
 10. **Font pre-bootstrap check:** `pnpm exec semantic-release --dry-run --no-ci -e ./packages/font/release.config.cjs` exits cleanly. After the `devicons-v1.8.0` seed tag is pushed, the same command reports `nextRelease.version === '1.9.0'` or later.
 11. `workflow_dispatch` with `dry_run: true` on the bootstrap PR branch completes both jobs successfully, with no tags pushed and no npm publishes.

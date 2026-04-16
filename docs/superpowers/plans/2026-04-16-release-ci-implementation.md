@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Wire up automated npm releases for the devicons monorepo via `semantic-release` + conventional commits, so that pushes to `master`/`canary` that touch `packages/core/export-files/**` publish `@dev.icons/{core,react,vue,svelte}` (lockstep) and/or `devicons` (font, independent) to npm.
+**Goal:** Wire up automated npm releases for the devicons monorepo via `semantic-release` + conventional commits, so that pushes to `main`/`canary` that touch `packages/core/export-files/**` publish `@dev.icons/{core,react,vue,svelte}` (lockstep) and/or `devicons` (font, independent) to npm.
 
 **Architecture:** Driver-and-mirror lockstep — `semantic-release` runs against `@dev.icons/core` (the driver) inside `scripts/release-group1.mjs`, computes the next version, then a mirror loop writes that version into `react`/`vue`/`svelte` `package.json` and `pnpm publish`es each. `devicons` runs independently via `semantic-release-monorepo` scoped to font paths. Canary uses native monotonic-within-window prereleases (`0.2.0-canary.1`, `0.2.0-canary.2`, …). All decisions driven by Conventional Commits.
 
@@ -759,7 +759,7 @@ Insert these fields after the existing `"description"` line (before `"keywords"`
     "url": "git+https://github.com/vorillaz/devicons.git",
     "directory": "packages/react"
   },
-  "homepage": "https://github.com/vorillaz/devicons/tree/master/packages/react#readme",
+  "homepage": "https://github.com/vorillaz/devicons/tree/main/packages/react#readme",
   "bugs": { "url": "https://github.com/vorillaz/devicons/issues" },
   "license": "MIT",
   "author": "Theodore Vorillas",
@@ -816,7 +816,7 @@ Insert after the existing `"description"` line (before `"keywords"`):
     "url": "git+https://github.com/vorillaz/devicons.git",
     "directory": "packages/vue"
   },
-  "homepage": "https://github.com/vorillaz/devicons/tree/master/packages/vue#readme",
+  "homepage": "https://github.com/vorillaz/devicons/tree/main/packages/vue#readme",
   "bugs": { "url": "https://github.com/vorillaz/devicons/issues" },
   "license": "MIT",
   "author": "Theodore Vorillas",
@@ -866,7 +866,7 @@ Insert after the existing `"description"` line (before `"keywords"`):
     "url": "git+https://github.com/vorillaz/devicons.git",
     "directory": "packages/svelte"
   },
-  "homepage": "https://github.com/vorillaz/devicons/tree/master/packages/svelte#readme",
+  "homepage": "https://github.com/vorillaz/devicons/tree/main/packages/svelte#readme",
   "bugs": { "url": "https://github.com/vorillaz/devicons/issues" },
   "license": "MIT",
   "author": "Theodore Vorillas",
@@ -940,7 +940,7 @@ Final shape:
     "url": "git+https://github.com/vorillaz/devicons.git",
     "directory": "packages/font"
   },
-  "homepage": "https://github.com/vorillaz/devicons/tree/master/packages/font#readme",
+  "homepage": "https://github.com/vorillaz/devicons/tree/main/packages/font#readme",
   "bugs": { "url": "https://github.com/vorillaz/devicons/issues" },
   "license": "MIT",
   "author": "Theodore Vorillas",
@@ -1007,7 +1007,7 @@ Expected: existing files visible (e.g., `clean-generated.mjs`). If the directory
 //   computes the next version from conventional commits.
 // - On a release-worthy bump, this script mirrors that version into
 //   react/vue/svelte package.json and pnpm publishes each with the
-//   same dist-tag (`latest` on master, `canary` on canary).
+//   same dist-tag (`latest` on main, `canary` on canary).
 // - DRY_RUN=true makes everything no-op (semantic-release dryRun + pnpm publish --dry-run).
 // - On canary the @semantic-release/changelog and @semantic-release/git plugins
 //   are omitted so nothing is committed back to the canary branch.
@@ -1058,7 +1058,7 @@ console.log(
 
 const result = await semanticRelease({
   tagFormat: 'v${version}',
-  branches: ['master', { name: 'canary', prerelease: 'canary' }],
+  branches: ['main', { name: 'canary', prerelease: 'canary' }],
   plugins,
   dryRun: DRY_RUN,
   ci: process.env.CI === 'true',
@@ -1119,7 +1119,7 @@ Expected one of two outcomes (both are OK at this point):
 - `[release-group1] No release.` if no qualifying conventional commits exist since the last `v*` tag (or none exists yet — semantic-release will say so)
 - A printed `nextRelease.version` from semantic-release's output, followed by mirror "publish" lines that include `--dry-run`. **Nothing is actually published.**
 
-If you see a hard failure mentioning "ERELEASEBRANCHES" or "EINVALIDLOGGER", check that you're on `master` or `canary` — semantic-release rejects unknown branches.
+If you see a hard failure mentioning "ERELEASEBRANCHES" or "EINVALIDLOGGER", check that you're on `main` or `canary` — semantic-release rejects unknown branches.
 
 - [ ] **Step 5: Commit**
 
@@ -1158,7 +1158,7 @@ const isCanary = branch === 'canary';
 module.exports = {
   ...monorepoConfig,
   tagFormat: 'devicons-v${version}',
-  branches: ['master', { name: 'canary', prerelease: 'canary' }],
+  branches: ['main', { name: 'canary', prerelease: 'canary' }],
   // semantic-release-monorepo defaults commitPaths to the package directory.
   // Extend it to include the upstream font asset source.
   commitPaths: ['packages/font/**', 'packages/core/export-files/font/**'],
@@ -1231,7 +1231,7 @@ name: Release
 
 on:
   push:
-    branches: [master, canary]
+    branches: [main, canary]
     paths:
       - 'packages/core/export-files/**'
   workflow_dispatch:
@@ -1342,7 +1342,7 @@ git commit -m "feat(release): add GitHub Actions workflow (group1 + font, parall
 ## Conventional commits (required for releases)
 
 Releases are driven by [Conventional Commits](https://www.conventionalcommits.org/).
-Any commit that touches `packages/core/export-files/**` and lands on `master` or `canary`
+Any commit that touches `packages/core/export-files/**` and lands on `main` or `canary`
 will trigger a release if its message uses one of these prefixes:
 
 | Prefix | Bump |
@@ -1364,7 +1364,7 @@ by **file paths** in the commit, not by commit-message scope:
 
 - `canary` — every release-worthy push publishes a prerelease (`0.2.0-canary.1`,
   `0.2.0-canary.2`, …). Install via `npm i @dev.icons/core@canary`.
-- `master` — every release-worthy push publishes a stable version.
+- `main` — every release-worthy push publishes a stable version.
   Install via `npm i @dev.icons/core` (default `latest` dist-tag).
 
 ## Local dry-runs
@@ -1526,22 +1526,22 @@ If either job fails, fix and re-run before proceeding to Phase 9.
 
 semantic-release defaults the first release to `1.0.0` and there's no clean way to override that to `0.1.0`. So Group 1's first publish is manual; automation owns everything from `v0.2.0` onward.
 
-### Task 9.1 — Manually publish Group 1 at `0.1.0` from `master`
+### Task 9.1 — Manually publish Group 1 at `0.1.0` from `main`
 
 **Files:** transient `package.json` edits (committed at the end).
 
-**Pre-flight:** confirm you have `master` checked out, you have npm publish permission on `@dev.icons`, and the bootstrap PR (Phase 0–8 commits) is **already merged** to master.
+**Pre-flight:** confirm you have `main` checked out, you have npm publish permission on `@dev.icons`, and the bootstrap PR (Phase 0–8 commits) is **already merged** to main.
 
-- [ ] **Step 1: Get on a clean master**
+- [ ] **Step 1: Get on a clean main**
 
 Run:
 ```bash
-git checkout master
-git pull origin master
+git checkout main
+git pull origin main
 git status
 ```
 
-Expected: clean working tree, on master, up to date with origin.
+Expected: clean working tree, on main, up to date with origin.
 
 - [ ] **Step 2: Clean build all four packages**
 
@@ -1598,7 +1598,7 @@ Expected: each prints a successful `+ @dev.icons/<pkg>@0.1.0` line. **If any one
 git add packages/{core,react,vue,svelte}/package.json
 git commit -m "chore(release): v0.1.0 [skip ci]"
 git tag v0.1.0
-git push origin master
+git push origin main
 git push origin v0.1.0
 ```
 
@@ -1635,7 +1635,7 @@ Note the timestamp. Then:
 git log --oneline --before="<timestamp>" -- packages/font/package.json | head -3
 ```
 
-Pick the most recent commit on `master` that introduced `version: "1.8.0"` to `packages/font/package.json`. If that history is unclear (e.g., the version bump never landed in this monorepo), use **the current HEAD on master** as the seed — the tag's only job is to be the starting point for `semantic-release-monorepo`'s next-version computation.
+Pick the most recent commit on `main` that introduced `version: "1.8.0"` to `packages/font/package.json`. If that history is unclear (e.g., the version bump never landed in this monorepo), use **the current HEAD on main** as the seed — the tag's only job is to be the starting point for `semantic-release-monorepo`'s next-version computation.
 
 - [ ] **Step 2: Tag it**
 
@@ -1704,25 +1704,25 @@ This will trigger another canary release at `0.2.0-canary.2` (the `revert(scope)
 
 ---
 
-### Task 10.2 — Trigger first stable publish from `master`
+### Task 10.2 — Trigger first stable publish from `main`
 
-- [ ] **Step 1: Open a PR from `canary` → `master`**
+- [ ] **Step 1: Open a PR from `canary` → `main`**
 
 Run:
 ```bash
-gh pr create --base master --head canary --title "Promote canary → master" --body "Initial release validation."
+gh pr create --base main --head canary --title "Promote canary → main" --body "Initial release validation."
 ```
 
 - [ ] **Step 2: Merge the PR**
 
 Use squash-merge so the resulting commit has a single conventional-commit message. Title the merge commit `feat(icons): initial automated release`.
 
-- [ ] **Step 3: Watch the workflow on master**
+- [ ] **Step 3: Watch the workflow on main**
 
 Expected:
 - `group1` publishes `@dev.icons/core@0.2.0` and mirrors react/vue/svelte
 - Tag `v0.2.0` pushed
-- `CHANGELOG.md` committed back to master with `[skip ci]`
+- `CHANGELOG.md` committed back to main with `[skip ci]`
 - GitHub Release created (not prerelease)
 
 - [ ] **Step 4: Verify on npm**
@@ -1739,8 +1739,8 @@ Expected: all four at `0.2.0`. The `latest` dist-tag now resolves to `0.2.0`.
 - [ ] **Step 5: Update local working copies**
 
 ```bash
-git checkout master && git pull
-git checkout canary && git pull && git merge master
+git checkout main && git pull
+git checkout canary && git pull && git merge main
 git push origin canary
 ```
 
@@ -1754,7 +1754,7 @@ The pipeline is live. From this point forward:
 
 - A `feat(...)` commit on `canary` touching `packages/core/export-files/**` → next prerelease (`0.3.0-canary.1`, …)
 - A `fix(...)` commit on `canary` touching the same → patch prerelease in the same window
-- Merging canary into master → a single stable release computed from the accumulated commits
+- Merging canary into main → a single stable release computed from the accumulated commits
 - A `BREAKING CHANGE:` footer or `feat!:` → major bump
 - Commits without a conventional prefix → no release (the workflow runs but exits with `No release.`)
 

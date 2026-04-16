@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [master, canary]
+    branches: [main, canary]
     paths:
       - 'packages/core/export-files/**'
   workflow_dispatch:
