@@ -5,7 +5,7 @@
 //   computes the next version from conventional commits.
 // - On a release-worthy bump, this script mirrors that version into
 //   react/vue/svelte package.json and pnpm publishes each with the
-//   same dist-tag (`latest` on master, `canary` on canary).
+//   same dist-tag (`latest` on main, `canary` on canary).
 // - DRY_RUN=true makes everything no-op (semantic-release dryRun + pnpm publish --dry-run).
 // - On canary the @semantic-release/changelog and @semantic-release/git plugins
 //   are omitted so nothing is committed back to the canary branch.
