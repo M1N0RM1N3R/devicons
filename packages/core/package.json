@@ -3,7 +3,36 @@
   "version": "0.0.0",
   "description": "Devicons Core - The core package for Devicons",
   "type": "module",
-  "keywords": [],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.mjs" },
+      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+    },
+    "./icons.json": "./dist/icons.json",
+    "./sprite": "./dist/sprite/sprite-symbol.svg",
+    "./font/css": "./dist/font/devicons.css",
+    "./font/woff2": "./dist/font/devicons.woff2",
+    "./font/ttf": "./dist/font/devicons.ttf"
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vorillaz/devicons.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/vorillaz/devicons#readme",
+  "bugs": { "url": "https://github.com/vorillaz/devicons/issues" },
+  "license": "MIT",
+  "author": "Theodore Vorillas",
+  "keywords": ["icons", "devicons", "sprite", "font", "svg"],
   "scripts": {
     "export-to-raw": "tsx scripts/export-to-raw.ts",
     "to-font": "tsx scripts/to-font.ts",
@@ -11,6 +40,7 @@
     "sprite": "tsx scripts/sprite.ts",
     "check": "tsx scripts/check.ts",
     "build": "tsx scripts/build-all.ts",
+    "build:lib": "tsx scripts/build-lib.ts",
     "test": "vitest run"
   },
   "devDependencies": {
@@ -31,6 +61,7 @@
     "ttf2woff": "^3.0.0",
     "ttf2woff2": "^5.0.0",
     "transformation-matrix-js": "^2.7.6",
+    "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vitest": "3.1.3",

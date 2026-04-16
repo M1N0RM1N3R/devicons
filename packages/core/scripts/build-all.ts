@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { loadIcons, generate } from '@dev.icons/codegen';
 import { buildFont } from './to-font';
 import { buildSprite } from './sprite';
+import { buildLib } from './build-lib';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '../../..');
@@ -31,6 +32,7 @@ const skipFont = args.has('--no-font');
 const skipSprite = args.has('--no-sprite');
 const skipFrameworks = args.has('--no-frameworks');
 const skipFontPkg = args.has('--no-font-pkg');
+const skipLib = args.has('--no-lib');
 
 const step = async <T>(name: string, fn: () => Promise<T>): Promise<T> => {
   const start = Date.now();
@@ -93,6 +95,10 @@ const run = async () => {
     await step('font-package', () =>
       runNpmScript(path.join(ROOT, 'packages/font'), 'build'),
     );
+  }
+
+  if (!skipLib) {
+    await step('core-lib', () => buildLib());
   }
 
   console.log(`✓ build-all done in ${Date.now() - totalStart}ms`);
