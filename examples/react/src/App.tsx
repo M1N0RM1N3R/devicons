@@ -10,11 +10,9 @@ import {
 import * as Icons from "@dev.icons/react";
 import { ICONS } from "@dev.icons/core";
 
-type IconType = "icon" | "font";
-
 interface IconProps {
   size?: string;
-  type?: IconType;
+  mono?: boolean;
 }
 
 type IconNamespace = Record<string, ComponentType<IconProps> | unknown>;
@@ -53,7 +51,7 @@ class IconErrorBoundary extends Component<
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const [type, setType] = useState<IconType>("icon");
+  const [mono, setMono] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
 
@@ -90,16 +88,16 @@ export default function App() {
           />
           <div className="flex items-center gap-1 text-sm border border-gray-300 rounded overflow-hidden">
             <button
-              className={`px-3 py-1.5 hover:bg-gray-100 ${type === "icon" ? "bg-gray-900 text-white" : ""}`}
-              onClick={() => setType("icon")}
+              className={`px-3 py-1.5 hover:bg-gray-100 ${!mono ? "bg-gray-900 text-white" : ""}`}
+              onClick={() => setMono(false)}
             >
-              Icon (SVG)
+              Colorful
             </button>
             <button
-              className={`px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300 ${type === "font" ? "bg-gray-900 text-white" : ""}`}
-              onClick={() => setType("font")}
+              className={`px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300 ${mono ? "bg-gray-900 text-white" : ""}`}
+              onClick={() => setMono(true)}
             >
-              Font
+              Mono
             </button>
           </div>
           <span className="text-xs text-gray-500 tabular-nums">
@@ -126,7 +124,7 @@ export default function App() {
                 onClick={() => copy(name)}
               >
                 <IconErrorBoundary>
-                  <Icon size="48px" type={type} />
+                  <Icon size="48px" mono={mono} />
                 </IconErrorBoundary>
                 <span className="text-xs text-gray-600 truncate w-full text-center">
                   {name}

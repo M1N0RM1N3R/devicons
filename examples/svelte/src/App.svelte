@@ -2,8 +2,6 @@
   import * as Icons from "@dev.icons/svelte";
   import { ICONS } from "@dev.icons/core";
 
-  type IconType = "icon" | "font";
-
   const toPascal = (name: string): string =>
     name
       .split("-")
@@ -20,7 +18,7 @@
   })();
 
   let query = $state("");
-  let type: IconType = $state("icon");
+  let mono = $state(false);
   let toast = $state<string | null>(null);
   let toastTimer: number | undefined;
 
@@ -49,16 +47,16 @@
     />
     <div class="flex items-center gap-1 text-sm border border-gray-300 rounded overflow-hidden">
       <button
-        class="px-3 py-1.5 hover:bg-gray-100 {type === 'icon' ? 'bg-gray-900 text-white' : ''}"
-        onclick={() => (type = "icon")}
+        class="px-3 py-1.5 hover:bg-gray-100 {!mono ? 'bg-gray-900 text-white' : ''}"
+        onclick={() => (mono = false)}
       >
-        Icon (SVG)
+        Colorful
       </button>
       <button
-        class="px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300 {type === 'font' ? 'bg-gray-900 text-white' : ''}"
-        onclick={() => (type = "font")}
+        class="px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300 {mono ? 'bg-gray-900 text-white' : ''}"
+        onclick={() => (mono = true)}
       >
-        Font
+        Mono
       </button>
     </div>
     <span class="text-xs text-gray-500 tabular-nums">
@@ -81,7 +79,7 @@
           title="Click to copy"
           onclick={() => copy(name)}
         >
-          <Icon size="48px" {type} />
+          <Icon size="48px" {mono} />
           <span class="text-xs text-gray-600 truncate w-full text-center">{name}</span>
         </button>
       {/each}
