@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  push:
+    branches: [master, canary]
+    paths:
+      - 'packages/core/export-files/**'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry-run mode (no publish, no tags)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write       # commit CHANGELOG, push tags, create releases
+  issues: write         # semantic-release issue comments
+  pull-requests: write  # semantic-release PR comments
+  id-token: write       # npm provenance via OIDC
+
+jobs:
+  group1:
+    name: Release Group 1 (core/react/vue/svelte)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: 'https://registry.npmjs.org'
+      - run: pnpm install --frozen-lockfile
+      - name: Build core (sprite + font assets + library)
+        run: pnpm -F @dev.icons/core build
+      - name: Build react/vue/svelte
+        run: |
+          pnpm -F @dev.icons/react build
+          pnpm -F @dev.icons/vue build
+          pnpm -F @dev.icons/svelte build
+      - name: Release Group 1
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: node scripts/release-group1.mjs
+
+  font:
+    name: Release devicons (font)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: 'https://registry.npmjs.org'
+      - run: pnpm install --frozen-lockfile
+      - name: Build core (produces font assets in packages/core/dist/font)
+        run: pnpm -F @dev.icons/core build
+      - name: Build devicons font package
+        run: pnpm -F devicons build
+      - name: Release devicons
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          ARGS=""
+          if [ "$DRY_RUN" = "true" ]; then ARGS="--dry-run"; fi
+          pnpm exec semantic-release -e ./packages/font/release.config.cjs $ARGS
