@@ -3,8 +3,6 @@ import { computed, ref } from "vue";
 import * as Icons from "@dev.icons/vue";
 import { ICONS } from "@dev.icons/core";
 
-type IconType = "icon" | "font";
-
 const toPascal = (name: string): string =>
   name
     .split("-")
@@ -21,7 +19,7 @@ const iconRegistry = (() => {
 })();
 
 const query = ref("");
-const type = ref<IconType>("icon");
+const mono = ref(false);
 const toast = ref<string | null>(null);
 let toastTimer: number | undefined;
 
@@ -51,16 +49,16 @@ const copy = (name: string): void => {
       />
       <div class="flex items-center gap-1 text-sm border border-gray-300 rounded overflow-hidden">
         <button
-          :class="['px-3 py-1.5 hover:bg-gray-100', type === 'icon' && 'bg-gray-900 text-white']"
-          @click="type = 'icon'"
+          :class="['px-3 py-1.5 hover:bg-gray-100', !mono && 'bg-gray-900 text-white']"
+          @click="mono = false"
         >
-          Icon (SVG)
+          Colorful
         </button>
         <button
-          :class="['px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300', type === 'font' && 'bg-gray-900 text-white']"
-          @click="type = 'font'"
+          :class="['px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300', mono && 'bg-gray-900 text-white']"
+          @click="mono = true"
         >
-          Font
+          Mono
         </button>
       </div>
       <span class="text-xs text-gray-500 tabular-nums">
@@ -88,7 +86,7 @@ const copy = (name: string): void => {
         title="Click to copy"
         @click="copy(name)"
       >
-        <component :is="Icon" size="48px" :type="type" />
+        <component :is="Icon" size="48px" :mono="mono" />
         <span class="text-xs text-gray-600 truncate w-full text-center">{{ name }}</span>
       </button>
     </div>
