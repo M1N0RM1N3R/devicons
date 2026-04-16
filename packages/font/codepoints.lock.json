@@ -372,7 +372,6 @@
   "dailydev": 62067,
   "dailydev-icon": 62068,
   "daisy-ui": 62069,
-  "daisyUI": 62070,
   "danfo": 62071,
   "dart": 62072,
   "dashlane": 62073,
@@ -1684,5 +1683,9 @@
   "zube": 63379,
   "zulip": 63380,
   "zulip-icon": 63381,
-  "zwave": 63382
+  "zwave": 63382,
+  "claude-icon": 63383,
+  "claude": 63384,
+  "cursor-icon": 63385,
+  "cursor": 63386
 }

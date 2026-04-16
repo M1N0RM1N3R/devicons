@@ -3,12 +3,7 @@
   "version": "1.8.0",
   "description": "Devicons - Icon font for developers",
   "type": "module",
-  "keywords": [
-    "icons",
-    "font",
-    "webfont",
-    "devicons"
-  ],
+  "keywords": ["icons", "font", "webfont", "devicons", "sprite"],
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
@@ -22,11 +17,20 @@
     "./sprite": "./dist/sprite-symbol.svg",
     "./codepoints": "./dist/codepoints.json"
   },
-  "files": [
-    "dist",
-    "src",
-    "codepoints.lock.json"
-  ],
+  "files": ["dist", "src", "codepoints.lock.json"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vorillaz/devicons.git",
+    "directory": "packages/font"
+  },
+  "homepage": "https://github.com/vorillaz/devicons/tree/master/packages/font#readme",
+  "bugs": { "url": "https://github.com/vorillaz/devicons/issues" },
+  "license": "MIT",
+  "author": "Theodore Vorillas",
   "scripts": {
     "build": "tsx scripts/build.ts",
     "test": "vitest run"
