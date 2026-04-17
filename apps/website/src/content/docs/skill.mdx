@@ -9,27 +9,27 @@ badge: "new"
 
 import Note from "../../components/docs/note.astro";
 
-Devicons ships a ready-to-install agent skill. Point Claude, Cursor, or any tool that consumes a [Claude-style skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) at a single URL and your agent gets the full icon catalog, component usage, CDN URLs, and metadata in its working memory.
+Devicons has a ready-to-install agent skill. Point Claude, Cursor, or any tool that reads a [Claude-style skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) at a single URL, and the agent gets the full icon catalog, component usage, CDN URLs, and metadata.
 
 ## One-line prompt
 
-Most tools support remote skill discovery. In any agent conversation, try:
+In any agent conversation:
 
 ```
 Read https://devicons.io/skill.md and follow the instructions to use @dev.icons.
 ```
 
-The agent fetches the skill, reads the instructions, and has everything it needs to generate icon code, pick the right package, build CDN URLs, and resolve slugs from free-text queries.
+The agent fetches the skill and can then generate icon code, pick packages, build CDN URLs, and resolve slugs from free-text queries.
 
 ## Discovery endpoint
 
-Devicons implements the [Cloudflare Agent Skills Discovery](https://github.com/cloudflare/agent-skills-discovery-rfc) spec (v0.2.0). Any compliant client — Claude Code, Cursor, an MCP server, your own agent — can find the skill by fetching a single well-known URL:
+Devicons implements the [Cloudflare Agent Skills Discovery](https://github.com/cloudflare/agent-skills-discovery-rfc) spec (v0.2.0). Any compliant client can find the skill at:
 
 ```
 https://devicons.io/.well-known/agent-skills/index.json
 ```
 
-The index lists every available skill with its type, description, artifact URL, and a SHA-256 digest so clients can verify the download is intact. Content-type is `application/json`, CORS is open, and the canonical `SKILL.md` URL sits right next to it.
+The index lists each skill with its type, description, artifact URL, and SHA-256 digest. CORS is open.
 
 ## Skill files
 
@@ -41,11 +41,11 @@ The index lists every available skill with its type, description, artifact URL, 
 | **reference/icons.md** | [`/skill/reference/icons.md`](/skill/reference/icons.md) |
 | **reference/packages.md** | [`/skill/reference/packages.md`](/skill/reference/packages.md) |
 
-All endpoints serve with permissive CORS (`Access-Control-Allow-Origin: *`) and the right content-type (`application/json` or `text/markdown`). The short `/skill.md` alias is kept for humans and agents that prefer a simpler URL — both paths return identical bytes, so the digest in the discovery index matches either.
+All endpoints have permissive CORS and correct content-types. `/skill.md` returns the same bytes as the canonical path.
 
 ## Install locally
 
-If your agent loads skills from a local directory, download the files once:
+If your agent loads skills from a local directory:
 
 ```bash
 SKILL_DIR=~/.claude/skills/devicons
@@ -55,11 +55,11 @@ curl -sL https://devicons.io/skill/reference/icons.md > "$SKILL_DIR/reference/ic
 curl -sL https://devicons.io/skill/reference/packages.md > "$SKILL_DIR/reference/packages.md"
 ```
 
-Change `SKILL_DIR` to match your agent — `~/.claude/skills/` for Claude Code, `~/.cursor/skills/` for Cursor, and so on.
+Change `SKILL_DIR` to match your tool: `~/.claude/skills/` for Claude Code, `~/.cursor/skills/` for Cursor.
 
 <Note variant="tip" title="Dynamic content">
 
-The `icons.md` reference is generated at request time from the live icon catalog. Every time you re-download it, you get the current list of recommended icons, their tags, and their React component names — no manual sync needed.
+`icons.md` is generated at request time from the live catalog. Re-downloading always gives you the current icon list and component names.
 
 </Note>
 
@@ -67,35 +67,35 @@ The `icons.md` reference is generated at request time from the live icon catalog
 
 Once loaded, the agent can:
 
-- Pick the right package for a given framework (`@dev.icons/react`, `@dev.icons/vue`, `@dev.icons/svelte`, `@dev.icons/core`, or the `devicons` font).
-- Resolve a free-text query ("the Postgres logo", "node") to a canonical slug via aliases and the recommended-per-tag map.
-- Generate component imports in React, Vue, or Svelte.
-- Build pinned CDN URLs for UNPKG, jsDelivr, npmmirror, or Skypack.
-- Emit `<link>`, `<img>`, sprite `<use>`, or inline-SVG markup.
-- Read each icon's metadata — brand colors, tags, aliases, variant list, and the `badInDark`/`badInLight` contrast hints.
+- Pick the right package for a framework
+- Resolve free-text queries ("the Postgres logo") to canonical slugs
+- Generate component imports for React, Vue, or Svelte
+- Build pinned CDN URLs for UNPKG, jsDelivr, npmmirror, or Skypack
+- Emit `<link>`, `<img>`, sprite `<use>`, or inline-SVG markup
+- Read icon metadata: brand colors, tags, aliases, and contrast hints
 
 ## When the skill triggers
 
-The skill is written to activate whenever an agent task mentions:
+The skill activates when a task mentions:
 
-- A developer brand or logo ("add the React logo", "Postgres icon in the header")
-- An icon format request (SVG, webfont, sprite)
-- Generic tech categories ("a frontend framework", "a cloud provider")
-- The `@dev.icons/*` or `devicons` package names directly
+- A developer brand or logo ("add the React logo")
+- An icon format (SVG, webfont, sprite)
+- Tech categories ("a frontend framework", "a cloud provider")
+- The `@dev.icons/*` or `devicons` package names
 
-If you want to force it, prepend the one-line prompt above.
+To force activation, use the one-line prompt above.
 
-## Updating the skill
+## Updating
 
-The skill content tracks the same data that powers this website. When we ship a new icon, flag a new `recommended` pick, or expose a new CDN route, the `/skill.md` and `/skill/reference/icons.md` endpoints update automatically. Agents that re-fetch the skill pick up the new content on the next run.
+The skill tracks the same data as this website. New icons and CDN routes update the endpoints automatically.
 
-For local installs, re-run the `curl` commands above whenever you want a fresh copy.
+For local installs, re-run the `curl` commands for a fresh copy.
 
 ## Under the hood
 
-The skill is not a separate system — it's generated from the same content collection that drives the [icon library](/icons). The flow is:
+Generated from the same content collection that drives the [icon library](/icons):
 
-1. Every icon MDX file carries metadata (`tags`, `popular`, `recommended`, `aliases`, `mainColor`, etc.).
-2. A one-off script ([`scripts/compute-recommended.ts`](https://github.com/vorillaz/devicons/blob/canary/apps/website/scripts/compute-recommended.ts)) promotes the flagship icon(s) per tag to `recommended: true`.
-3. Astro endpoints at [`/skill.md`](/skill.md) and [`/skill/reference/*`](/skill/reference/icons.md) render the content collection as markdown at request time.
-4. Agents consume the markdown directly — no JSON, no custom protocol.
+1. Every icon MDX file carries metadata (`tags`, `popular`, `recommended`, `aliases`, `mainColor`, etc.)
+2. A [script](https://github.com/vorillaz/devicons/blob/canary/apps/website/scripts/compute-recommended.ts) promotes flagship icons per tag to `recommended: true`
+3. Astro endpoints at `/skill.md` and `/skill/reference/*` render the collection as markdown
+4. Agents consume the markdown directly

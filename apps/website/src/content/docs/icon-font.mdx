@@ -8,14 +8,14 @@ categoryOrder: 1
 
 import Note from "../../components/docs/note.astro";
 
-`devicons` is the no-framework option. One CSS file, 1,600+ glyphs. Drop it into legacy stacks, email templates, or a plain HTML page.
+`@devicons/font` is the no-framework option. One CSS file, 1,600+ glyphs. Works in legacy stacks, email templates, or plain HTML.
 
 <Note title="Class prefix">
-Every class is namespaced under `devicon-`. A bare `.react` or `.vue` selector would collide with most stylesheets, so the prefix keeps things safe. Use `.devicon` to opt into the font, then `.devicon-<slug>` to pick a glyph, e.g. `devicon-react`, `devicon-next-js`.
+All classes use the `devicon-` prefix to avoid collisions. Add `.devicon` to opt into the font, then `.devicon-<slug>` to pick a glyph, e.g. `devicon-react`, `devicon-next-js`.
 </Note>
 
 <Note variant="info" title="Version numbering">
-The font package uses a higher version number (`>1.x`) than the framework packages. This is intentional: the icon font predates the framework wrappers and carries its own release history for backwards compatibility. The icon content is identical across all packages at any given release.
+The font package has a higher version number (`>1.x`) than the framework packages. The icon font predates the framework wrappers and has its own release history. Icon content is identical across all packages at any given release.
 </Note>
 
 ## Install
@@ -24,7 +24,7 @@ The font package uses a higher version number (`>1.x`) than the framework packag
 npm install @devicons/font
 ```
 
-Prefer a no-build workflow? See the [CDN guide](/docs/cdn) for stylesheet, sprite, and raw-SVG URLs.
+For a no-build workflow, see the [CDN guide](/docs/cdn).
 
 ## Usage
 
@@ -38,7 +38,7 @@ Slugs match the icon IDs in the [icon library](/search).
 
 ## Sizing and color
 
-The font inherits `font-size` and `color`. Style it like any text.
+The font inherits `font-size` and `color`.
 
 ```html
 <i
@@ -49,4 +49,4 @@ The font inherits `font-size` and `color`. Style it like any text.
 
 ## Ligatures
 
-Ligatures are disabled to keep bundle size small. If you need them, use the [React](/docs/react) or [Vue](/docs/vue) packages instead.
+Ligatures are disabled to keep the bundle small. Use the [React](/docs/react) or [Vue](/docs/vue) packages if you need component-based rendering.

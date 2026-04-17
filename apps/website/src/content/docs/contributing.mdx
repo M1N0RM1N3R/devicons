@@ -6,46 +6,49 @@ category: "Community"
 categoryOrder: 4
 ---
 
-Devicons is community-built. Every icon, metadata entry, and tooling improvement lands through pull requests [on GitHub](https://github.com/vorillaz/devicons).
+All changes land through pull requests [on GitHub](https://github.com/vorillaz/devicons).
 
 ## Before you open a PR
 
-1. Search first. Check the [icon library](/search) and open issues to avoid duplicates.
-2. Follow the grid. Icons are drawn on a **grid** by default. Larger marks use 2px.
-3. Check brand guidelines. If the icon represents a company or product, link the guideline you followed.
-4. For each PR you should also include:
-   - A one-sentence description of the icon in the metadata frontmatter.
-   - At least one tag for searchability, e.g. `frontend`, `cloud`, `database`, etc.
-   - A link to the official website of the brand or product, if applicable.
-   - The raw SVG and monochrome variants, if applicable.
+1. **Search first.** Check the [icon library](/search) and open issues for duplicates.
+2. **Follow the grid.** Icons use a unified grid. Larger marks use 2px strokes.
+3. **Check brand guidelines.** Link the guideline you followed for company/product logos.
+4. **Include:**
+   - A one-sentence description in the metadata frontmatter
+   - At least one tag (`frontend`, `cloud`, `database`, etc.)
+   - A link to the official brand website
+   - Both colored and monochrome SVG variants
 
 ## Adding an icon
 
-Drop a single, optimized SVG into `packages/core/export-files/icons/<slug>.svg`. Then add the monochrome version to `packages/core/export-files/font/<slug>.svg`. The slug should be kebab-case, e.g. `next-js`, `visual-studio-code`, etc. Sometimes the icon can have multiple variants, e.g. `react` and `react-icon`. In that case, add a suffix to the slug to distinguish them. 
+1. Add the optimized SVG to `packages/core/export-files/icons/<slug>.svg`
+2. Add the monochrome version to `packages/core/export-files/font/<slug>.svg`
 
-Once done, commit your changes with a message like `feat: add next-js icon`. Run the `mdx` generator to update the documentation:
+Use kebab-case slugs: `next-js`, `visual-studio-code`. For multiple variants, add a suffix (`react` and `react-icon`).
+
+3. Commit: `feat: add next-js icon`
+4. Generate the docs page:
 
 ```bash
 cd apps/website && pnpm run copy:mdx
 ```
 
-This will create a new file in `apps/website/src/content/docs/icons/<slug>.mdx` with blank metadata. Fill in the description, tags, and website link before opening the PR.
-Adjust the icon's associated alternatives and provide a solid description to help users find it in search. 
-Commit your changes with a message like `docs: add next-js icon`. 
+5. Fill in the description, tags, alternatives, and website link in the generated MDX file
+6. Commit: `docs: add next-js icon`
 
 ## Improving an existing icon
 
-- Preserve the original icon names. They're public API and used to generate the icon's names, classes and metadata.
-- Match the visual weight of nearby icons. The new version should sit cleanly next to its siblings.
-- Test both the colored and monochrome variants before opening the PR.
+- Keep original icon names. They are public API.
+- Match the visual weight of neighboring icons.
+- Test both colored and monochrome variants.
 
-## FAQ
+## Icon specs
 
-- All the icons are in a `600x600` size, maxing out either by width or height. 
-- Try to cleanup the SVGs as much as possible. Remove unnecessary groups, metadata, and attributes. The simpler the SVG, the better it scales and the easier it is to maintain.
-- For monochrome icons use `currentColor` for the fill or stroke. This allows users to style the icons with CSS and ensures consistency across the catalog.
-- [SVGO](https://github.com/svg/svgo) is the recommended tool for optimizing SVGs. Use the default config, but feel free to tweak it if it breaks the icon. The goal is to reduce file size without sacrificing visual fidelity.
+- Canvas size: `600x600`, maxing out by width or height
+- Clean up SVGs: remove unnecessary groups, metadata, and attributes
+- Monochrome icons use `currentColor` for fill or stroke
+- Use [SVGO](https://github.com/svg/svgo) with default config to optimize
 
 ## Code of conduct
 
-Be kind. Assume good intent. Celebrate first-time contributors, even if their PR is just fixing a typo.
+Be kind. Assume good intent.

@@ -6,11 +6,11 @@ category: "Customization"
 categoryOrder: 3
 ---
 
-Devicons ships two variants per icon: a full-color brand mark and a monochrome glyph that inherits `currentColor`. Import the monochrome variant from the `/mono` subpath.
+Each icon has two variants: a full-color brand mark and a monochrome glyph that inherits `currentColor`. Import monochrome variants from the `/mono` subpath.
 
 ## Tint with currentColor
 
-Wrap the icon in an element with a text color. The monochrome variant picks it up.
+Set a text color on the parent element. Monochrome icons inherit it.
 
 ```tsx
 import { ReactIcon, GithubIcon } from "@devicons/react/mono";
@@ -26,7 +26,7 @@ import { ReactIcon, GithubIcon } from "@devicons/react/mono";
 
 ## Override with the color prop
 
-For a one-off color, pass it directly:
+Pass a color directly for one-off use:
 
 ```tsx
 import { ReactIcon } from "@devicons/react/mono";
@@ -36,7 +36,7 @@ import { ReactIcon } from "@devicons/react/mono";
 
 ## CSS custom properties
 
-Hook icons into your design token system:
+Use design tokens to control icon color:
 
 ```css
 :root {
@@ -58,7 +58,7 @@ import { ReactIcon } from "@devicons/react/mono";
 
 ## Dark mode brand colors
 
-Some brands ship different marks for light vs. dark backgrounds. GitHub and Apple are the usual ones. Devicons exposes suffix variants for these:
+Some brands have different marks for light and dark backgrounds. Devicons exposes suffix variants for these:
 
 ```tsx
 import { GithubIcon, GithubLightIcon } from "@devicons/react";
@@ -75,4 +75,4 @@ function ThemedLogo() {
 
 ## Brand guidelines
 
-Icons tied to strict brand guidelines (Slack, Figma, Google) default to the guideline-approved color. Check the brand's public usage rules before overriding. Most guidelines are linked on the icon's detail page.
+Icons with strict brand guidelines (Slack, Figma, Google) default to guideline-approved colors. Check the brand's usage rules before overriding. Most guidelines are linked on the icon's detail page.
