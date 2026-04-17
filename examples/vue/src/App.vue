@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import * as Icons from "@dev.icons/vue";
+import * as ColorIcons from "@dev.icons/vue";
+import * as MonoIcons from "@dev.icons/vue/mono";
 import { ICONS } from "@dev.icons/core";
 
 const toPascal = (name: string): string =>
@@ -9,24 +10,27 @@ const toPascal = (name: string): string =>
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join("");
 
-const iconRegistry = (() => {
-  const ns = Icons as Record<string, unknown>;
-  return ICONS.flatMap((record) => {
+const buildRegistry = (ns: Record<string, unknown>) =>
+  ICONS.flatMap((record) => {
     const Icon = ns[toPascal(record.name)];
     if (typeof Icon !== "object" && typeof Icon !== "function") return [];
     return [{ name: record.name, Icon: Icon as object }];
   });
-})();
+
+const colorRegistry = buildRegistry(ColorIcons as Record<string, unknown>);
+const monoRegistry = buildRegistry(MonoIcons as Record<string, unknown>);
 
 const query = ref("");
-const mono = ref(false);
+const variant = ref<"colorful" | "mono">("colorful");
 const toast = ref<string | null>(null);
 let toastTimer: number | undefined;
 
+const registry = computed(() => variant.value === "mono" ? monoRegistry : colorRegistry);
+
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase();
-  if (!q) return iconRegistry;
-  return iconRegistry.filter((i) => i.name.toLowerCase().includes(q));
+  if (!q) return registry.value;
+  return registry.value.filter((i) => i.name.toLowerCase().includes(q));
 });
 
 const copy = (name: string): void => {
@@ -49,20 +53,20 @@ const copy = (name: string): void => {
       />
       <div class="flex items-center gap-1 text-sm border border-gray-300 rounded overflow-hidden">
         <button
-          :class="['px-3 py-1.5 hover:bg-gray-100', !mono && 'bg-gray-900 text-white']"
-          @click="mono = false"
+          :class="['px-3 py-1.5 hover:bg-gray-100', variant === 'colorful' && 'bg-gray-900 text-white']"
+          @click="variant = 'colorful'"
         >
           Colorful
         </button>
         <button
-          :class="['px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300', mono && 'bg-gray-900 text-white']"
-          @click="mono = true"
+          :class="['px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300', variant === 'mono' && 'bg-gray-900 text-white']"
+          @click="variant = 'mono'"
         >
           Mono
         </button>
       </div>
       <span class="text-xs text-gray-500 tabular-nums">
-        {{ filtered.length.toLocaleString() }} of {{ iconRegistry.length.toLocaleString() }}
+        {{ filtered.length.toLocaleString() }} of {{ registry.length.toLocaleString() }}
       </span>
     </div>
   </header>
@@ -86,7 +90,7 @@ const copy = (name: string): void => {
         title="Click to copy"
         @click="copy(name)"
       >
-        <component :is="Icon" size="48px" :mono="mono" />
+        <component :is="Icon" size="48px" />
         <span class="text-xs text-gray-600 truncate w-full text-center">{{ name }}</span>
       </button>
     </div>

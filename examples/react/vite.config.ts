@@ -7,6 +7,7 @@ export default defineConfig({
   server: { port: 5184 },
   resolve: {
     alias: {
+      "@dev.icons/react/mono": path.resolve(__dirname, "../../packages/react/src/mono.ts"),
       "@dev.icons/react": path.resolve(__dirname, "../../packages/react/src/index.ts"),
     },
   },
