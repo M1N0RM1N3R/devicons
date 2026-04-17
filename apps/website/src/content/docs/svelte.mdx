@@ -24,23 +24,33 @@ npm install @devicons/svelte
 
 ```svelte
 <script lang="ts">
-  import { SvelteIcon, ReactIcon } from "@devicons/svelte";
+  import { SvelteIcon } from "@devicons/svelte";
 </script>
 
-<div class="flex gap-3">
-  <SvelteIcon size={48} />
-  <ReactIcon size={48} mono />
-</div>
+<SvelteIcon size={48} />
 ```
+
+## Monochrome variants
+
+Import from the `/mono` subpath:
+
+```svelte
+<script lang="ts">
+  import { SvelteIcon } from "@devicons/svelte/mono";
+</script>
+
+<SvelteIcon size={48} />
+```
+
+Monochrome icons use `currentColor`, so they inherit the parent's text color.
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `size` | `number \| string` | `24` | Width and height shortcut |
-| `mono` | `boolean` | `false` | Monochrome variant using `currentColor` |
 | `title` | `string` | `undefined` | Accessible label |
-| `color` | `string` | `currentColor` | Fill override for monochrome variants |
+| `color` | `string` | `currentColor` | Fill override |
 
 ## SvelteKit
 
@@ -48,10 +58,10 @@ No special config needed. Import inside any `+page.svelte`, `+layout.svelte`, or
 
 ```svelte
 <script lang="ts">
-  import { GithubIcon } from "@devicons/svelte";
+  import { GithubIcon } from "@devicons/svelte/mono";
 </script>
 
 <a href="https://github.com" aria-label="GitHub">
-  <GithubIcon size={24} mono />
+  <GithubIcon size={24} />
 </a>
 ```

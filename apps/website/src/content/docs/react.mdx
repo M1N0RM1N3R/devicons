@@ -30,6 +30,20 @@ export function Logo() {
 }
 ```
 
+## Monochrome variants
+
+Import from the `/mono` subpath:
+
+```tsx
+import { ReactIcon } from "@devicons/react/mono";
+
+export function MonoLogo() {
+  return <ReactIcon size={32} />;
+}
+```
+
+Monochrome icons use `currentColor`, so they inherit the parent's text color.
+
 ## Props
 
 Every icon accepts standard SVG props plus these:
@@ -37,9 +51,8 @@ Every icon accepts standard SVG props plus these:
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `size` | `number \| string` | `24` | Sets both `width` and `height` |
-| `mono` | `boolean` | `false` | Monochrome variant using `currentColor` |
 | `title` | `string` | `undefined` | Accessible name rendered as `<title>` |
-| `color` | `string` | `currentColor` | Override color for monochrome variants |
+| `color` | `string` | `currentColor` | Override fill color |
 
 Anything else (`className`, `onClick`, `aria-*`, `data-*`) is forwarded to the root `<svg>`.
 
@@ -79,7 +92,9 @@ Icons are decorative by default (`aria-hidden="true"`). When an icon carries mea
 For icon-only buttons, put the label on the button instead:
 
 ```tsx
+import { ReactIcon } from "@devicons/react/mono";
+
 <button aria-label="Open React docs">
-  <ReactIcon size={20} mono />
+  <ReactIcon size={20} />
 </button>
 ```
