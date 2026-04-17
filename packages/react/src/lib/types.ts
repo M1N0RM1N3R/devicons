@@ -11,8 +11,6 @@ export interface IconProps
   color?: string;
   size?: string | number;
   mirrored?: boolean;
-  mono?: boolean;
 }
 
-export type IconType = "icon" | "font";
 export type Icon = ForwardRefExoticComponent<IconProps>;

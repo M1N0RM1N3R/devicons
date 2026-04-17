@@ -5,7 +5,7 @@ import { IconContextKey, defaultContext } from "./context";
 
 const props = defineProps<
   IconProps & {
-    icons: Map<string, string>;
+    content: string;
   }
 >();
 
@@ -14,8 +14,6 @@ const context = inject(IconContextKey, defaultContext);
 const resolvedColor = computed(() => props.color ?? context.color ?? "currentColor");
 const resolvedSize = computed(() => props.size ?? context.size ?? "1em");
 const resolvedMirrored = computed(() => props.mirrored ?? context.mirrored ?? false);
-const resolvedMono = computed(() => props.mono ?? context.mono ?? false);
-const iconContent = computed(() => props.icons.get(resolvedMono.value ? "font" : "icon") ?? "");
 </script>
 
 <template>
@@ -30,6 +28,6 @@ const iconContent = computed(() => props.icons.get(resolvedMono.value ? "font" :
   >
     <title v-if="props.alt">{{ props.alt }}</title>
     <slot />
-    <g v-html="iconContent" />
+    <g v-html="content" />
   </svg>
 </template>

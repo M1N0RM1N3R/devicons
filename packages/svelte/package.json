@@ -40,6 +40,17 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
+    },
+    "./mono": {
+      "svelte": "./dist/mono.mjs",
+      "import": {
+        "types": "./dist/mono.d.mts",
+        "default": "./dist/mono.mjs"
+      },
+      "require": {
+        "types": "./dist/mono.d.cts",
+        "default": "./dist/mono.cjs"
+      }
     }
   },
   "files": [

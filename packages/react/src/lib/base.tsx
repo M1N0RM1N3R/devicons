@@ -1,20 +1,15 @@
-import React, { forwardRef, useContext, ReactElement } from 'react';
-import { IconContext } from './ctx';
-import { IconProps, IconType } from './types';
+import React, { forwardRef, useContext } from "react";
+import { IconContext } from "./ctx";
+import { IconProps } from "./types";
 
-interface BaseProps extends IconProps {
-  icons: Map<IconType, ReactElement>;
-}
-
-const Base = forwardRef<SVGSVGElement, BaseProps>((props, ref) => {
-  const { color, size, mirrored, children, icons, ...rest } = props;
+const Base = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
+  const { color, size, mirrored, children, ...rest } = props;
 
   const {
     alt,
-    color: contextColor = 'currentColor',
+    color: contextColor = "currentColor",
     size: contextSize,
     mirrored: contextMirrored = false,
-    mono: contextMono = false,
     ...restContext
   } = useContext(IconContext);
 
@@ -26,16 +21,16 @@ const Base = forwardRef<SVGSVGElement, BaseProps>((props, ref) => {
       height={size ?? contextSize}
       fill={color ?? contextColor}
       viewBox="0 0 600 600"
-      transform={mirrored || contextMirrored ? 'scale(-1, 1)' : undefined}
+      transform={mirrored || contextMirrored ? "scale(-1, 1)" : undefined}
       {...restContext}
-      {...rest}>
+      {...rest}
+    >
       {!!alt && <title>{alt}</title>}
       {children}
-      {icons.get(contextMono ? "font" : "icon")}
     </svg>
   );
 });
 
-Base.displayName = 'Base';
+Base.displayName = "Base";
 
 export default Base;

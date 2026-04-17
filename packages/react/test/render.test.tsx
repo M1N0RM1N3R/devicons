@@ -1,17 +1,15 @@
 import { describe, it, expect } from "vitest";
-import React, { ReactElement } from "react";
+import React from "react";
 import { render } from "@testing-library/react";
 import SSRBase from "../src/lib/ssr";
-import type { IconType } from "../src/lib/types";
-
-const icons = new Map<IconType, ReactElement>([
-  ["icon", <path key="icon" data-testid="body" d="M1 2" />],
-  ["font", <circle key="font" data-testid="body-font" r="10" />],
-]);
 
 describe("SSRBase", () => {
   it("renders an svg with default viewBox and icon body", () => {
-    const { container, getByTestId } = render(<SSRBase icons={icons} />);
+    const { container, getByTestId } = render(
+      <SSRBase>
+        <path data-testid="body" d="M1 2" />
+      </SSRBase>
+    );
     const svg = container.querySelector("svg")!;
     expect(svg.getAttribute("viewBox")).toBe("0 0 600 600");
     expect(svg.getAttribute("fill")).toBe("currentColor");
@@ -20,7 +18,9 @@ describe("SSRBase", () => {
 
   it("applies color and size props", () => {
     const { container } = render(
-      <SSRBase icons={icons} color="red" size={32} />
+      <SSRBase color="red" size={32}>
+        <path d="M1 2" />
+      </SSRBase>
     );
     const svg = container.querySelector("svg")!;
     expect(svg.getAttribute("fill")).toBe("red");
@@ -29,19 +29,22 @@ describe("SSRBase", () => {
   });
 
   it("mirrored prop applies transform", () => {
-    const { container } = render(<SSRBase icons={icons} mirrored />);
+    const { container } = render(
+      <SSRBase mirrored>
+        <path d="M1 2" />
+      </SSRBase>
+    );
     expect(container.querySelector("svg")!.getAttribute("transform")).toBe(
       "scale(-1, 1)"
     );
   });
 
-  it("mono switches to monochrome variant", () => {
-    const { getByTestId } = render(<SSRBase icons={icons} mono />);
-    expect(getByTestId("body-font")).toBeTruthy();
-  });
-
   it("renders <title> when alt provided", () => {
-    const { container } = render(<SSRBase icons={icons} alt="node" />);
+    const { container } = render(
+      <SSRBase alt="node">
+        <path d="M1 2" />
+      </SSRBase>
+    );
     expect(container.querySelector("title")?.textContent).toBe("node");
   });
 });
