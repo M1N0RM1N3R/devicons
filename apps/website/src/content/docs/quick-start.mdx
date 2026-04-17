@@ -6,7 +6,7 @@ category: "Getting Started"
 categoryOrder: 0
 ---
 
-This guide assumes you already have a React, Vue, or Svelte project running. If not, start with [Installation](/docs/installation).
+Assumes you have a React, Vue, or Svelte project running. If not, start with [Installation](/docs/installation).
 
 ## 1. Install
 
@@ -34,28 +34,32 @@ Every icon is a named export. The component name is PascalCase + `Icon`, so `nex
 
 ## 3. Switch to monochrome
 
-Full-color icons are the default. Add the `mono` prop to get a single-color variant that inherits `currentColor`.
+Full-color icons are the default. Import from the `/mono` subpath to get single-color variants that inherit `currentColor`.
 
 ```tsx
+import { ReactIcon } from "@devicons/react/mono";
+
 <div className="text-accent">
-  <ReactIcon size={48} mono />
+  <ReactIcon size={48} />
 </div>
 ```
 
 ## 4. Make it interactive
 
-Icons accept every SVG attribute: `onClick`, `aria-label`, `role`, and so on.
+Icons accept all SVG attributes: `onClick`, `aria-label`, `role`, etc.
 
 ```tsx
+import { GithubIcon } from "@devicons/react/mono";
+
 <button
   type="button"
   aria-label="View on GitHub"
   className="text-text-muted hover:text-accent transition-colors"
 >
-  <GithubIcon size={24} mono />
+  <GithubIcon size={24} />
 </button>
 ```
 
 ## That's it
 
-You're shipping Devicons. Browse the [icon library](/search) for the full catalog, or read the [React guide](/docs/react) for props, tree-shaking, and SSR.
+Browse the [icon library](/search) for the full catalog, or read the [React guide](/docs/react) for props, tree-shaking, and SSR.

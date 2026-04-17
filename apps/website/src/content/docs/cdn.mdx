@@ -9,21 +9,13 @@ badge: "new"
 
 import Note from "../../components/docs/note.astro";
 
-Every Devicons package is published to npm, which means every file is reachable through a public npm CDN. Reach for this when you need:
-
-- Quick prototypes and CodePen / JSFiddle demos
-- Zero-build legacy stacks (WordPress, Rails, Django templates)
-- Loading individual SVGs on demand from static HTML
-- ESM imports directly in the browser
-- A region-friendly mirror when `npmjs.com` is slow
+Every Devicons package is on npm, so every file is reachable through public CDNs. Use this for prototypes, CodePen demos, zero-build stacks, or loading SVGs from static HTML.
 
 ## Providers
 
-Four public mirrors are supported. Pick the one closest to your audience and the right tool for the file type you need.
-
 ### UNPKG
 
-Default for any file. Global CDN, US origin — fastest choice for most demos.
+Global CDN, US origin. Default for most use cases.
 
 ```
 https://unpkg.com/<pkg>@<version>/<path>
@@ -31,7 +23,7 @@ https://unpkg.com/<pkg>@<version>/<path>
 
 ### jsDelivr
 
-Multi-region (US / EU / Asia) with aggressive edge caching. Good balance of speed and availability worldwide.
+Multi-region (US / EU / Asia) with edge caching.
 
 ```
 https://cdn.jsdelivr.net/npm/<pkg>@<version>/<path>
@@ -39,7 +31,7 @@ https://cdn.jsdelivr.net/npm/<pkg>@<version>/<path>
 
 ### npmmirror
 
-China-friendly mirror. Use when UNPKG or jsDelivr is slow or blocked in your target region.
+China-friendly mirror. Use when other CDNs are slow or blocked.
 
 ```
 https://registry.npmmirror.com/<pkg>/<version>/files/<path>
@@ -47,19 +39,19 @@ https://registry.npmmirror.com/<pkg>/<version>/files/<path>
 
 ### Skypack
 
-ESM JavaScript imports only — not for CSS, SVG, or font files. Serves pinned, optimized modules you can `import` straight into the browser.
+ESM imports only, not for CSS, SVG, or font files.
 
 ```
 https://cdn.skypack.dev/<pkg>@<version>
 ```
 
 <Note variant="warn" title="Pin a version in production">
-`@latest` (or omitting the version entirely) is fine for sandboxes. In production, always pin a semver — unpinned URLs break silently when we ship a new major.
+`@latest` is fine for sandboxes. In production, always pin a semver version.
 </Note>
 
 ## Icon font
 
-Serve `devicons` directly — one `<link>` tag is enough. Skypack is skipped here because it targets JS modules, not stylesheets.
+One `<link>` tag is enough.
 
 **UNPKG**
 
@@ -88,17 +80,17 @@ Serve `devicons` directly — one `<link>` tag is enough. Skypack is skipped her
 />
 ```
 
-Then drop an `<i>` anywhere:
+Then use it:
 
 ```html
 <i class="devicon devicon-react"></i>
 ```
 
-See the [icon font guide](/docs/icon-font) for sizing, color, and the full slug list.
+See the [icon font guide](/docs/icon-font) for sizing and color.
 
 ## SVG sprite
 
-The sprite is a single `<svg>` document containing every icon as a `<symbol>`. Reference icons with `<use>` — ideal when many icons render on one page without the bloat of individual requests.
+A single `<svg>` containing every icon as a `<symbol>`. Reference with `<use>`. Good for pages with many icons.
 
 **UNPKG**
 
@@ -124,22 +116,17 @@ The sprite is a single `<svg>` document containing every icon as a `<symbol>`. R
 </svg>
 ```
 
-<Note variant="info" title="Symbol ids match icon slugs">
+<Note variant="info" title="Symbol IDs match icon slugs">
 
-Every `<symbol>` id in the sprite is the icon slug from the [icon library](/icons):
-
-- `#react`, `#vue`, `#svelte` — base logos
-- `#nextjs-icon`, `#postgresql-icon` — glyph-only variants
+`<symbol>` IDs are the slugs from the [icon library](/icons): `#react`, `#vue`, `#nextjs-icon`, etc.
 
 </Note>
 
-## Raw SVGs via @dev.icons/core
+## Raw SVGs
 
-`@dev.icons/core` ships every icon as an individual SVG under `export-files/icons/`. You can fetch, embed, or inline any of them directly — no bundler, no wrapper.
+Every icon is available as an individual SVG under `export-files/icons/`.
 
-### 1. Inline as `<img>`
-
-Simplest approach, works everywhere.
+### As `<img>`
 
 ```html
 <img
@@ -150,9 +137,9 @@ Simplest approach, works everywhere.
 />
 ```
 
-### 2. Fetch and inject
+### Fetch and inject
 
-Pulling the raw markup lets you style the icon with CSS (color, stroke, filters).
+Fetching raw SVG markup lets you style it with CSS.
 
 ```html
 <span class="icon" data-icon="postgresql" aria-hidden="true"></span>
@@ -169,45 +156,39 @@ Pulling the raw markup lets you style the icon with CSS (color, stroke, filters)
 </script>
 ```
 
-### 3. Import as ES module (Skypack)
+### ES module via Skypack
 
-Skypack serves the package as a pinned, optimized ES module — no install, no bundler:
+No install, no bundler:
 
 ```html
 <script type="module">
   import { react, vue, postgresql } from "https://cdn.skypack.dev/@dev.icons/core@latest";
 
-  // Each export is a plain SVG string
   document.getElementById("logo").innerHTML = react;
 </script>
 ```
 
-### 4. Fetch from a build script / server
+### Server-side fetch
 
 ```ts
-// Node 18+ or any modern runtime
 const url =
   "https://registry.npmmirror.com/@dev.icons/core/latest/files/export-files/icons/typescript.svg";
 
 const svg = await fetch(url).then((r) => r.text());
-console.log(svg);
-// '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">...</svg>'
 ```
 
 ### Icon variants
 
-Most brands ship both a full logo and a glyph-only mark. Append the variant directly to the slug:
+Most brands have a full logo and a glyph-only mark:
 
 | Path | Example |
 | --- | --- |
 | `icons/<slug>.svg` | `icons/react.svg` |
 | `icons/<slug>-icon.svg` | `icons/nextjs-icon.svg` |
 
-Slugs are the same ones listed on the [icon library](/icons).
-
 ## Versioning and caching
 
-UNPKG, jsDelivr, and npmmirror all honor semver range URLs:
+All CDNs honor semver ranges:
 
 ```
 https://unpkg.com/@dev.icons/core@1.2.3/export-files/icons/react.svg
@@ -217,14 +198,14 @@ https://unpkg.com/@dev.icons/core@latest/export-files/icons/react.svg
 
 <Note variant="tip" title="Cache behavior">
 
-- **Pinned** (`@1.2.3`) — immutable, cached forever at the edge. Always use in production.
-- **Range** (`@^1`) — revalidated periodically; picks up patches and minors automatically.
-- **`@latest`** — drifts with every release. Fine for demos, risky in production.
+- **Pinned** (`@1.2.3`) -- cached forever at the edge. Use in production.
+- **Range** (`@^1`) -- revalidated periodically, picks up patches and minors.
+- **`@latest`** -- changes with every release. Fine for demos only.
 
 </Note>
 
 ## When CDN is not enough
 
-- You need tree-shaken, typed components → use [`@dev.icons/react`](/docs/react), [`@dev.icons/vue`](/docs/vue), or [`@dev.icons/svelte`](/docs/svelte).
-- You need programmatic metadata (tags, variants, search) → install [`@dev.icons/core`](/docs/core) locally.
-- You want SSR-rendered markup without a runtime → [`@dev.icons/core`](/docs/core) exports each icon as a plain SVG string.
+- Tree-shaken, typed components: [`@dev.icons/react`](/docs/react), [`@dev.icons/vue`](/docs/vue), [`@dev.icons/svelte`](/docs/svelte)
+- Programmatic metadata: install [`@dev.icons/core`](/docs/core) locally
+- SSR markup without a runtime: [`@dev.icons/core`](/docs/core) exports each icon as a plain SVG string
