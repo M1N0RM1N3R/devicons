@@ -1027,6 +1027,13 @@ body *:not(canvas):not(svg *) {
   opacity: 1;
 }
 
+/* Vaul drawer scroll lock — CSS-only so nothing leaks across
+   Astro view-transition navigations (vaul's JS scroll-lock
+   adds window/document listeners that survive the DOM swap). */
+body:has([data-vaul-drawer][data-state="open"]) {
+  overflow: hidden;
+}
+
 /* ============================================================
    Mobile drawers — navbar menu + docs sidebar.
    Brutalist slide-in panels. State driven by [data-state].
