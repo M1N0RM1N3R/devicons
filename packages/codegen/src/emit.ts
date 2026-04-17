@@ -45,18 +45,18 @@ export const generate = async (options: GenerateOptions): Promise<number> => {
   const batchSize = options.batchSize ?? 200;
   const generator = GENERATORS[framework];
 
-  const defsDir = path.join(outDir, "defs");
   const iconsDir = path.join(
     outDir,
     framework === "react" ? "ssr" : "icons"
   );
+  const monoDir = path.join(outDir, "mono");
 
-  ensureDir(defsDir);
   ensureDir(iconsDir);
+  ensureDir(monoDir);
 
   await Promise.all([
-    cleanDir(defsDir, ["*.ts", "*.tsx"]),
     cleanDir(iconsDir, ["*.ts", "*.tsx", "*.vue", "*.svelte"]),
+    cleanDir(monoDir, ["*.ts", "*.tsx", "*.vue", "*.svelte"]),
   ]);
 
   const pretty = options.pretty ?? false;
@@ -73,31 +73,37 @@ export const generate = async (options: GenerateOptions): Promise<number> => {
   }));
 
   await writeBatched(resolved, batchSize, async (icon) => {
-    const { defs, component } = generator.emit(icon);
+    const colorful = generator.emitComponent(icon, "icon");
+    const mono = generator.emitComponent(icon, "font");
 
-    const defsContent = formatter
-      ? await formatter(defs, "babel-ts")
-      : defs;
-    const componentContent =
+    const formatTsx = async (s: string) =>
       formatter && generator.extension === "tsx"
-        ? await formatter(component, "babel-ts")
-        : component;
+        ? await formatter(s, "babel-ts")
+        : s;
+
+    const [colorfulContent, monoContent] = await Promise.all([
+      formatTsx(colorful),
+      formatTsx(mono),
+    ]);
 
     await Promise.all([
       writeFile(
-        path.join(defsDir, `${icon.componentName}.${generator.defsExtension}`),
-        defsContent
+        path.join(iconsDir, `${icon.componentName}.${generator.extension}`),
+        colorfulContent
       ),
       writeFile(
-        path.join(iconsDir, `${icon.componentName}.${generator.extension}`),
-        componentContent
+        path.join(monoDir, `${icon.componentName}.${generator.extension}`),
+        monoContent
       ),
     ]);
   });
 
   const names = resolved.map((i) => i.componentName);
   const barrelContent = generator.emitBarrel(names);
-  await writeFile(path.join(iconsDir, "index.ts"), barrelContent);
+  await Promise.all([
+    writeFile(path.join(iconsDir, "index.ts"), barrelContent),
+    writeFile(path.join(monoDir, "index.ts"), barrelContent),
+  ]);
 
   return icons.length;
 };

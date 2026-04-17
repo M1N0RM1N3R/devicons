@@ -8,20 +8,11 @@ export interface IconRecord {
   fontSvg: string;
 }
 
-export interface EmittedFile {
-  path: string;
-  content: string;
-}
-
-export interface GeneratorOutput {
-  defs: EmittedFile;
-  component: EmittedFile;
-}
+export type Variant = "icon" | "font";
 
 export interface Generator {
   extension: "tsx" | "vue" | "svelte";
-  defsExtension: "tsx" | "ts";
   resolveName: (base: string) => string;
   emitBarrel: (names: string[]) => string;
-  emit: (icon: IconRecord) => { defs: string; component: string };
+  emitComponent: (icon: IconRecord, variant: Variant) => string;
 }

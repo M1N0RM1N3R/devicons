@@ -1,38 +1,25 @@
-import type { Generator, IconRecord } from "../types";
+import type { Generator, IconRecord, Variant } from "../types";
 
 const escape = (s: string) =>
   s.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
 
-const defsTemplate = (icon: IconRecord) =>
-  `/* GENERATED FILE - DO NOT EDIT */
-import type { IconType } from "../lib/types";
-
-export default new Map<IconType, string>([
-  ["icon", \`${escape(icon.iconSvg)}\`],
-  ["font", \`${escape(icon.fontSvg)}\`],
-]);
-`;
-
-const componentTemplate = (icon: IconRecord) =>
+const componentTemplate = (icon: IconRecord, variant: Variant) =>
   `<!-- GENERATED FILE - DO NOT EDIT -->
 <script lang="ts">
   import Base from "../lib/Base.svelte";
-  import icons from "../defs/${icon.componentName}";
+
+  const content = \`${escape(variant === "icon" ? icon.iconSvg : icon.fontSvg)}\`;
 
   const { ...rest } = $props();
 </script>
 
-<Base {...rest} {icons} />
+<Base {...rest} {content} />
 `;
 
 export const svelteGenerator: Generator = {
   extension: "svelte",
-  defsExtension: "ts",
   resolveName: (base) => base,
-  emit: (icon) => ({
-    defs: defsTemplate(icon),
-    component: componentTemplate(icon),
-  }),
+  emitComponent: componentTemplate,
   emitBarrel: (names) =>
     `/* GENERATED FILE - DO NOT EDIT */
 ${names

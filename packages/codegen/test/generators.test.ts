@@ -34,35 +34,48 @@ describe("generator output snapshots", () => {
     fontSvg: '<path d="M100 100h800v800H100z"/>',
   };
 
-  it("reactGenerator matches snapshot", () => {
-    const { defs, component } = reactGenerator.emit(icon);
-    expect(defs).toMatchSnapshot("react-defs");
-    expect(component).toMatchSnapshot("react-component");
-    expect(defs).toContain("clipRule");
+  it("reactGenerator colorful matches snapshot", () => {
+    const component = reactGenerator.emitComponent(icon, "icon");
+    expect(component).toMatchSnapshot("react-colorful");
+    expect(component).toContain("clipRule");
   });
 
-  it("vueGenerator matches snapshot", () => {
-    const { defs, component } = vueGenerator.emit(icon);
-    expect(defs).toMatchSnapshot("vue-defs");
-    expect(component).toMatchSnapshot("vue-component");
-    expect(defs).toContain("clip-rule");
+  it("reactGenerator mono matches snapshot", () => {
+    const component = reactGenerator.emitComponent(icon, "font");
+    expect(component).toMatchSnapshot("react-mono");
+    expect(component).toContain("M100 100");
   });
 
-  it("svelteGenerator matches snapshot", () => {
-    const { defs, component } = svelteGenerator.emit(icon);
-    expect(defs).toMatchSnapshot("svelte-defs");
-    expect(component).toMatchSnapshot("svelte-component");
+  it("vueGenerator colorful matches snapshot", () => {
+    const component = vueGenerator.emitComponent(icon, "icon");
+    expect(component).toMatchSnapshot("vue-colorful");
+    expect(component).toContain("clip-rule");
   });
 
-  it("vue/svelte defs escape backticks and ${ in source", () => {
+  it("vueGenerator mono matches snapshot", () => {
+    const component = vueGenerator.emitComponent(icon, "font");
+    expect(component).toMatchSnapshot("vue-mono");
+  });
+
+  it("svelteGenerator colorful matches snapshot", () => {
+    const component = svelteGenerator.emitComponent(icon, "icon");
+    expect(component).toMatchSnapshot("svelte-colorful");
+  });
+
+  it("svelteGenerator mono matches snapshot", () => {
+    const component = svelteGenerator.emitComponent(icon, "font");
+    expect(component).toMatchSnapshot("svelte-mono");
+  });
+
+  it("vue/svelte escape backticks and ${ in source", () => {
     const evil = {
       ...icon,
       iconSvg: '<path d="`${injected}`"/>',
       fontSvg: "<path/>",
     };
-    expect(vueGenerator.emit(evil).defs).toContain("\\`");
-    expect(vueGenerator.emit(evil).defs).toContain("\\${");
-    expect(svelteGenerator.emit(evil).defs).toContain("\\`");
+    expect(vueGenerator.emitComponent(evil, "icon")).toContain("\\`");
+    expect(vueGenerator.emitComponent(evil, "icon")).toContain("\\${");
+    expect(svelteGenerator.emitComponent(evil, "icon")).toContain("\\`");
   });
 
   it("barrel exports list all component names", () => {
@@ -87,7 +100,7 @@ describe("generate writes to disk", () => {
     fs.rmSync(tmp, { recursive: true, force: true });
   });
 
-  it("emits defs + components + barrel for each framework", async () => {
+  it("emits colorful + mono components + barrels for each framework", async () => {
     const icons = await loadIcons({
       iconsDir: path.join(FIXTURES, "icons"),
       fontDir: path.join(FIXTURES, "font"),
@@ -107,15 +120,15 @@ describe("generate writes to disk", () => {
     expect(vc).toBe(2);
     expect(sc).toBe(2);
 
-    expect(fs.existsSync(path.join(reactOut, "defs/Sample.tsx"))).toBe(true);
     expect(fs.existsSync(path.join(reactOut, "ssr/Sample.tsx"))).toBe(true);
+    expect(fs.existsSync(path.join(reactOut, "mono/Sample.tsx"))).toBe(true);
     expect(fs.existsSync(path.join(reactOut, "ssr/index.ts"))).toBe(true);
+    expect(fs.existsSync(path.join(reactOut, "mono/index.ts"))).toBe(true);
 
-    expect(fs.existsSync(path.join(vueOut, "defs/Sample.ts"))).toBe(true);
     expect(fs.existsSync(path.join(vueOut, "icons/Sample.vue"))).toBe(true);
+    expect(fs.existsSync(path.join(vueOut, "mono/Sample.vue"))).toBe(true);
 
-    expect(fs.existsSync(path.join(svelteOut, "icons/Sample.svelte"))).toBe(
-      true
-    );
+    expect(fs.existsSync(path.join(svelteOut, "icons/Sample.svelte"))).toBe(true);
+    expect(fs.existsSync(path.join(svelteOut, "mono/Sample.svelte"))).toBe(true);
   });
 });

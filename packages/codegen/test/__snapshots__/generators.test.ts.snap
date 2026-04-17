@@ -1,14 +1,15 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`generator output snapshots > reactGenerator matches snapshot > react-component 1`] = `
+exports[`generator output snapshots > reactGenerator colorful matches snapshot > react-colorful 1`] = `
 "/* GENERATED FILE - DO NOT EDIT */
 import React, { forwardRef } from "react";
 import type { Icon } from "../lib/types";
 import SSRBase from "../lib/ssr";
-import icons from "../defs/DeviconsSample";
 
 const I: Icon = forwardRef((props, ref) => (
-  <SSRBase ref={ref} {...props} icons={icons} />
+  <SSRBase ref={ref} {...props}>
+    <path d="M3 3h18v18H3z" clipRule="evenodd"/>
+  </SSRBase>
 ));
 
 I.displayName = "DeviconsSample";
@@ -16,74 +17,79 @@ export { I as DeviconsSample };
 "
 `;
 
-exports[`generator output snapshots > reactGenerator matches snapshot > react-defs 1`] = `
+exports[`generator output snapshots > reactGenerator mono matches snapshot > react-mono 1`] = `
 "/* GENERATED FILE - DO NOT EDIT */
-import React, { ReactElement } from "react";
-import { IconType } from "../lib";
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
 
-export default new Map<IconType, ReactElement>([
-  [
-    "icon",
-    <>
-      <path d="M3 3h18v18H3z" clipRule="evenodd"/>
-    </>,
-  ],
-  [
-    "font",
-    <>
-      <path d="M100 100h800v800H100z"/>
-    </>,
-  ],
-]);
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M100 100h800v800H100z"/>
+  </SSRBase>
+));
+
+I.displayName = "DeviconsSample";
+export { I as DeviconsSample };
 "
 `;
 
-exports[`generator output snapshots > svelteGenerator matches snapshot > svelte-component 1`] = `
+exports[`generator output snapshots > svelteGenerator colorful matches snapshot > svelte-colorful 1`] = `
 "<!-- GENERATED FILE - DO NOT EDIT -->
 <script lang="ts">
   import Base from "../lib/Base.svelte";
-  import icons from "../defs/DeviconsSample";
+
+  const content = \`<path d="M3 3h18v18H3z" clip-rule="evenodd"/>\`;
 
   const { ...rest } = $props();
 </script>
 
-<Base {...rest} {icons} />
+<Base {...rest} {content} />
 "
 `;
 
-exports[`generator output snapshots > svelteGenerator matches snapshot > svelte-defs 1`] = `
-"/* GENERATED FILE - DO NOT EDIT */
-import type { IconType } from "../lib/types";
+exports[`generator output snapshots > svelteGenerator mono matches snapshot > svelte-mono 1`] = `
+"<!-- GENERATED FILE - DO NOT EDIT -->
+<script lang="ts">
+  import Base from "../lib/Base.svelte";
 
-export default new Map<IconType, string>([
-  ["icon", \`<path d="M3 3h18v18H3z" clip-rule="evenodd"/>\`],
-  ["font", \`<path d="M100 100h800v800H100z"/>\`],
-]);
+  const content = \`<path d="M100 100h800v800H100z"/>\`;
+
+  const { ...rest } = $props();
+</script>
+
+<Base {...rest} {content} />
 "
 `;
 
-exports[`generator output snapshots > vueGenerator matches snapshot > vue-component 1`] = `
+exports[`generator output snapshots > vueGenerator colorful matches snapshot > vue-colorful 1`] = `
 "<!-- GENERATED FILE - DO NOT EDIT -->
 <script setup lang="ts">
 import Base from "../lib/Base.vue";
-import icons from "../defs/DeviconsSample";
 
 defineOptions({ name: "DeviconsSample" });
+
+const content = \`<path d="M3 3h18v18H3z" clip-rule="evenodd"/>\`;
 </script>
 
 <template>
-  <Base v-bind="$attrs" :icons="icons" />
+  <Base v-bind="$attrs" :content="content" />
 </template>
 "
 `;
 
-exports[`generator output snapshots > vueGenerator matches snapshot > vue-defs 1`] = `
-"/* GENERATED FILE - DO NOT EDIT */
-import type { IconType } from "../lib/types";
+exports[`generator output snapshots > vueGenerator mono matches snapshot > vue-mono 1`] = `
+"<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
 
-export default new Map<IconType, string>([
-  ["icon", \`<path d="M3 3h18v18H3z" clip-rule="evenodd"/>\`],
-  ["font", \`<path d="M100 100h800v800H100z"/>\`],
-]);
+defineOptions({ name: "DeviconsSample" });
+
+const content = \`<path d="M100 100h800v800H100z"/>\`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>
 "
 `;
