@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <g><path d="M186.651 222.906L222.872 243.815V356.167L186.651 377.084V222.906Z" fill="currentColor"/><path d="M248.721 258.737V341.239L320.165 299.979L248.721 258.737Z" fill="currentColor"/><path d="M371.848 299.979L248.721 371.076V411.122L441.19 299.995L248.721 188.867V228.892L371.848 299.979Z" fill="currentColor"/><path d="M299.992 600C465.679 600 600 465.692 600 300C600 134.308 465.679 0 299.992 0C134.305 0 0 134.308 0 300C0 465.692 134.305 600 299.992 600ZM222.872 144.094L492.888 299.995L222.872 455.88V386.002L160.802 421.842V178.133L222.872 213.968V144.094Z" fill="currentColor"/></g>
+  </SSRBase>
+));
+
+I.displayName = "PluralsightIcon";
+export { I as PluralsightIcon };

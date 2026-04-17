@@ -1,0 +1,14 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path fill="currentColor"
+        d="M552.519 142.013 312.459 3.338a24.92 24.92 0 0 0-24.929 0L47.481 142.013A20.98 20.98 0 0 0 37 160.18v279.64c0 7.499 4 14.423 10.481 18.166l240.06 138.676a24.93 24.93 0 0 0 24.929 0l240.06-138.676a20.98 20.98 0 0 0 10.481-18.166V160.18a20.98 20.98 0 0 0-10.481-18.167zm-15.079 29.375L305.697 573.004c-1.567 2.707-5.703 1.602-5.703-1.533V308.497a14.75 14.75 0 0 0-7.359-12.754L65.028 164.262c-2.705-1.568-1.6-5.706 1.533-5.706h463.486c6.581 0 10.695 7.138 7.404 12.843h-.011z" />
+  </SSRBase>
+));
+
+I.displayName = "CursorIcon";
+export { I as CursorIcon };

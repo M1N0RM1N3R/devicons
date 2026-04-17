@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M589.505 57.7266H299.125L258.892 120.7L468.805 250.146L589.505 57.7266Z" fill="currentColor"/><path d="M258.892 120.7L64.7217 0V290.379L132.944 328.863L468.805 250.146L258.892 120.7Z" fill="currentColor"/><path d="M531.78 309.619L468.806 271.135L339.359 479.298L531.78 599.998V309.619Z" fill="currentColor"/><path d="M468.805 271.135L131.194 351.601L10.4941 540.522H300.874L339.359 479.298L468.805 271.135Z" fill="currentColor"/>
+  </SSRBase>
+));
+
+I.displayName = "ModxIcon";
+export { I as ModxIcon };

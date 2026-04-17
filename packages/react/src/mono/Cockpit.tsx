@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <g><path d="M300 600C465.684 600 600 465.684 600 300C600 134.316 465.684 0 300 0C134.316 0 0 134.316 0 300C0 465.684 134.316 600 300 600ZM260.822 201.9L174.317 288.403C151.751 310.971 173.691 332.908 196.257 310.343L325.386 181.214C409.383 97.2161 542.588 230.421 458.59 314.418L420.04 352.968L474.575 407.503L409.383 472.694L304.074 367.385L401.234 270.225C419.621 251.838 393.608 225.825 375.221 244.211L239.197 380.236C153.319 454.83 32.9653 335.73 105.678 246.719L203.466 144.543L260.822 201.9Z" fill="currentColor"/></g>
+  </SSRBase>
+));
+
+I.displayName = "Cockpit";
+export { I as Cockpit };

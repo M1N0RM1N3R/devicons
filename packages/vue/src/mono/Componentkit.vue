@@ -1,0 +1,12 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+
+defineOptions({ name: "Componentkit" });
+
+const content = `<g><path d="M217.377 317.824L399.767 500.214L299.981 600L117.591 417.61L217.377 317.824ZM500.214 200.196L600 299.981L417.61 482.372L317.824 382.586L500.214 200.196ZM300.019 0L399.804 99.7859L99.7859 399.804L0 300.019L300.019 0Z" fill="currentColor"/></g>`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>

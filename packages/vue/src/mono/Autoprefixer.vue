@@ -1,0 +1,12 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+
+defineOptions({ name: "Autoprefixer" });
+
+const content = `<path d="M146.004 525.4H218.472L240.853 448.668H352.753L375.133 525.4H451.865L300.533 74.6003L146.004 525.4ZM300.533 270.693L338.899 394.316H262.167L300.533 270.693ZM600 436.945L592.54 406.039L434.814 390.053L455.062 444.405L600 436.945ZM165.187 394.316L7.46004 410.302L0 441.208L146.004 448.668L165.187 394.316Z" fill="currentColor"/>`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>

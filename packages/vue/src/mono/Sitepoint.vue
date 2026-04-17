@@ -1,0 +1,12 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+
+defineOptions({ name: "Sitepoint" });
+
+const content = `<g><path fill-rule="evenodd" clip-rule="evenodd" d="M538.193 336.75L493.943 294.45L354.068 165.938L293.768 223.2C288.256 230.7 288.631 240.825 294.893 247.837L350.018 295.312L349.831 295.387L409.081 352.012C416.093 359.812 415.906 371.362 408.556 378.862L248.806 530.662L321.443 600L538.193 394.05C554.806 378.225 554.843 352.575 538.193 336.675V336.75Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M61.7555 263.325L106.005 305.512L245.955 434.025L306.218 376.762C311.693 369.337 311.318 359.137 305.093 352.125L249.968 304.575L250.155 304.462L190.868 247.875C183.93 240.112 184.118 228.525 191.43 221.062L351.18 69.1875L278.543 0L61.793 205.95C45.1805 221.775 45.1805 247.462 61.793 263.325H61.7555Z" fill="currentColor"/></g>`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>

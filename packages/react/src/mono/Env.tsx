@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <g><path d="M600 0V600H0V0H600ZM273.325 397.25H171V535.25H275.95V512H198.875V474.425H268.125V451.175H198.875V420.575H273.325V397.225V397.25ZM326.975 397.25H299.875V535.25H325.75V445.25L381.4 535.25H409.35V397.25H383.45V489.4L326.975 397.225V397.25ZM454.9 397.25H424.7L474.025 535.25H503.775L553.175 397.25H523.625L489.825 499.375L454.9 397.225V397.25ZM135 492H93V534H135V492Z" fill="currentColor"/></g>
+  </SSRBase>
+));
+
+I.displayName = "Env";
+export { I as Env };

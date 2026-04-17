@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M357.755 401.87L355.658 408.073L466.204 595.572L472.461 599.999L587.967 400.266L472.461 199.73L357.755 401.87Z" fill="currentColor"/><path d="M125.135 0L12.0332 199.733L129.547 401.871L241.445 199.733L241.143 191.564L130.291 4.06305L125.135 0Z" fill="currentColor"/><path d="M125.136 0L241.446 199.733H472.461L355.348 0H125.136Z" fill="currentColor"/><path d="M129.548 401.871L243.453 600H472.461L357.756 401.871H129.548Z" fill="currentColor"/>
+  </SSRBase>
+));
+
+I.displayName = "Hibernate";
+export { I as Hibernate };

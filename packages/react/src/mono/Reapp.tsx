@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <g><path d="M185.531 0C185.531 0 72.7969 0 72.7969 112.735V507.296C72.7969 507.296 185.531 509.549 185.531 396.256V197.284V174.736V140.913C185.531 125.347 198.15 112.735 213.709 112.735H244.148H297.135C406.486 112.735 408.739 0 408.739 0H185.531Z" fill="currentColor"/><path d="M414.47 203.753V402.718V425.266V459.089C414.47 474.655 401.851 487.267 386.292 487.267H355.853H302.873C193.522 487.267 191.262 600.002 191.262 600.002H414.47C414.47 600.002 527.204 600.002 527.204 487.267V92.7064C527.204 92.7064 414.47 90.453 414.47 203.753Z" fill="currentColor"/></g>
+  </SSRBase>
+));
+
+I.displayName = "Reapp";
+export { I as Reapp };

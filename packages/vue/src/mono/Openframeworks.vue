@@ -1,0 +1,12 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+
+defineOptions({ name: "Openframeworks" });
+
+const content = `<path d="M158.182 141.816C245.455 141.816 316.364 212.725 316.364 299.998C316.364 387.271 245.455 458.18 158.182 458.18C70.9091 458.18 0 387.271 0 299.998C0 212.725 70.9091 141.816 158.182 141.816ZM458.182 141.816V458.18H321.818V141.816H458.182ZM545.455 283.635V365.453H463.636V283.635H545.455ZM600 141.816L463.636 278.18V141.816H600Z" fill="currentColor"/>`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>
