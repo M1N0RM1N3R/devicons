@@ -108,15 +108,17 @@ export function SearchDrawer({ allIcons }: SearchDrawerProps) {
       setIcon(null);
       scrubVaulResidue();
     };
-    const onAfterSwap = () => {
+    const onSwapOrLoad = () => {
       scrubVaulResidue();
       setMountKey(k => k + 1);
     };
     document.addEventListener('astro:before-swap', onBeforeSwap);
-    document.addEventListener('astro:after-swap', onAfterSwap);
+    document.addEventListener('astro:after-swap', onSwapOrLoad);
+    document.addEventListener('astro:page-load', onSwapOrLoad);
     return () => {
       document.removeEventListener('astro:before-swap', onBeforeSwap);
-      document.removeEventListener('astro:after-swap', onAfterSwap);
+      document.removeEventListener('astro:after-swap', onSwapOrLoad);
+      document.removeEventListener('astro:page-load', onSwapOrLoad);
     };
   }, [setIcon]);
 
@@ -132,7 +134,7 @@ export function SearchDrawer({ allIcons }: SearchDrawerProps) {
     : null;
 
   return (
-    <Drawer key={mountKey} open={!!iconParam} onOpenChange={handleOpenChange}>
+    <Drawer key={mountKey} open={!!iconParam} onOpenChange={handleOpenChange} shouldScaleBackground={false}>
       <DrawerContent className="bg-bg border-t border-border max-h-[95vh] sm:max-h-[85vh]">
         <div className="sr-only">
           <DrawerHeader>
