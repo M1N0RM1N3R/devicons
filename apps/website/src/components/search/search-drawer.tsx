@@ -68,7 +68,7 @@ function DrawerBody({ icon }: { icon: IconEntry }) {
         />
       </div>
 
-      <InstallTabs icons={icon.icons?.length ? icon.icons : [icon.id]} />
+      <InstallTabs icons={icon.icons?.length ? icon.icons : [icon.id]} mono={variant === 'font'} />
     </div>
   );
 }
