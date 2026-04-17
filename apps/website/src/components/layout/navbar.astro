@@ -1,11 +1,12 @@
 ---
 const GITHUB_REPO = 'https://github.com/vorillaz/devicons';
-const pathname = Astro.url.pathname;
+const raw = Astro.url.pathname;
+const pathname = raw.length > 1 && raw.endsWith('/') ? raw.slice(0, -1) : raw;
 const isDocs = pathname === '/docs' || pathname.startsWith('/docs/');
-const isIcons = pathname === '/search' || pathname.startsWith('/search/');
+const isSearch = pathname === '/search' || pathname.startsWith('/search/');
 const navLinks = [
   { href: '/icons', label: 'All Icons', active: pathname === '/icons' },
-  { href: '/search', label: 'Search', active: isIcons },
+  { href: '/search', label: 'Search', active: isSearch },
   { href: '/docs', label: 'Docs', active: isDocs },
 ];
 ---
@@ -424,15 +425,19 @@ const navLinks = [
   // `is-active` class is stuck on the first-visited page. Recompute it
   // during the view-transition swap so the bracket fade lines up with
   // the page fade instead of flashing after the transition finishes.
+  // Strip trailing slash so `/icons/` matches the href `/icons`.
+  const norm = (p: string) => p.length > 1 && p.endsWith('/') ? p.slice(0, -1) : p;
+
   const matchesPath = (target: string, pathname: string) => {
-    if (target === '/') return pathname === '/';
+    const p = norm(pathname);
+    if (target === '/') return p === '/';
     if (target === '/search') {
-      return pathname === '/search' || pathname.startsWith('/search/');
+      return p === '/search' || p.startsWith('/search/');
     }
     if (target === '/docs') {
-      return pathname === '/docs' || pathname.startsWith('/docs/');
+      return p === '/docs' || p.startsWith('/docs/');
     }
-    return pathname === target;
+    return p === target;
   };
 
   function syncActiveLink(pathname: string) {
