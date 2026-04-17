@@ -24,25 +24,37 @@ npm install @devicons/vue
 
 ```vue
 <script setup lang="ts">
-import { ReactIcon, VueIcon } from "@devicons/vue";
+import { VueIcon } from "@devicons/vue";
 </script>
 
 <template>
-  <div class="flex gap-3">
-    <VueIcon :size="48" />
-    <ReactIcon :size="48" mono />
-  </div>
+  <VueIcon :size="48" />
 </template>
 ```
+
+## Monochrome variants
+
+Import from the `/mono` subpath:
+
+```vue
+<script setup lang="ts">
+import { VueIcon } from "@devicons/vue/mono";
+</script>
+
+<template>
+  <VueIcon :size="48" />
+</template>
+```
+
+Monochrome icons use `currentColor`, so they inherit the parent's text color.
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `size` | `Number \| String` | `24` | Shortcut for `width` and `height` |
-| `mono` | `Boolean` | `false` | Monochrome variant |
 | `title` | `String` | `undefined` | Adds an SVG `<title>` for accessibility |
-| `color` | `String` | `currentColor` | Fill override for monochrome icons |
+| `color` | `String` | `currentColor` | Fill override |
 
 ## Nuxt
 

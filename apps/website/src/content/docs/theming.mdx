@@ -6,19 +6,21 @@ category: "Customization"
 categoryOrder: 3
 ---
 
-Devicons ships two variants per icon: a full-color brand mark and a monochrome glyph that inherits `currentColor`. The monochrome variant is the one you style.
+Devicons ships two variants per icon: a full-color brand mark and a monochrome glyph that inherits `currentColor`. Import the monochrome variant from the `/mono` subpath.
 
 ## Tint with currentColor
 
 Wrap the icon in an element with a text color. The monochrome variant picks it up.
 
 ```tsx
+import { ReactIcon, GithubIcon } from "@devicons/react/mono";
+
 <div className="text-accent">
-  <ReactIcon mono size={48} />
+  <ReactIcon size={48} />
 </div>
 
 <button className="text-text-muted hover:text-accent transition-colors">
-  <GithubIcon mono size={20} />
+  <GithubIcon size={20} />
 </button>
 ```
 
@@ -27,7 +29,9 @@ Wrap the icon in an element with a text color. The monochrome variant picks it u
 For a one-off color, pass it directly:
 
 ```tsx
-<ReactIcon mono color="#ff4d00" size={48} />
+import { ReactIcon } from "@devicons/react/mono";
+
+<ReactIcon color="#ff4d00" size={48} />
 ```
 
 ## CSS custom properties
@@ -45,8 +49,10 @@ Hook icons into your design token system:
 ```
 
 ```tsx
+import { ReactIcon } from "@devicons/react/mono";
+
 <span className="icon">
-  <ReactIcon mono size={48} />
+  <ReactIcon size={48} />
 </span>
 ```
 
