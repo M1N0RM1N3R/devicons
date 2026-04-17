@@ -13,7 +13,7 @@ Each icon has two variants: a full-color brand mark and a monochrome glyph that 
 Set a text color on the parent element. Monochrome icons inherit it.
 
 ```tsx
-import { ReactIcon, GithubIcon } from "@devicons/react/mono";
+import { ReactIcon, GithubIcon } from "@dev.icons/react/mono";
 
 <div className="text-accent">
   <ReactIcon size={48} />
@@ -29,7 +29,7 @@ import { ReactIcon, GithubIcon } from "@devicons/react/mono";
 Pass a color directly for one-off use:
 
 ```tsx
-import { ReactIcon } from "@devicons/react/mono";
+import { ReactIcon } from "@dev.icons/react/mono";
 
 <ReactIcon color="#ff4d00" size={48} />
 ```
@@ -49,7 +49,7 @@ Use design tokens to control icon color:
 ```
 
 ```tsx
-import { ReactIcon } from "@devicons/react/mono";
+import { ReactIcon } from "@dev.icons/react/mono";
 
 <span className="icon">
   <ReactIcon size={48} />
@@ -61,7 +61,7 @@ import { ReactIcon } from "@devicons/react/mono";
 Some brands have different marks for light and dark backgrounds. Devicons exposes suffix variants for these:
 
 ```tsx
-import { GithubIcon, GithubLightIcon } from "@devicons/react";
+import { GithubIcon, GithubLightIcon } from "@dev.icons/react";
 
 function ThemedLogo() {
   return (

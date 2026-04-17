@@ -1,13 +1,13 @@
 ---
-import { render } from "astro:content";
-import { getSortedDocs } from "../../lib/docs";
-import Docs from "../../layouts/Docs.astro";
-import { faqSchema } from "../../lib/seo";
+import { render } from 'astro:content';
+import { getSortedDocs } from '../../lib/docs';
+import Docs from '../../layouts/Docs.astro';
+import { faqSchema } from '../../lib/seo';
 
 export async function getStaticPaths() {
-  const INDEX_ID = "introduction";
+  const INDEX_ID = 'introduction';
   const docs = await getSortedDocs();
-  return docs.map((entry) => ({
+  return docs.map(entry => ({
     params: { slug: entry.id === INDEX_ID ? undefined : entry.id },
     props: { entry, isIndex: entry.id === INDEX_ID },
   }));
@@ -19,24 +19,24 @@ const { Content, headings } = await render(entry);
 const DOC_FAQS: Record<string, Array<{ question: string; answer: string }>> = {
   installation: [
     {
-      question: "How do I install Devicons in a React project?",
+      question: 'How do I install Devicons in a React project?',
       answer:
-        "Run `npm install @devicons/react`. Then import an icon component, e.g. `import { React } from '@devicons/react'`.",
+        "Run `npm install @dev.icons/react`. Then import an icon component, e.g. `import { React } from '@dev.icons/react'`.",
     },
     {
-      question: "Does Devicons work with Vue and Svelte?",
+      question: 'Does Devicons work with Vue and Svelte?',
       answer:
-        "Yes. Install the matching package — `@devicons/vue` or `@devicons/svelte` — and import components the same way.",
+        'Yes. Install the matching package — `@dev.icons/vue` or `@dev.icons/svelte` — and import components the same way.',
     },
     {
-      question: "Can I use raw SVG files instead of components?",
+      question: 'Can I use raw SVG files instead of components?',
       answer:
-        "Yes. Every icon is available as an optimized SVG; download directly from the icon page or the Devicons GitHub repository.",
+        'Yes. Every icon is available as an optimized SVG; download directly from the icon page or the Devicons GitHub repository.',
     },
     {
-      question: "What license are Devicons released under?",
+      question: 'What license are Devicons released under?',
       answer:
-        "Devicons is released under the MIT license. Brand assets remain the property of their respective owners.",
+        'Devicons is released under the MIT license. Brand assets remain the property of their respective owners.',
     },
   ],
 };
@@ -54,7 +54,6 @@ const extraJsonLd = DOC_FAQS[entry.id]
   category={entry.data.category}
   headings={headings}
   isIndex={isIndex}
-  extraJsonLd={extraJsonLd}
->
+  extraJsonLd={extraJsonLd}>
   <Content />
 </Docs>
