@@ -5,6 +5,7 @@ type TabId = 'react' | 'vue' | 'svelte' | 'astro' | 'font';
 
 interface InstallTabsProps {
   icons: string[];
+  mono?: boolean;
   className?: string;
 }
 
@@ -32,34 +33,35 @@ interface Snippet {
   code: string;
 }
 
-function snippetsFor(tab: TabId, icons: string[]): Snippet[] {
+function snippetsFor(tab: TabId, icons: string[], mono: boolean): Snippet[] {
   const components = icons.map(toComponentName);
   const importList = components.join(', ');
+  const subpath = mono ? '/mono' : '';
 
   if (tab === 'react') {
     return [
-      { label: 'Import', code: `import { ${importList} } from "@dev.icons/react";` },
+      { label: 'Import', code: `import { ${importList} } from "@dev.icons/react${subpath}";` },
       { label: 'Render', code: components.map(c => `<${c} size={32} />`).join('\n') },
     ];
   }
 
   if (tab === 'vue') {
     return [
-      { label: 'Import', code: `import { ${importList} } from "@dev.icons/vue";` },
+      { label: 'Import', code: `import { ${importList} } from "@dev.icons/vue${subpath}";` },
       { label: 'Render', code: components.map(c => `<${c} :size="32" />`).join('\n') },
     ];
   }
 
   if (tab === 'svelte') {
     return [
-      { label: 'Import', code: `import { ${importList} } from "@dev.icons/svelte";` },
+      { label: 'Import', code: `import { ${importList} } from "@dev.icons/svelte${subpath}";` },
       { label: 'Render', code: components.map(c => `<${c} size={32} />`).join('\n') },
     ];
   }
 
   if (tab === 'astro') {
     return [
-      { label: 'Import', code: `---\nimport { ${importList} } from "@dev.icons/react";\n---` },
+      { label: 'Import', code: `---\nimport { ${importList} } from "@dev.icons/react${subpath}";\n---` },
       { label: 'Render', code: components.map(c => `<${c} size={32} client:load />`).join('\n') },
     ];
   }
@@ -104,9 +106,9 @@ function Snippet({ snippet }: { snippet: Snippet }) {
   );
 }
 
-export function InstallTabs({ icons, className }: InstallTabsProps) {
+export function InstallTabs({ icons, mono = false, className }: InstallTabsProps) {
   const [tab, setTab] = useState<TabId>('react');
-  const snippets = snippetsFor(tab, icons);
+  const snippets = snippetsFor(tab, icons, mono);
 
   return (
     <div className={clsx('install-tabs', className)}>
