@@ -1027,11 +1027,104 @@ body *:not(canvas):not(svg *) {
   opacity: 1;
 }
 
-/* Vaul drawer scroll lock — CSS-only so nothing leaks across
-   Astro view-transition navigations (vaul's JS scroll-lock
-   adds window/document listeners that survive the DOM swap). */
+/* ── Vaul drawer ─────────────────────────────────────────────
+   Vaul injects its animation CSS via a runtime <style> tag at
+   module-load time.  Astro's view-transition head-merge strips
+   that tag on every soft navigation and the ES module never
+   re-executes, so the animations disappear.  Duplicating the
+   essential rules here makes them immune to the merge.
+   ────────────────────────────────────────────────────────── */
+
+/* Scroll lock — CSS-only so nothing leaks across navigations. */
 body:has([data-vaul-drawer][data-state="open"]) {
   overflow: hidden;
+}
+
+/* Base transition on the drawer content element. */
+[data-vaul-drawer] {
+  touch-action: none;
+  will-change: transform;
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Slide in / out — bottom direction (the only one we use). */
+[data-vaul-drawer][data-vaul-snap-points="false"][data-vaul-drawer-direction="bottom"][data-state="open"] {
+  animation-name: vaulSlideIn;
+}
+[data-vaul-drawer][data-vaul-snap-points="false"][data-vaul-drawer-direction="bottom"][data-state="closed"] {
+  animation-name: vaulSlideOut;
+}
+
+/* Snap-point positioning (fallback initial transform). */
+[data-vaul-drawer][data-vaul-snap-points="true"][data-vaul-drawer-direction="bottom"] {
+  transform: translate3d(0, var(--initial-transform, 100%), 0);
+}
+
+/* Kill animation when vaul says so (drag gestures, etc.). */
+[data-vaul-animate="false"] {
+  animation: none !important;
+}
+
+/* Overlay fade. */
+[data-vaul-overlay][data-vaul-snap-points="false"] {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+[data-vaul-overlay][data-vaul-snap-points="false"][data-state="open"] {
+  animation-name: vaulFadeIn;
+}
+[data-vaul-overlay][data-state="closed"] {
+  animation-name: vaulFadeOut;
+}
+
+/* Overlay with snap-points: opacity-driven, no animation. */
+[data-vaul-overlay][data-vaul-snap-points="true"] {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+[data-vaul-overlay][data-vaul-snap-points="true"][data-state="open"] {
+  opacity: 1;
+}
+[data-vaul-overlay][data-vaul-snap-points="true"]:not([data-vaul-snap-points-overlay="true"]):not([data-state="closed"]) {
+  opacity: 0;
+}
+[data-vaul-overlay][data-vaul-snap-points-overlay="true"] {
+  opacity: 1;
+}
+
+/* Extend drawer background past the fold so overscroll
+   doesn't reveal the page behind it. */
+[data-vaul-drawer]:not([data-vaul-custom-container="true"])::after {
+  content: "";
+  position: absolute;
+  background: inherit;
+  background-color: inherit;
+}
+[data-vaul-drawer][data-vaul-drawer-direction="bottom"]::after {
+  top: 100%;
+  bottom: initial;
+  left: 0;
+  right: 0;
+  height: 200%;
+}
+
+@keyframes vaulFadeIn  { from { opacity: 0 } }
+@keyframes vaulFadeOut { to   { opacity: 0 } }
+@keyframes vaulSlideIn {
+  from { transform: translate3d(0, var(--initial-transform, 100%), 0) }
+  to   { transform: translate3d(0, 0, 0) }
+}
+@keyframes vaulSlideOut {
+  to { transform: translate3d(0, var(--initial-transform, 100%), 0) }
+}
+
+/* Fine-pointer devices: prevent text selection while dragging. */
+@media (hover: hover) and (pointer: fine) {
+  [data-vaul-drawer] {
+    user-select: none;
+  }
 }
 
 /* ============================================================
