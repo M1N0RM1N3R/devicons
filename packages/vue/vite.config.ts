@@ -12,12 +12,15 @@ export default defineConfig({
   build: {
     target: "ES2017",
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      fileName: (format, name) => `${name}.${format === "umd" ? "cjs" : "mjs"}`,
+      entry: [resolve(__dirname, "src/index.ts"), resolve(__dirname, "src/mono.ts")],
+      fileName: (format, name) => `${name}.${format === "cjs" ? "cjs" : "mjs"}`,
     },
     rollupOptions: {
       external: Object.keys(pkg.peerDependencies),
-      input: "./src/index.ts",
+      input: {
+        index: "./src/index.ts",
+        mono: "./src/mono.ts",
+      },
       output: [
         {
           format: "es",
@@ -28,8 +31,10 @@ export default defineConfig({
           },
         },
         {
-          format: "umd",
-          name: "DeviconsVue",
+          format: "cjs",
+          preserveModules: true,
+          preserveModulesRoot: "src",
+          entryFileNames: "[name].cjs",
           globals: {
             vue: "Vue",
           },

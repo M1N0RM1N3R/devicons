@@ -1,6 +1,6 @@
 <script lang="ts">
   import Base from "../src/lib/Base.svelte";
-  const { icons, ...rest } = $props();
+  const { content, ...rest } = $props();
 </script>
 
-<Base {icons} {...rest} />
+<Base {content} {...rest} />

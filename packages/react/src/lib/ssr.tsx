@@ -1,19 +1,13 @@
-import React, { forwardRef, ReactElement } from "react";
-import { IconProps, IconType } from "./types";
+import React, { forwardRef } from "react";
+import { IconProps } from "./types";
 
-interface SsrBaseProps extends IconProps {
-  icons: Map<IconType, ReactElement>;
-}
-
-const SSRBase = forwardRef<SVGSVGElement, SsrBaseProps>((props, ref) => {
+const SSRBase = forwardRef<SVGSVGElement, IconProps>((props, ref) => {
   const {
     alt,
     color = "currentColor",
     size = "1em",
     mirrored = false,
     children,
-    mono = false,
-    icons,
     ...restProps
   } = props;
 
@@ -30,7 +24,6 @@ const SSRBase = forwardRef<SVGSVGElement, SsrBaseProps>((props, ref) => {
     >
       {!!alt && <title>{alt}</title>}
       {children}
-      {icons.get(mono ? "font" : "icon")}
     </svg>
   );
 });

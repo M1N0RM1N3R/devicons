@@ -5,5 +5,4 @@ export const IconContext = createContext<IconProps>({
   color: "currentColor",
   size: "1em",
   mirrored: false,
-  mono: false,
 });

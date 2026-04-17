@@ -7,5 +7,4 @@ export const defaultContext: IconProps = {
   color: "currentColor",
   size: "1em",
   mirrored: false,
-  mono: false,
 };
