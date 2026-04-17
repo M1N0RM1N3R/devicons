@@ -1,2 +1,2 @@
 export * from "./lib";
-export * from "./mono";
+export * from "./mono/index";

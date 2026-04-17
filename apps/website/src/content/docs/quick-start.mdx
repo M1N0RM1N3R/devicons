@@ -11,13 +11,13 @@ Assumes you have a React, Vue, or Svelte project running. If not, start with [In
 ## 1. Install
 
 ```bash
-npm install @devicons/react
+npm install @dev.icons/react
 ```
 
 ## 2. Import and render
 
 ```tsx
-import { ReactIcon, VueIcon, SvelteIcon } from "@devicons/react";
+import { ReactIcon, VueIcon, SvelteIcon } from "@dev.icons/react";
 
 export default function Stack() {
   return (
@@ -37,7 +37,7 @@ Every icon is a named export. The component name is PascalCase + `Icon`, so `nex
 Full-color icons are the default. Import from the `/mono` subpath to get single-color variants that inherit `currentColor`.
 
 ```tsx
-import { ReactIcon } from "@devicons/react/mono";
+import { ReactIcon } from "@dev.icons/react/mono";
 
 <div className="text-accent">
   <ReactIcon size={48} />
@@ -49,7 +49,7 @@ import { ReactIcon } from "@devicons/react/mono";
 Icons accept all SVG attributes: `onClick`, `aria-label`, `role`, etc.
 
 ```tsx
-import { GithubIcon } from "@devicons/react/mono";
+import { GithubIcon } from "@dev.icons/react/mono";
 
 <button
   type="button"
