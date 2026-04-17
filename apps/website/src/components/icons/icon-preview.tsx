@@ -1,7 +1,8 @@
 import {
   IconPreviewGrid,
   PreviewControls,
-  useIconPreviewState,
+  type IconVariant,
+  type IconBackground,
 } from './icon-preview-grid';
 
 interface IconPreviewProps {
@@ -9,6 +10,12 @@ interface IconPreviewProps {
   name: string;
   badInDark?: boolean;
   badInLight?: boolean;
+  previewState: {
+    variant: IconVariant;
+    setVariant: (v: IconVariant) => void;
+    bg: IconBackground;
+    setBg: (b: IconBackground) => void;
+  };
 }
 
 export function IconPreview({
@@ -16,9 +23,8 @@ export function IconPreview({
   name,
   badInDark,
   badInLight,
+  previewState: { variant, setVariant, bg, setBg },
 }: IconPreviewProps) {
-  const { variant, setVariant, bg, setBg } = useIconPreviewState();
-
   return (
     <div>
       <PreviewControls

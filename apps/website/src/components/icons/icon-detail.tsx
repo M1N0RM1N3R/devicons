@@ -1,4 +1,5 @@
 import { IconPreview } from './icon-preview';
+import { useIconPreviewState } from './icon-preview-grid';
 import { InstallTabs } from '../ui/install-tabs';
 
 interface IconDetailProps {
@@ -16,6 +17,8 @@ export function IconDetail({
   badInDark,
   badInLight,
 }: IconDetailProps) {
+  const previewState = useIconPreviewState();
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6">
       <div className="mb-8 sm:mb-12">
@@ -24,9 +27,13 @@ export function IconDetail({
           name={name}
           badInDark={badInDark}
           badInLight={badInLight}
+          previewState={previewState}
         />
       </div>
-      <InstallTabs icons={icons.length > 0 ? icons : [slug]} />
+      <InstallTabs
+        icons={icons.length > 0 ? icons : [slug]}
+        mono={previewState.variant === 'font'}
+      />
     </div>
   );
 }
