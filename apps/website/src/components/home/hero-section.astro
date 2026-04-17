@@ -402,7 +402,7 @@ const initialDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(initialSvgD
   type Logo = { id: string; label: string; svg: string; dispScale: number };
 
   function initHero() {
-  const copyBtn = document.querySelector<HTMLButtonElement>('.hero-copy');
+  const copyBtn = document.querySelector<HTMLButtonElement>('[data-copy]');
   if (copyBtn) {
     const label = copyBtn.querySelector<HTMLSpanElement>('[data-label]');
     const original = label?.textContent ?? '';
