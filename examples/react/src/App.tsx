@@ -7,12 +7,12 @@ import {
   type ComponentType,
   type ReactNode,
 } from "react";
-import * as Icons from "@dev.icons/react";
+import * as ColorIcons from "@dev.icons/react";
+import * as MonoIcons from "@dev.icons/react/mono";
 import { ICONS } from "@dev.icons/core";
 
 interface IconProps {
   size?: string;
-  mono?: boolean;
 }
 
 type IconNamespace = Record<string, ComponentType<IconProps> | unknown>;
@@ -23,14 +23,15 @@ const toPascal = (name: string): string =>
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join("");
 
-const iconRegistry = (() => {
-  const ns = Icons as IconNamespace;
-  return ICONS.flatMap((record) => {
+const buildRegistry = (ns: IconNamespace) =>
+  ICONS.flatMap((record) => {
     const Component = ns[toPascal(record.name)];
     if (!Component || (typeof Component !== "function" && typeof Component !== "object")) return [];
     return [{ name: record.name, Component: Component as ComponentType<IconProps> }];
   });
-})();
+
+const colorRegistry = buildRegistry(ColorIcons as IconNamespace);
+const monoRegistry = buildRegistry(MonoIcons as IconNamespace);
 
 class IconErrorBoundary extends Component<
   { children: ReactNode },
@@ -51,15 +52,17 @@ class IconErrorBoundary extends Component<
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const [mono, setMono] = useState(false);
+  const [variant, setVariant] = useState<"colorful" | "mono">("colorful");
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
 
+  const registry = variant === "mono" ? monoRegistry : colorRegistry;
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return iconRegistry;
-    return iconRegistry.filter((i) => i.name.toLowerCase().includes(q));
-  }, [query]);
+    if (!q) return registry;
+    return registry.filter((i) => i.name.toLowerCase().includes(q));
+  }, [query, registry]);
 
   useEffect(() => {
     return () => {
@@ -88,20 +91,20 @@ export default function App() {
           />
           <div className="flex items-center gap-1 text-sm border border-gray-300 rounded overflow-hidden">
             <button
-              className={`px-3 py-1.5 hover:bg-gray-100 ${!mono ? "bg-gray-900 text-white" : ""}`}
-              onClick={() => setMono(false)}
+              className={`px-3 py-1.5 hover:bg-gray-100 ${variant === "colorful" ? "bg-gray-900 text-white" : ""}`}
+              onClick={() => setVariant("colorful")}
             >
               Colorful
             </button>
             <button
-              className={`px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300 ${mono ? "bg-gray-900 text-white" : ""}`}
-              onClick={() => setMono(true)}
+              className={`px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300 ${variant === "mono" ? "bg-gray-900 text-white" : ""}`}
+              onClick={() => setVariant("mono")}
             >
               Mono
             </button>
           </div>
           <span className="text-xs text-gray-500 tabular-nums">
-            {filtered.length.toLocaleString()} of {iconRegistry.length.toLocaleString()}
+            {filtered.length.toLocaleString()} of {registry.length.toLocaleString()}
           </span>
         </div>
       </header>
@@ -124,7 +127,7 @@ export default function App() {
                 onClick={() => copy(name)}
               >
                 <IconErrorBoundary>
-                  <Icon size="48px" mono={mono} />
+                  <Icon size="48px" />
                 </IconErrorBoundary>
                 <span className="text-xs text-gray-600 truncate w-full text-center">
                   {name}

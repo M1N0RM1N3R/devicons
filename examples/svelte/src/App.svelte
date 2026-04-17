@@ -1,5 +1,6 @@
 <script lang="ts">
-  import * as Icons from "@dev.icons/svelte";
+  import * as ColorIcons from "@dev.icons/svelte";
+  import * as MonoIcons from "@dev.icons/svelte/mono";
   import { ICONS } from "@dev.icons/core";
 
   const toPascal = (name: string): string =>
@@ -8,24 +9,27 @@
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
       .join("");
 
-  const iconRegistry = (() => {
-    const ns = Icons as Record<string, unknown>;
-    return ICONS.flatMap((record) => {
+  const buildRegistry = (ns: Record<string, unknown>) =>
+    ICONS.flatMap((record) => {
       const Icon = ns[toPascal(record.name)];
       if (typeof Icon !== "function") return [];
       return [{ name: record.name, Icon }];
     });
-  })();
+
+  const colorRegistry = buildRegistry(ColorIcons as Record<string, unknown>);
+  const monoRegistry = buildRegistry(MonoIcons as Record<string, unknown>);
 
   let query = $state("");
-  let mono = $state(false);
+  let variant = $state<"colorful" | "mono">("colorful");
   let toast = $state<string | null>(null);
   let toastTimer: number | undefined;
 
+  const registry = $derived(variant === "mono" ? monoRegistry : colorRegistry);
+
   const filtered = $derived.by(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return iconRegistry;
-    return iconRegistry.filter((i) => i.name.toLowerCase().includes(q));
+    if (!q) return registry;
+    return registry.filter((i) => i.name.toLowerCase().includes(q));
   });
 
   const copy = (name: string): void => {
@@ -47,20 +51,20 @@
     />
     <div class="flex items-center gap-1 text-sm border border-gray-300 rounded overflow-hidden">
       <button
-        class="px-3 py-1.5 hover:bg-gray-100 {!mono ? 'bg-gray-900 text-white' : ''}"
-        onclick={() => (mono = false)}
+        class="px-3 py-1.5 hover:bg-gray-100 {variant === 'colorful' ? 'bg-gray-900 text-white' : ''}"
+        onclick={() => (variant = "colorful")}
       >
         Colorful
       </button>
       <button
-        class="px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300 {mono ? 'bg-gray-900 text-white' : ''}"
-        onclick={() => (mono = true)}
+        class="px-3 py-1.5 hover:bg-gray-100 border-l border-gray-300 {variant === 'mono' ? 'bg-gray-900 text-white' : ''}"
+        onclick={() => (variant = "mono")}
       >
         Mono
       </button>
     </div>
     <span class="text-xs text-gray-500 tabular-nums">
-      {filtered.length.toLocaleString()} of {iconRegistry.length.toLocaleString()}
+      {filtered.length.toLocaleString()} of {registry.length.toLocaleString()}
     </span>
   </div>
 </header>
@@ -79,7 +83,7 @@
           title="Click to copy"
           onclick={() => copy(name)}
         >
-          <Icon size="48px" {mono} />
+          <Icon size="48px" />
           <span class="text-xs text-gray-600 truncate w-full text-center">{name}</span>
         </button>
       {/each}
