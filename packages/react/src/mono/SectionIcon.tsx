@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M258.411 422.328L428.016 458.464V141.279L258.411 177.275V422.328ZM478.51 524.432L217.752 453.957V145.538L478.123 75.5742L478.495 524.447L478.51 524.432Z" fill="currentColor"/><path d="M371.559 0L121.488 90.704V509.281L371.559 600V0ZM166.05 484.699V115.316L321.622 67.3V532.7L166.05 484.684V484.699Z" fill="currentColor"/><path d="M371.56 153.234L396.234 148.014V97.582L371.56 104.196V153.234ZM371.56 495.512L396.234 502.172V451.693L371.56 446.427V495.512Z" fill="currentColor"/>
+  </SSRBase>
+));
+
+I.displayName = "SectionIcon";
+export { I as SectionIcon };

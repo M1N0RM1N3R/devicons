@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <g><path d="M466.625 549.45C418.95 581.375 361.625 600 300 600C134.425 600 0 465.575 0 300C0 134.425 134.425 0 300 0C465.575 0 600 134.425 600 300C600 389.575 560.65 470.025 498.325 525.025L230.475 180H180V419.9H220.375V231.275L466.625 549.45ZM383.325 336.125L423.325 387.65V180H383.325V336.125Z" fill="currentColor"/></g>
+  </SSRBase>
+));
+
+I.displayName = "NextjsIcon";
+export { I as NextjsIcon };

@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <g><path d="M1.12117 339.666C-1.94096 349.089 1.4128 359.414 9.42979 365.238L300 576.35L590.57 365.238C598.587 359.414 601.941 349.089 598.879 339.666L565.307 236.34L565.306 236.34L498.768 31.5553C495.346 21.0194 480.438 21.0166 477.016 31.5553L410.476 236.34H189.523L122.982 31.5553C119.56 21.0166 104.652 21.0194 101.23 31.5553L1.12117 339.666Z" fill="currentColor"/></g>
+  </SSRBase>
+));
+
+I.displayName = "Gitlab";
+export { I as Gitlab };

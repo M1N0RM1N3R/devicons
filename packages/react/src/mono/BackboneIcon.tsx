@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M58.5 0V261.25L138.5 215.5V131.75L211.75 173.5L287 130.5L58.5 0ZM541.25 0L312.5 130.5L388 173.75L461.5 131.75V215.5L541.5 261.25V0H541.25ZM293.75 141L58.75 275.5V600L293.75 466V372L138.5 461V323.5L293.75 235V141ZM306.25 141V235L461.75 323.5V461L306.25 372V466L541.5 600V275.5L306.25 141ZM192.5 307.5L151.25 331V377.5L205.5 408.5L287.5 361.75L192.5 307.5ZM407.75 307.5L312.75 361.5L394.75 408.5L449 377.5V331L407.75 307.5Z" fill="currentColor"/>
+  </SSRBase>
+));
+
+I.displayName = "BackboneIcon";
+export { I as BackboneIcon };

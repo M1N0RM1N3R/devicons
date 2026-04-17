@@ -1,0 +1,12 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+
+defineOptions({ name: "Patreon" });
+
+const content = `<path d="M105.787 11.3086V588.691H0V11.3086H105.787ZM383.571 11.3086C503.102 11.3086 600 108.207 600 227.737C600 347.267 503.102 444.166 383.571 444.166C264.041 444.166 167.143 347.267 167.143 227.737C167.143 108.207 264.041 11.3086 383.571 11.3086Z" fill="currentColor"/>`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>

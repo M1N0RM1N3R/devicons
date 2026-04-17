@@ -1,0 +1,12 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+
+defineOptions({ name: "Serverless" });
+
+const content = `<path d="M0 439.227H106.199L73.2967 538.593H0V439.227ZM0 250.319H168.752L135.853 349.684H0V250.319ZM0 61.4102H231.309L198.403 160.773H0V61.4102ZM335.974 61.4102H600V160.773H303.075L335.974 61.4102ZM273.423 250.319H599.999V349.684H240.521L273.423 250.319ZM210.869 439.227H599.998V538.593H177.97L210.869 439.227Z" fill="currentColor"/>`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>

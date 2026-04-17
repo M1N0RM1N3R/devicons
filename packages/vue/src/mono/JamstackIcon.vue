@@ -1,0 +1,12 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+
+defineOptions({ name: "JamstackIcon" });
+
+const content = `<g><path fill-rule="evenodd" clip-rule="evenodd" d="M0 300C0 134.113 134.113 0 300 0H600V300C600 465.886 465.886 600 300 600C134.113 600 0 465.886 0 300ZM283.688 535.011V316.311H64.9875L65.2153 319.831C73.5942 435.765 167.289 528.362 283.688 535.011ZM299.633 534.783C405.904 526.404 490.784 432.71 496.879 316.311H296.406V535.011L299.633 534.783ZM497.143 303.593V102.855H296.406V303.593H497.143Z" fill="currentColor"/></g>`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>

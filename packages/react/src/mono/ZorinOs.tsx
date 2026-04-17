@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M295.143 34.9648L150.373 35.0455L108.457 108.519H491.785L450.353 35.4485L295.143 34.9648ZM56.5863 199.686L0 299.598L52.7171 393.264H73.0705L360.758 199.686H56.5863ZM524.189 199.686L236.461 393.264H547.444L600 300.404L543.333 199.686H524.189ZM104.225 484.431L149.688 564.554L304.857 565.038L449.667 564.957L495.614 484.431H104.225Z" fill="currentColor"/>
+  </SSRBase>
+));
+
+I.displayName = "ZorinOs";
+export { I as ZorinOs };

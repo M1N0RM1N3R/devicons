@@ -1,0 +1,12 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script setup lang="ts">
+import Base from "../lib/Base.vue";
+
+defineOptions({ name: "TerraformIcon" });
+
+const content = `<path d="M400.001 389.803L564.001 295.203V105.703L400.001 200.503V389.803Z" fill="currentColor"/><path d="M218 105.7L382 200.5V389.8L218 295.1M36 189.4L200 284.1V94.7L36 0M218 505.3L382 600V410.6L218 315.9" fill="currentColor"/>`;
+</script>
+
+<template>
+  <Base v-bind="$attrs" :content="content" />
+</template>

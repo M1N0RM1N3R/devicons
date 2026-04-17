@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M277.146 192.725V527.349H0L277.146 192.725ZM277.146 72.6484C277.146 149.158 215.083 211.222 138.573 211.222C62.0637 211.222 0 149.158 0 72.6484H277.146ZM322.853 527.349C322.853 450.763 384.841 388.776 461.427 388.776C538.013 388.776 600 450.84 600 527.349H322.853ZM322.853 407.196V72.6484H600L322.853 407.196Z" fill="currentColor"/>
+  </SSRBase>
+));
+
+I.displayName = "ZendeskIcon";
+export { I as ZendeskIcon };

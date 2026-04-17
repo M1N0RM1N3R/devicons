@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M428.177 365.487V234.533L315.25 300.118L428.177 365.487Z" fill="currentColor"/><path d="M420.871 221.76L307.746 156.348V287.329L420.871 221.76Z" fill="currentColor"/><path d="M293.044 287.319V156.338L179.839 221.75L293.044 287.319Z" fill="currentColor"/><path d="M285.727 143.775L172.629 77.9844V209.159L285.727 143.775Z" fill="currentColor"/><path d="M420.871 378.073L307.746 312.719V443.679L420.871 378.073Z" fill="currentColor"/><path d="M293.044 443.685V312.719L179.839 378.082L293.044 443.685Z" fill="currentColor"/><path d="M556.172 300.118L442.882 234.541V365.487L556.172 300.118Z" fill="currentColor"/><path d="M157.898 209.159V77.9844L43.9518 143.775L157.898 209.159Z" fill="currentColor"/><path d="M285.727 456.263L172.629 390.709V521.84L285.727 456.263Z" fill="currentColor"/><path d="M157.898 521.848V390.719L43.9518 456.273L157.898 521.848Z" fill="currentColor"/><path d="M285.727 300.118L172.629 234.541V365.487L285.727 300.118Z" fill="currentColor"/><path d="M428.177 209.159V77.9844L315.25 143.775L428.177 209.159Z" fill="currentColor"/><path d="M307.75 0V130.938L420.875 65.3835L307.75 0Z" fill="currentColor"/><path d="M179.837 65.3835L293.042 130.938V0L179.837 65.3835Z" fill="currentColor"/><path d="M420.871 534.422L307.746 469.082V599.999L420.871 534.422Z" fill="currentColor"/><path d="M293.044 599.998V469.072L179.839 534.421L293.044 599.998Z" fill="currentColor"/><path d="M563.502 443.685V312.719L450.505 378.082L563.502 443.685Z" fill="currentColor"/><path d="M157.898 365.49V234.33L43.9518 300.121L157.898 365.49Z" fill="currentColor"/><path d="M150.609 378.073L36.4975 312.719V443.679L150.609 378.073Z" fill="currentColor"/><path d="M563.502 287.319V156.338L450.505 221.75L563.502 287.319Z" fill="currentColor"/><path d="M556.172 143.775L442.882 77.9844V209.159L556.172 143.775Z" fill="currentColor"/><path d="M556.172 456.263L442.882 390.709V521.84L556.172 456.263Z" fill="currentColor"/><path d="M428.177 521.848V390.719L315.25 456.273L428.177 521.848Z" fill="currentColor"/><path d="M150.609 221.76L36.4975 156.348V287.329L150.609 221.76Z" fill="currentColor"/>
+  </SSRBase>
+));
+
+I.displayName = "Mesos";
+export { I as Mesos };

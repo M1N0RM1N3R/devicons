@@ -1,0 +1,10 @@
+<!-- GENERATED FILE - DO NOT EDIT -->
+<script lang="ts">
+  import Base from "../lib/Base.svelte";
+
+  const content = `<path d="M200 600C255.2 600 300 555.2 300 500V400H200C144.8 400 100 444.8 100 500C100 555.2 144.8 600 200 600Z" fill="currentColor"/><path d="M100 300C100 244.8 144.8 200 200 200H300V400H200C144.8 400 100 355.2 100 300Z" fill="currentColor"/><path d="M100 100C100 44.8 144.8 0 200 0H300V200H200C144.8 200 100 155.2 100 100Z" fill="currentColor"/><path d="M300 0H400C455.2 0 500 44.8 500 100C500 155.2 455.2 200 400 200H300V0Z" fill="currentColor"/><path d="M500 300C500 355.2 455.2 400 400 400C344.8 400 300 355.2 300 300C300 244.8 344.8 200 400 200C455.2 200 500 244.8 500 300Z" fill="currentColor"/>`;
+
+  const { ...rest } = $props();
+</script>
+
+<Base {...rest} {content} />

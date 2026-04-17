@@ -1,0 +1,13 @@
+/* GENERATED FILE - DO NOT EDIT */
+import React, { forwardRef } from "react";
+import type { Icon } from "../lib/types";
+import SSRBase from "../lib/ssr";
+
+const I: Icon = forwardRef((props, ref) => (
+  <SSRBase ref={ref} {...props}>
+    <path d="M494.853 0H299.995L360.218 187.668H555.076L397.424 299.581L457.665 488.314C559.142 414.391 592.299 302.513 555.094 187.668L494.853 0ZM44.9139 187.668H239.772L299.995 0H105.155L44.9139 187.668C7.6909 302.513 40.8652 414.391 142.343 488.314L202.566 299.581L44.9139 187.668ZM142.343 488.314L299.995 600L457.647 488.314L299.995 374.777L142.343 488.314Z" fill="currentColor"/>
+  </SSRBase>
+));
+
+I.displayName = "Auth0Icon";
+export { I as Auth0Icon };
