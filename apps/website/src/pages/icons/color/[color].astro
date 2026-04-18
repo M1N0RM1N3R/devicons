@@ -45,7 +45,7 @@ const jsonLd = [
 const otherBuckets = COLOR_BUCKETS.filter((b) => b.slug !== bucket.slug);
 ---
 
-<PageLayout title={title} description={description} jsonLd={jsonLd}>
+<PageLayout title={title} description={description} image={`/og/icons/color/${bucket.slug}.png`} jsonLd={jsonLd}>
   <div class="max-w-[1400px] mx-auto px-6 pt-10">
     <Breadcrumbs
       items={[

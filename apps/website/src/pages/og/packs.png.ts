@@ -1,15 +1,17 @@
 import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
 import { renderOgImage } from '../../lib/og/render';
 import { ogShell } from '../../lib/og/layout';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 
 export const GET: APIRoute = async () => {
+  const packs = await getCollection('packs');
+
   const png = await renderOgImage(
     ogShell({
-      eyebrow: 'devicons.io',
-      title: SITE_TITLE,
-      description: SITE_DESCRIPTION,
-      titleSize: 72,
+      eyebrow: 'devicons.io / packs',
+      category: 'Packs',
+      title: 'Icon packs',
+      description: `${packs.length} hand-picked logo sets for the stacks you ship with — MERN, JAMstack, DevOps, modern data, and more.`,
     }),
   );
 
