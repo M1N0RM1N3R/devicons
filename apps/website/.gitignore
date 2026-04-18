@@ -2,6 +2,8 @@
 dist/
 # generated types
 .astro/
+# content-hash cache of build-time OG images (see src/lib/og/render.ts)
+.og-cache/
 # generated assets (populated by scripts/sync-assets.ts)
 public/devicons/
 
