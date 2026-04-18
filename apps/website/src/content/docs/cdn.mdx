@@ -1,84 +1,36 @@
 ---
 title: "CDN"
 description: "Use Devicons without npm — icon font, sprite, and raw SVGs straight from a CDN."
-order: 5
+order: 6
 category: "Packages"
 categoryOrder: 1
-badge: "new"
 ---
 
 import Note from "../../components/docs/note.astro";
+import { CdnTabs } from "../../components/docs/cdn-tabs.tsx";
+import {
+  FONT_PKG_NAME,
+  FONT_PKG_VERSION,
+  CORE_PKG_NAME,
+  CORE_PKG_VERSION,
+} from "../../lib/pkg-versions";
 
 Every Devicons package is on npm, so every file is reachable through public CDNs. Use this for prototypes, CodePen demos, zero-build stacks, or loading SVGs from static HTML.
-
-## Providers
-
-### UNPKG
-
-Global CDN, US origin. Default for most use cases.
-
-```
-https://unpkg.com/<pkg>@<version>/<path>
-```
-
-### jsDelivr
-
-Multi-region (US / EU / Asia) with edge caching.
-
-```
-https://cdn.jsdelivr.net/npm/<pkg>@<version>/<path>
-```
-
-### npmmirror
-
-China-friendly mirror. Use when other CDNs are slow or blocked.
-
-```
-https://registry.npmmirror.com/<pkg>/<version>/files/<path>
-```
-
-### Skypack
-
-ESM imports only, not for CSS, SVG, or font files.
-
-```
-https://cdn.skypack.dev/<pkg>@<version>
-```
-
-<Note variant="warn" title="Pin a version in production">
-`@latest` is fine for sandboxes. In production, always pin a semver version.
-</Note>
 
 ## Icon font
 
 One `<link>` tag is enough.
 
-**UNPKG**
-
-```html
-<link
+<CdnTabs
+  client:load
+  pkg={FONT_PKG_NAME}
+  version={FONT_PKG_VERSION}
+  path="css/devicons.min.css"
+  template={`<link
   rel="stylesheet"
-  href="https://unpkg.com/devicons@1.8.0/css/devicons.min.css"
+  href="{url}"
+/>`}
 />
-```
-
-**jsDelivr**
-
-```html
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/devicons@1.8.0/css/devicons.min.css"
-/>
-```
-
-**npmmirror**
-
-```html
-<link
-  rel="stylesheet"
-  href="https://registry.npmmirror.com/devicons/1.8.0/files/css/devicons.min.css"
-/>
-```
 
 Then use it:
 
@@ -92,29 +44,16 @@ See the [icon font guide](/docs/icon-font) for sizing and color.
 
 A single `<svg>` containing every icon as a `<symbol>`. Reference with `<use>`. Good for pages with many icons.
 
-**UNPKG**
-
-```html
-<svg class="icon" width="24" height="24" aria-label="React logo">
-  <use href="https://unpkg.com/@dev.icons/core@latest/export-files/sprite.svg#react"></use>
-</svg>
-```
-
-**jsDelivr**
-
-```html
-<svg class="icon" width="24" height="24">
-  <use href="https://cdn.jsdelivr.net/npm/@dev.icons/core@latest/export-files/sprite.svg#react"></use>
-</svg>
-```
-
-**npmmirror**
-
-```html
-<svg class="icon" width="24" height="24">
-  <use href="https://registry.npmmirror.com/@dev.icons/core/latest/files/export-files/sprite.svg#react"></use>
-</svg>
-```
+<CdnTabs
+  client:load
+  pkg={CORE_PKG_NAME}
+  version={CORE_PKG_VERSION}
+  path="export-files/sprite.svg"
+  fragment="#react"
+  template={`<svg class="icon" width="24" height="24" aria-label="React logo">
+  <use href="{url}"></use>
+</svg>`}
+/>
 
 <Note variant="info" title="Symbol IDs match icon slugs">
 
@@ -168,15 +107,6 @@ No install, no bundler:
 </script>
 ```
 
-### Server-side fetch
-
-```ts
-const url =
-  "https://registry.npmmirror.com/@dev.icons/core/latest/files/export-files/icons/typescript.svg";
-
-const svg = await fetch(url).then((r) => r.text());
-```
-
 ### Icon variants
 
 Most brands have a full logo and a glyph-only mark:
@@ -191,9 +121,7 @@ Most brands have a full logo and a glyph-only mark:
 All CDNs honor semver ranges:
 
 ```
-https://unpkg.com/@dev.icons/core@1.2.3/export-files/icons/react.svg
-https://cdn.jsdelivr.net/npm/@dev.icons/core@^1/export-files/icons/react.svg
-https://unpkg.com/@dev.icons/core@latest/export-files/icons/react.svg
+https://<cdn>/@dev.icons/core@1.2.3/export-files/icons/react.svg
 ```
 
 <Note variant="tip" title="Cache behavior">
