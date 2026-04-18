@@ -76,7 +76,7 @@ const initialDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(initialSvgD
           Logos & Icons for<br />people who ship.
         </h1>
         <div
-          class="hero-actions flex flex-wrap items-center gap-3 mt-5 sm:mt-6">
+          class="hero-actions flex flex-wrap items-center gap-3 justify-between mt-5 sm:mt-6">
           <a href="#icons" class="btn btn--primary btn--mono"> Browse Icons </a>
           <button
             type="button"
@@ -402,115 +402,121 @@ const initialDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(initialSvgD
   type Logo = { id: string; label: string; svg: string; dispScale: number };
 
   function initHero() {
-  const copyBtn = document.querySelector<HTMLButtonElement>('[data-copy]');
-  if (copyBtn) {
-    const label = copyBtn.querySelector<HTMLSpanElement>('[data-label]');
-    const original = label?.textContent ?? '';
-    copyBtn.addEventListener('click', async () => {
-      const text = copyBtn.dataset.copy ?? '';
-      try {
-        await navigator.clipboard.writeText(text);
-        if (label) {
-          label.textContent = 'Copied!';
-          setTimeout(() => {
-            label.textContent = original;
-          }, 2000);
-        }
-      } catch {}
-    });
-  }
-
-  const logoEl = document.querySelector<HTMLElement>('.hero-logo');
-  const shapeEl = logoEl?.querySelector<HTMLElement>('[data-glass-shape]');
-  const defsSvg = document.querySelector<SVGSVGElement>('.hero-glass-defs');
-
-  if (logoEl && shapeEl && defsSvg) {
-    const logos = JSON.parse(logoEl.dataset.logos ?? '[]') as Logo[];
-    installIdentityFilter(defsSvg, 'heroLiquid-fallback');
-
-    const filterIdFor = (id: string) => `heroLiquid-${id}`;
-    const mapReady = new Set<string>();
-
-    const filterSize = Math.max(shapeEl.clientWidth, 1);
-
-    const ensureMap = async (logo: Logo): Promise<boolean> => {
-      if (mapReady.has(logo.id)) return true;
-      const shader = await installLogoGlass(logo.svg, {
-        size: filterSize,
-        filterHost: defsSvg,
-        filterId: filterIdFor(logo.id),
-        strength: (logo.dispScale ?? 24) / 70,
-      });
-      if (!shader) return false;
-      mapReady.add(logo.id);
-      return true;
-    };
-
-    const pointToFilter = (logo: Logo) => {
-      shapeEl.style.setProperty(
-        '--liquid-filter-id',
-        mapReady.has(logo.id)
-          ? `url(#${filterIdFor(logo.id)})`
-          : 'url(#heroLiquid-fallback)',
-      );
-    };
-
-    const setLogoMask = (logo: Logo) => {
-      fetch(logo.svg)
-        .then(r => r.text())
-        .then(text => {
-          const compact = text
-            .replace(/<\?xml[^?]*\?>\s*/, '')
-            .replace(/\s+/g, ' ')
-            .trim();
-          const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(compact)}`;
-          shapeEl.style.setProperty('--logo', `url("${dataUrl}")`);
-        })
-        .catch(() => {
-          shapeEl.style.setProperty('--logo', `url("${logo.svg}")`);
-        });
-    };
-
-    if (logos.length) {
-      let idx = 0;
-      const first = logos[0];
-      if (first) {
-        void ensureMap(first).then(() => pointToFilter(first));
-      }
-      logos.slice(1).forEach(logo => {
-        scheduleIdle(() => void ensureMap(logo));
-      });
-
-      const next = () => {
-        idx = (idx + 1) % logos.length;
-        const logo = logos[idx];
-        if (!logo) return;
-        setLogoMask(logo);
-        void ensureMap(logo).then(() => pointToFilter(logo));
-      };
-
-      logoEl.addEventListener('click', next);
-      logoEl.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          next();
-        }
+    const copyBtn = document.querySelector<HTMLButtonElement>('[data-copy]');
+    if (copyBtn) {
+      const label = copyBtn.querySelector<HTMLSpanElement>('[data-label]');
+      const original = label?.textContent ?? '';
+      copyBtn.addEventListener('click', async () => {
+        const text = copyBtn.dataset.copy ?? '';
+        try {
+          await navigator.clipboard.writeText(text);
+          if (label) {
+            label.textContent = 'Copied!';
+            setTimeout(() => {
+              label.textContent = original;
+            }, 2000);
+          }
+        } catch {}
       });
     }
 
-    logoEl.addEventListener('pointermove', e => {
-      const r = shapeEl.getBoundingClientRect();
-      if (r.width === 0 || r.height === 0) return;
-      const x = ((e.clientX - r.left) / r.width) * 100;
-      const y = ((e.clientY - r.top) / r.height) * 100;
-      shapeEl.style.setProperty('--sx', String(Math.max(0, Math.min(100, x))));
-      shapeEl.style.setProperty('--sy', String(Math.max(0, Math.min(100, y))));
-    });
-    logoEl.addEventListener('pointerleave', () => {
-      shapeEl.style.setProperty('--sx', '32');
-      shapeEl.style.setProperty('--sy', '22');
-    });
-  }
+    const logoEl = document.querySelector<HTMLElement>('.hero-logo');
+    const shapeEl = logoEl?.querySelector<HTMLElement>('[data-glass-shape]');
+    const defsSvg = document.querySelector<SVGSVGElement>('.hero-glass-defs');
+
+    if (logoEl && shapeEl && defsSvg) {
+      const logos = JSON.parse(logoEl.dataset.logos ?? '[]') as Logo[];
+      installIdentityFilter(defsSvg, 'heroLiquid-fallback');
+
+      const filterIdFor = (id: string) => `heroLiquid-${id}`;
+      const mapReady = new Set<string>();
+
+      const filterSize = Math.max(shapeEl.clientWidth, 1);
+
+      const ensureMap = async (logo: Logo): Promise<boolean> => {
+        if (mapReady.has(logo.id)) return true;
+        const shader = await installLogoGlass(logo.svg, {
+          size: filterSize,
+          filterHost: defsSvg,
+          filterId: filterIdFor(logo.id),
+          strength: (logo.dispScale ?? 24) / 70,
+        });
+        if (!shader) return false;
+        mapReady.add(logo.id);
+        return true;
+      };
+
+      const pointToFilter = (logo: Logo) => {
+        shapeEl.style.setProperty(
+          '--liquid-filter-id',
+          mapReady.has(logo.id)
+            ? `url(#${filterIdFor(logo.id)})`
+            : 'url(#heroLiquid-fallback)',
+        );
+      };
+
+      const setLogoMask = (logo: Logo) => {
+        fetch(logo.svg)
+          .then(r => r.text())
+          .then(text => {
+            const compact = text
+              .replace(/<\?xml[^?]*\?>\s*/, '')
+              .replace(/\s+/g, ' ')
+              .trim();
+            const dataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(compact)}`;
+            shapeEl.style.setProperty('--logo', `url("${dataUrl}")`);
+          })
+          .catch(() => {
+            shapeEl.style.setProperty('--logo', `url("${logo.svg}")`);
+          });
+      };
+
+      if (logos.length) {
+        let idx = 0;
+        const first = logos[0];
+        if (first) {
+          void ensureMap(first).then(() => pointToFilter(first));
+        }
+        logos.slice(1).forEach(logo => {
+          scheduleIdle(() => void ensureMap(logo));
+        });
+
+        const next = () => {
+          idx = (idx + 1) % logos.length;
+          const logo = logos[idx];
+          if (!logo) return;
+          setLogoMask(logo);
+          void ensureMap(logo).then(() => pointToFilter(logo));
+        };
+
+        logoEl.addEventListener('click', next);
+        logoEl.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            next();
+          }
+        });
+      }
+
+      logoEl.addEventListener('pointermove', e => {
+        const r = shapeEl.getBoundingClientRect();
+        if (r.width === 0 || r.height === 0) return;
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        shapeEl.style.setProperty(
+          '--sx',
+          String(Math.max(0, Math.min(100, x))),
+        );
+        shapeEl.style.setProperty(
+          '--sy',
+          String(Math.max(0, Math.min(100, y))),
+        );
+      });
+      logoEl.addEventListener('pointerleave', () => {
+        shapeEl.style.setProperty('--sx', '32');
+        shapeEl.style.setProperty('--sy', '22');
+      });
+    }
   }
 
   document.addEventListener('astro:page-load', initHero);

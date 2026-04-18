@@ -69,13 +69,15 @@ const jsonLd = [
 
       {/* Main content */}
       <article class="min-w-0 pb-12 md:pb-14">
-        {!isIndex && (
-          <div class="mb-6">
-            <Breadcrumbs items={breadcrumbItems} />
-          </div>
-        )}
+        {
+          !isIndex && (
+            <div class="mb-6">
+              <Breadcrumbs items={breadcrumbItems} />
+            </div>
+          )
+        }
         <header class="mb-10 flex flex-col gap-3 pb-8 border-b border-border">
-          <div class="flex flex-wrap items-center gap-3">
+          <div class="flex flex-wrap items-center gap-4">
             {
               isIndex ? (
                 <h1 class="type-h1">
