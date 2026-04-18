@@ -43,6 +43,7 @@ apps/assets
 
 dist/
 .cache/
+cache/
 
 plan/
 research/

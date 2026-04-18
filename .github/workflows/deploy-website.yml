@@ -55,12 +55,18 @@ jobs:
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
           echo "Deploying $env via Cloudflare branch $branch"
 
-      - name: Restore cached images
-        id: cache-images-restore
+      - name: Restore Astro build cache
+        id: cache-astro-restore
         uses: actions/cache/restore@v4
         with:
-          path: cache
-          key: Images-${{ runner.os }}
+          # Astro's cacheDir is set to './cache' in astro.config.mjs, which
+          # resolves to apps/website/cache (optimized images, font assets).
+          # .astro holds content collections, generated types, and the content
+          # data store — all expensive to regenerate on a cold build.
+          path: |
+            apps/website/cache
+            apps/website/.astro
+          key: astro-website-${{ runner.os }}
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
@@ -100,23 +106,25 @@ jobs:
           wranglerVersion: '4.83.0'
           command: pages deploy dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --branch=${{ steps.target.outputs.branch }}
 
-      - name: Check if images cache exists for current branch
+      - name: Check if Astro cache exists for current branch
         id: actions-cache-list
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "RESULT=$(gh actions-cache list --branch ${{ github.ref }} --key Images-)" >> $GITHUB_OUTPUT
+        run: echo "RESULT=$(gh actions-cache list --branch ${{ github.ref }} --key astro-website-)" >> $GITHUB_OUTPUT
 
-      - name: Clear existing images cache
+      - name: Clear existing Astro cache
         if: ${{ steps.actions-cache-list.outputs.RESULT != '' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh actions-cache delete ${{ steps.cache-images-restore.outputs.cache-primary-key }} --branch ${{ github.ref }} --confirm
+        run: gh actions-cache delete ${{ steps.cache-astro-restore.outputs.cache-primary-key }} --branch ${{ github.ref }} --confirm
 
-      - name: Cache images
+      - name: Save Astro build cache
         uses: actions/cache/save@v4
         with:
-          path: cache
-          key: ${{ steps.cache-images-restore.outputs.cache-primary-key }}
+          path: |
+            apps/website/cache
+            apps/website/.astro
+          key: ${{ steps.cache-astro-restore.outputs.cache-primary-key }}
 
       - name: Summary
         run: |

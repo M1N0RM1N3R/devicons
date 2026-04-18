@@ -52,7 +52,7 @@ export default defineConfig({
     },
   ],
   integrations: [
-    mdx(),
+    mdx({ optimize: true }),
     sitemap({
       filter: page =>
         !page.includes('/og/') &&
