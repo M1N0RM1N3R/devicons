@@ -55,6 +55,12 @@ jobs:
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
           echo "Deploying $env via Cloudflare branch $branch"
 
+      - name: Restore cached images
+        id: cache-images-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: cache
+          key: Images-${{ runner.os }}
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
@@ -91,8 +97,26 @@ jobs:
           # so the action skips its own npm-based install which otherwise
           # re-runs every package's postinstall script and breaks the build.
           packageManager: pnpm
-          wranglerVersion: "4.83.0"
+          wranglerVersion: '4.83.0'
           command: pages deploy dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --branch=${{ steps.target.outputs.branch }}
+
+      - name: Check if images cache exists for current branch
+        id: actions-cache-list
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "RESULT=$(gh actions-cache list --branch ${{ github.ref }} --key Images-)" >> $GITHUB_OUTPUT
+
+      - name: Clear existing images cache
+        if: ${{ steps.actions-cache-list.outputs.RESULT != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh actions-cache delete ${{ steps.cache-images-restore.outputs.cache-primary-key }} --branch ${{ github.ref }} --confirm
+
+      - name: Cache images
+        uses: actions/cache/save@v4
+        with:
+          path: cache
+          key: ${{ steps.cache-images-restore.outputs.cache-primary-key }}
 
       - name: Summary
         run: |
