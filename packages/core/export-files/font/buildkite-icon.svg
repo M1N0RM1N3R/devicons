@@ -1,1 +1,1 @@
-<svg viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M200 198L0 100V300L200 398V198ZM600 198L402 100L200 198V398L402 300V500.001L600 398.001V198Z" fill="currentColor"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 600 600"><path fill="currentColor" fill-rule="evenodd" d="M200 198 0 100v200l200 98zm400 0-198-98-202 98v200l202-98v200l198-102z" clip-rule="evenodd"/></svg>

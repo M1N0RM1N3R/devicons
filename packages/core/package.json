@@ -47,6 +47,7 @@
     "export-to-raw": "tsx scripts/export-to-raw.ts",
     "to-font": "tsx scripts/to-font.ts",
     "process-icons": "tsx scripts/process-icons.ts",
+    "optimize-svgs": "tsx scripts/optimize-svgs.ts",
     "sprite": "tsx scripts/sprite.ts",
     "check": "tsx scripts/check.ts",
     "build": "tsx scripts/build-all.ts",
