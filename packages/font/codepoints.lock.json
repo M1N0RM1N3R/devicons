@@ -866,7 +866,6 @@
   "lucene": 62562,
   "lucene-net": 62563,
   "lumen": 62564,
-  "macOS": 62565,
   "maestro": 62566,
   "mageia": 62567,
   "mailchimp": 62568,
@@ -1687,5 +1686,6 @@
   "claude-icon": 63383,
   "claude": 63384,
   "cursor-icon": 63385,
-  "cursor": 63386
+  "cursor": 63386,
+  "macos": 63387
 }

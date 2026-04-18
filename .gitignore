@@ -19,14 +19,20 @@ packages/react/src/defs/*
 !packages/react/src/defs/.gitkeep
 packages/react/src/ssr/*
 !packages/react/src/ssr/.gitkeep
+packages/react/src/mono/*
+!packages/react/src/mono/.gitkeep
 packages/vue/src/defs/*
 !packages/vue/src/defs/.gitkeep
 packages/vue/src/icons/*
 !packages/vue/src/icons/.gitkeep
+packages/vue/src/mono/*
+!packages/vue/src/mono/.gitkeep
 packages/svelte/src/defs/*
 !packages/svelte/src/defs/.gitkeep
 packages/svelte/src/icons/*
 !packages/svelte/src/icons/.gitkeep
+packages/svelte/src/mono/*
+!packages/svelte/src/mono/.gitkeep
 dist/
 
 # logs
