@@ -1,6 +1,6 @@
 {
   "name": "@dev.icons/core",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Devicons Core - The core package for Devicons",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -8,8 +8,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.mjs" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./icons.json": "./dist/icons.json",
     "./sprite": "./dist/sprite/sprite-symbol.svg",
@@ -30,8 +36,7 @@
   ],
   "sideEffects": false,
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -39,10 +44,18 @@
     "directory": "packages/core"
   },
   "homepage": "https://github.com/vorillaz/devicons#readme",
-  "bugs": { "url": "https://github.com/vorillaz/devicons/issues" },
+  "bugs": {
+    "url": "https://github.com/vorillaz/devicons/issues"
+  },
   "license": "MIT",
   "author": "Theodore Vorillas",
-  "keywords": ["icons", "devicons", "sprite", "font", "svg"],
+  "keywords": [
+    "icons",
+    "devicons",
+    "sprite",
+    "font",
+    "svg"
+  ],
   "scripts": {
     "export-to-raw": "tsx scripts/export-to-raw.ts",
     "to-font": "tsx scripts/to-font.ts",
