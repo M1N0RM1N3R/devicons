@@ -44,7 +44,7 @@ const cards = [
 ];
 ---
 
-<PageLayout title={title} description={description} jsonLd={jsonLd}>
+<PageLayout title={title} description={description} image={`/og/compare/${compareSlug(a.id, b.id)}.png`} jsonLd={jsonLd}>
   <div class="max-w-[1200px] mx-auto px-6 pt-10">
     <Breadcrumbs
       items={[

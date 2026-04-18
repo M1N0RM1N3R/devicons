@@ -1,15 +1,14 @@
 import type { APIRoute } from 'astro';
 import { renderOgImage } from '../../lib/og/render';
 import { ogShell } from '../../lib/og/layout';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 
 export const GET: APIRoute = async () => {
   const png = await renderOgImage(
     ogShell({
-      eyebrow: 'devicons.io',
-      title: SITE_TITLE,
-      description: SITE_DESCRIPTION,
-      titleSize: 72,
+      eyebrow: 'devicons.io / 404',
+      category: 'Error / 404',
+      title: 'Page not found',
+      description: "That route isn't part of the Devicons catalog.",
     }),
   );
 
