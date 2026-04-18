@@ -20,6 +20,11 @@ export default defineConfig({
   site: 'https://devicons.io',
   build: {
     inlineStylesheets: 'always',
+    // Parallelize page rendering. OG image generation (satori + sharp) is
+    // CPU-bound and independent per page, so a small amount of concurrency
+    // shortens cold-cache builds. Keep this low — JS is single-threaded
+    // and high values cause memory pressure on CI runners.
+    concurrency: 2,
   },
   markdown: {
     shikiConfig: {

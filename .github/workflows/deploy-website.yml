@@ -56,8 +56,7 @@ jobs:
           echo "Deploying $env via Cloudflare branch $branch"
 
       - name: Restore Astro build cache
-        id: cache-astro-restore
-        uses: actions/cache/restore@v4
+        uses: actions/cache@v4
         with:
           # Astro's cacheDir is set to './cache' in astro.config.mjs, which
           # resolves to apps/website/cache (optimized images, font assets).
@@ -66,7 +65,16 @@ jobs:
           path: |
             apps/website/cache
             apps/website/.astro
-          key: astro-website-${{ runner.os }}
+            apps/website/.og-cache
+          # Key is unique per commit so every run saves a fresh cache (the
+          # .astro content store evolves with content edits). restore-keys
+          # falls back to the most recent cache on this runner for a warm
+          # start. GitHub evicts oldest caches automatically past 10 GB.
+          key: astro-website-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            astro-website-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            astro-website-${{ runner.os }}-
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
@@ -105,26 +113,6 @@ jobs:
           packageManager: pnpm
           wranglerVersion: '4.83.0'
           command: pages deploy dist --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }} --branch=${{ steps.target.outputs.branch }}
-
-      - name: Check if Astro cache exists for current branch
-        id: actions-cache-list
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "RESULT=$(gh actions-cache list --branch ${{ github.ref }} --key astro-website-)" >> $GITHUB_OUTPUT
-
-      - name: Clear existing Astro cache
-        if: ${{ steps.actions-cache-list.outputs.RESULT != '' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh actions-cache delete ${{ steps.cache-astro-restore.outputs.cache-primary-key }} --branch ${{ github.ref }} --confirm
-
-      - name: Save Astro build cache
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            apps/website/cache
-            apps/website/.astro
-          key: ${{ steps.cache-astro-restore.outputs.cache-primary-key }}
 
       - name: Summary
         run: |
