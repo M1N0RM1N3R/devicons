@@ -1,11 +1,10 @@
 {
   "name": "@dev.icons/vue",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Devicons Vue - The Vue package for Devicons",
   "sideEffects": false,
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "repository": {
     "type": "git",
