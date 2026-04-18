@@ -1,12 +1,12 @@
 ---
 import {
-  getUniqueTags,
+  getFooterTags,
   slugifyTag,
   formatTagLabel,
 } from '../../lib/icons-query';
 
 const year = new Date().getFullYear();
-const topTags = (await getUniqueTags()).slice(0, 8);
+const topTags = (await getFooterTags()).slice(0, 8);
 ---
 
 <footer class="footer-brutalist border-t-2 border-border">
