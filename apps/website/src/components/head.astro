@@ -44,6 +44,39 @@ const normalizedPath =
   rawPath.length > 1 && rawPath.endsWith("/") ? rawPath.slice(0, -1) : rawPath;
 const canonicalURL = new URL(normalizedPath, Astro.site ?? SITE_URL);
 
+// Markdown alternate: emit <link rel="alternate" type="text/markdown"> for
+// pages that have a pre-rendered .md counterpart so agents can discover them
+// without content negotiation.
+function resolveMarkdownAlternate(path: string): string | null {
+  if (path === "" || path === "/") return "/index.md";
+  const trimmed = path.replace(/\/$/, "");
+  // Known top-level pages with MD counterparts.
+  if (trimmed === "/search" || trimmed === "/legal") return `${trimmed}.md`;
+  if (trimmed === "/docs" || trimmed === "/icons" || trimmed === "/packs")
+    return `${trimmed}.md`;
+  // Listing/utility pages under /icons do not have MD counterparts.
+  if (
+    trimmed.startsWith("/icons/tag/") ||
+    trimmed.startsWith("/icons/color/") ||
+    trimmed === "/icons/popular"
+  )
+    return null;
+  // Prerendered content pages.
+  if (
+    trimmed.startsWith("/docs/") ||
+    trimmed.startsWith("/icons/") ||
+    trimmed.startsWith("/packs/") ||
+    trimmed.startsWith("/compare/")
+  )
+    return `${trimmed}.md`;
+  return null;
+}
+
+const markdownAlternatePath = resolveMarkdownAlternate(normalizedPath);
+const markdownAlternate = markdownAlternatePath
+  ? new URL(markdownAlternatePath, Astro.site ?? SITE_URL).toString()
+  : null;
+
 const ogImage = image ? new URL(image, Astro.site ?? SITE_URL).toString() : undefined;
 const siteOrigin = (Astro.site ?? new URL(SITE_URL)).toString().replace(/\/$/, "");
 const pageJsonLd = jsonLd
@@ -99,6 +132,14 @@ const verificationGoogle = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
   title={SITE_TITLE}
   href={new URL("rss.xml", Astro.site ?? SITE_URL)}
 />
+{markdownAlternate && (
+  <link
+    rel="alternate"
+    type="text/markdown"
+    title={`${title} (Markdown)`}
+    href={markdownAlternate}
+  />
+)}
 <meta name="generator" content={Astro.generator} />
 
 <!-- Canonical URL -->

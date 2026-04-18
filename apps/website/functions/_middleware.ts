@@ -3,51 +3,26 @@
  *
  * Implements Markdown-for-Agents content negotiation. When a client sends
  * `Accept: text/markdown` (or prefers it over `text/html` via q-values), this
- * middleware converts the underlying HTML response into Markdown at the edge
- * and returns it with `Content-Type: text/markdown; charset=utf-8`. Browsers
- * (which send `Accept: text/html,...`) always continue to receive HTML.
+ * middleware rewrites the request to fetch the sibling `.md` asset that was
+ * pre-rendered at build time by the Astro `.md.ts` endpoints:
  *
- * The conversion uses the unified pipeline (`rehype-parse` → `rehype-remark`
- * → `remark-stringify` + `remark-gfm`), which is pure JS and runs inside the
- * Workers runtime without DOM polyfills.
+ *   GET /            Accept: text/markdown  →  serves /index.md
+ *   GET /docs/cdn    Accept: text/markdown  →  serves /docs/cdn.md
+ *   GET /icons/react Accept: text/markdown  →  serves /icons/react.md
+ *
+ * Browsers (which send `Accept: text/html,...`) always continue to receive
+ * HTML. Paths without a `.md` counterpart fall back to HTML.
  */
-
-import { unified } from 'unified';
-import rehypeParse from 'rehype-parse';
-import rehypeRemark from 'rehype-remark';
-import remarkGfm from 'remark-gfm';
-import remarkStringify from 'remark-stringify';
 
 interface MiddlewareContext {
   request: Request;
-  next: () => Promise<Response>;
+  next: (input?: Request | string, init?: RequestInit) => Promise<Response>;
 }
 
-const processor = unified()
-  .use(rehypeParse, { fragment: false })
-  .use(rehypeRemark, {
-    handlers: {
-      // Drop scripts/styles entirely — they have no markdown equivalent and
-      // the unified default is to serialize them as text, which leaks JS into
-      // the output.
-      script: () => undefined,
-      style: () => undefined,
-      noscript: () => undefined,
-    },
-  })
-  .use(remarkGfm)
-  .use(remarkStringify, {
-    bullet: '-',
-    fences: true,
-    incrementListMarker: false,
-    rule: '-',
-  });
-
 /**
- * Returns true if the client prefers `text/markdown` over `text/html` in its
- * Accept header (per RFC 9110 q-value comparison). A plain `Accept: */*` does
- * NOT trigger conversion — browsers send that as a fallback and we don't want
- * to break the default browsing experience.
+ * Returns true if the client prefers `text/markdown` over `text/html`
+ * per RFC 9110 q-value comparison. A catch-all Accept (browsers' `*` fallback)
+ * does NOT trigger conversion — we don't want to break default browsing.
  */
 function prefersMarkdown(accept: string | null): boolean {
   if (!accept) return false;
@@ -71,18 +46,51 @@ function prefersMarkdown(accept: string | null): boolean {
   return mdQ > 0 && mdQ >= htmlQ;
 }
 
-/**
- * Heuristic token estimate. Real BPE tokenizers vary by model, but ~4 chars
- * per token is a reasonable rule-of-thumb for English prose and is what
- * Anthropic/OpenAI cite for back-of-envelope sizing.
- */
+function resolveMarkdownPath(pathname: string): string | null {
+  if (pathname === '/' || pathname === '') return '/index.md';
+  // Already a .md URL — pass through.
+  if (pathname.endsWith('.md')) return null;
+  const trimmed = pathname.replace(/\/$/, '');
+  // Skip /og/ (dynamic PNG endpoint) and /api/ style paths.
+  if (trimmed.startsWith('/og/')) return null;
+  // Skip paths that don't have MD counterparts — let them fall through.
+  if (
+    trimmed.startsWith('/icons/tag/') ||
+    trimmed.startsWith('/icons/color/') ||
+    trimmed === '/icons/popular'
+  ) {
+    return null;
+  }
+  return `${trimmed}.md`;
+}
+
 function approxTokens(text: string): number {
   return Math.max(1, Math.round(text.length / 4));
 }
 
-async function convertToMarkdown(html: string): Promise<string> {
-  const file = await processor.process(html);
-  return String(file).replace(/\n{3,}/g, '\n\n').trim() + '\n';
+async function withMarkdownHeaders(
+  res: Response,
+  isHead: boolean,
+): Promise<Response> {
+  const body = await res.text();
+  const headers = new Headers(res.headers);
+  headers.set('Content-Type', 'text/markdown; charset=utf-8');
+  headers.set('Vary', appendVary(headers.get('Vary'), 'Accept'));
+  if (body) headers.set('x-markdown-tokens', String(approxTokens(body)));
+  headers.delete('Content-Length');
+  headers.delete('Content-Encoding');
+  return new Response(isHead ? null : body, {
+    status: res.status,
+    statusText: res.statusText,
+    headers,
+  });
+}
+
+function appendVary(existing: string | null, value: string): string {
+  if (!existing) return value;
+  const parts = existing.split(',').map(s => s.trim().toLowerCase());
+  if (parts.includes(value.toLowerCase())) return existing;
+  return `${existing}, ${value}`;
 }
 
 export const onRequest = async (
@@ -90,76 +98,43 @@ export const onRequest = async (
 ): Promise<Response> => {
   const { request, next } = context;
 
-  // Always pass through non-GET (and HEAD, which we still want to advertise).
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     return next();
   }
 
-  const wantsMd = prefersMarkdown(request.headers.get('Accept'));
-
-  const response = await next();
-
-  // Tell caches that response varies on Accept, regardless of which branch.
-  const baseHeaders = new Headers(response.headers);
-  const existingVary = baseHeaders.get('Vary');
-  baseHeaders.set(
-    'Vary',
-    existingVary && !/\baccept\b/i.test(existingVary)
-      ? `${existingVary}, Accept`
-      : existingVary ?? 'Accept',
-  );
+  const accept = request.headers.get('Accept');
+  const wantsMd = prefersMarkdown(accept);
 
   if (!wantsMd) {
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: baseHeaders,
+    // Still advertise that we can vary on Accept so intermediaries cache
+    // HTML and MD separately once we do flip.
+    const res = await next();
+    const headers = new Headers(res.headers);
+    headers.set('Vary', appendVary(headers.get('Vary'), 'Accept'));
+    return new Response(res.body, {
+      status: res.status,
+      statusText: res.statusText,
+      headers,
     });
   }
 
-  const contentType = response.headers.get('Content-Type') ?? '';
-  if (!contentType.toLowerCase().includes('text/html') || !response.ok) {
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: baseHeaders,
-    });
-  }
+  const url = new URL(request.url);
+  const mdPath = resolveMarkdownPath(url.pathname);
+  if (!mdPath) return next();
 
-  // HEAD: convert headers but skip body (HTTP semantics).
-  if (request.method === 'HEAD') {
-    baseHeaders.set('Content-Type', 'text/markdown; charset=utf-8');
-    baseHeaders.delete('Content-Length');
-    baseHeaders.delete('Content-Encoding');
-    return new Response(null, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: baseHeaders,
-    });
-  }
-
-  let markdown: string;
-  try {
-    const html = await response.text();
-    markdown = await convertToMarkdown(html);
-  } catch {
-    // If conversion blows up for any reason, fail open with the original HTML
-    // rather than serving a 500 to an agent.
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: baseHeaders,
-    });
-  }
-
-  baseHeaders.set('Content-Type', 'text/markdown; charset=utf-8');
-  baseHeaders.set('x-markdown-tokens', String(approxTokens(markdown)));
-  baseHeaders.delete('Content-Length');
-  baseHeaders.delete('Content-Encoding');
-
-  return new Response(markdown, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: baseHeaders,
+  const mdUrl = new URL(mdPath, url);
+  const mdRequest = new Request(mdUrl.toString(), {
+    method: request.method,
+    headers: request.headers,
   });
+  const mdResponse = await next(mdRequest);
+
+  // If the .md variant doesn't exist (404), fall back to the HTML page so
+  // agents still get *something* instead of a hard error.
+  if (mdResponse.status === 404) {
+    return next();
+  }
+  if (!mdResponse.ok) return mdResponse;
+
+  return await withMarkdownHeaders(mdResponse, request.method === 'HEAD');
 };

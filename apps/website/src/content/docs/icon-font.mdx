@@ -1,27 +1,23 @@
 ---
 title: "Icon font"
 description: "Devicons as a web font. No build step, works everywhere."
-order: 3
+order: 5
 category: "Packages"
 categoryOrder: 1
 ---
 
 import Note from "../../components/docs/note.astro";
 
-`@dev.icons/font` is the no-framework option. One CSS file, 1,600+ glyphs. Works in legacy stacks, email templates, or plain HTML.
+`devicons` is the no-framework option. One CSS file, 1,600+ glyphs. Works in legacy stacks, email templates, or plain HTML.
 
-<Note title="Class prefix">
-All classes use the `devicon-` prefix to avoid collisions. Add `.devicon` to opt into the font, then `.devicon-<slug>` to pick a glyph, e.g. `devicon-react`, `devicon-next-js`.
-</Note>
-
-<Note variant="info" title="Version numbering">
-The font package has a higher version number (`>1.x`) than the framework packages. The icon font predates the framework wrappers and has its own release history. Icon content is identical across all packages at any given release.
+<Note variant="info" title="Version numbering & naming">
+The font package has a higher version number (`>2.x`) than the framework packages since it has been around for almost 12 years. That's why it's also not prefixed with `@dev.icons/` like the others.
 </Note>
 
 ## Install
 
 ```bash
-npm install @dev.icons/font
+npm install devicons
 ```
 
 For a no-build workflow, see the [CDN guide](/docs/cdn).
