@@ -25,6 +25,9 @@ const OG = {
   text: '#e6e6e6',
   textMuted: '#8a8a8a',
   accent: '#ff4d00',
+  // Mirrors `.icon-grid-card--bad-dark` in global.css: a near-white slab
+  // behind icons flagged `badInDark` so they stay legible on the dark canvas.
+  badInDarkSlab: '#f5f5f5',
   fontDisplay: 'Display',
   fontMono: 'Mono',
 } as const;
@@ -35,6 +38,7 @@ interface IndexEntry {
   description?: string;
   icons?: string[];
   tags?: string[];
+  badInDark?: boolean;
 }
 
 // Module scope — reused across requests on the same isolate.
@@ -94,6 +98,7 @@ function buildJsx(
   description: string | undefined,
   iconImages: string[],
   tagList: string,
+  badInDark: boolean,
 ) {
   return {
     type: 'div',
@@ -311,13 +316,21 @@ function buildJsx(
                     display: 'flex',
                     gap: '24px',
                     alignItems: 'center',
+                    ...(badInDark
+                      ? {
+                          padding: '40px',
+                          paddingLeft: '37px',
+                          backgroundColor: OG.badInDarkSlab,
+                          borderLeft: `3px solid ${OG.accent}`,
+                        }
+                      : {}),
                   },
                   children: iconImages.map((src) => ({
                     type: 'img',
                     props: {
                       src,
-                      width: iconImages.length === 1 ? 180 : 120,
-                      height: iconImages.length === 1 ? 180 : 120,
+                      width: 180,
+                      height: 180,
                       style: { objectFit: 'contain' },
                     },
                   })),
@@ -367,13 +380,13 @@ export const onRequestGet = async (context: PagesContext): Promise<Response> => 
       return new Response('Not found', { status: 404 });
     }
 
-    const iconImages = (
-      await Promise.all(
-        (entry.icons ?? [])
-          .slice(0, 2)
-          .map((s) => fetchIconAsDataUri(s, origin)),
-      )
-    ).filter((src): src is string => Boolean(src));
+    const slugs = entry.icons ?? [];
+    const preferred = slugs.find((s) => s.endsWith('-icon')) ?? slugs[0];
+    const iconImages: string[] = [];
+    if (preferred) {
+      const src = await fetchIconAsDataUri(preferred, origin);
+      if (src) iconImages.push(src);
+    }
 
     const tagList = (entry.tags ?? []).slice(0, 4).join(' / ');
 
@@ -383,9 +396,13 @@ export const onRequestGet = async (context: PagesContext): Promise<Response> => 
     // satori's types expect React-ish JSX but accepts plain objects with
     // { type, props } — we pass the latter to avoid pulling React.
     const svg = await satori(
-      buildJsx(entry.name, entry.description, iconImages, tagList) as Parameters<
-        typeof satori
-      >[0],
+      buildJsx(
+        entry.name,
+        entry.description,
+        iconImages,
+        tagList,
+        entry.badInDark ?? false,
+      ) as Parameters<typeof satori>[0],
       {
         width: OG.width,
         height: OG.height,
