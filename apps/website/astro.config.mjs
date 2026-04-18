@@ -12,6 +12,7 @@ import { deviconsDark, deviconsLight } from './src/lib/shiki-themes.ts';
 
 // https://astro.build/config
 export default defineConfig({
+  cacheDir: './cache',
   prefetch: {
     prefetchAll: false,
     defaultStrategy: 'hover',
