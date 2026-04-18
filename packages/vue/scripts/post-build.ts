@@ -1,9 +1,25 @@
-import { readdirSync, readFileSync, writeFileSync, copyFileSync, existsSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, copyFileSync, existsSync, statSync, unlinkSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.resolve(__dirname, '../dist');
+
+// plugin-vue + rollup preserveModules emit `.vue2.*` aliases that just re-export
+// the real `.vue.*` sibling. They have no consumer inside this package, so drop
+// them before publish.
+const stripVue2Aliases = (dir: string) => {
+  if (!existsSync(dir)) return;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      stripVue2Aliases(full);
+    } else if (/\.vue2\.(mjs|cjs|d\.ts|d\.mts|d\.cts)$/.test(entry.name)) {
+      unlinkSync(full);
+    }
+  }
+};
+stripVue2Aliases(DIST);
 
 /** Recursively walk a directory, calling fn(absPath) on every .d.ts file (excluding .d.mts/.d.cts). */
 const walkDts = (dir: string, fn: (file: string) => void) => {

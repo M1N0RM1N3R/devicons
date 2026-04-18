@@ -16,7 +16,12 @@ export default defineConfig({
       fileName: (format, name) => `${name}.${format === "cjs" ? "cjs" : "mjs"}`,
     },
     rollupOptions: {
-      external: [...Object.keys(pkg.peerDependencies), "svelte/internal"],
+      external: (id) =>
+        id === "svelte" ||
+        id.startsWith("svelte/") ||
+        id === "clsx" ||
+        id === "esm-env" ||
+        Object.keys(pkg.peerDependencies).includes(id),
       input: {
         index: "./src/index.ts",
         mono: "./src/mono.ts",

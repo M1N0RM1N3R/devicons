@@ -17,7 +17,17 @@
     "./font/woff2": "./dist/font/devicons.woff2",
     "./font/ttf": "./dist/font/devicons.ttf"
   },
-  "files": ["dist"],
+  "files": [
+    "dist/index.cjs",
+    "dist/index.mjs",
+    "dist/index.d.ts",
+    "dist/index.d.cts",
+    "dist/icons.json",
+    "dist/sprite/sprite-symbol.svg",
+    "dist/font/devicons.css",
+    "dist/font/devicons.woff2",
+    "dist/font/devicons.ttf"
+  ],
   "sideEffects": false,
   "publishConfig": {
     "access": "public",
