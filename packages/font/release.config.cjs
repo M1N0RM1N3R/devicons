@@ -20,18 +20,26 @@
 //
 // Plugin loading note:
 //   semantic-release-monorepo wraps each plugin by string name, so inline
-//   plugin objects break it. The publish plugin is loaded by path from
-//   ./scripts/npm-publish-plugin.cjs (shared with scripts/release-group1.mjs).
+//   plugin objects break it. The publish plugin is loaded by absolute path
+//   from scripts/npm-publish-plugin.cjs (shared with scripts/release-group1.mjs).
+//   The path MUST be absolute: semantic-release-plugin-decorators (used by
+//   semantic-release-monorepo) resolves plugin paths relative to its own
+//   file location inside node_modules, not the repo root, so a relative
+//   `./scripts/…` path fails with ERR_MODULE_NOT_FOUND.
 //
 // On canary, @semantic-release/changelog and @semantic-release/git are
 // omitted so nothing is committed back to the canary branch.
 
+const path = require('node:path');
 const monorepoConfig = require('semantic-release-monorepo');
 
 const branch = process.env.GITHUB_REF_NAME || process.env.SR_BRANCH || '';
 const isCanary = branch === 'canary';
 
-const PUBLISH_PLUGIN = './scripts/npm-publish-plugin.cjs';
+const PUBLISH_PLUGIN = path.resolve(
+  __dirname,
+  '../../scripts/npm-publish-plugin.cjs',
+);
 
 module.exports = {
   ...monorepoConfig,

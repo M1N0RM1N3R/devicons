@@ -44,11 +44,19 @@
 // omitted so nothing is committed back to the canary branch.
 
 import { execSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import semanticRelease from 'semantic-release';
 
 const DRY_RUN = process.env.DRY_RUN === 'true';
 const PACKAGES = ['core', 'react', 'vue', 'svelte'];
-const PUBLISH_PLUGIN = './scripts/npm-publish-plugin.cjs';
+// Absolute path — matches the font config. semantic-release-plugin-decorators
+// (used by semantic-release-monorepo) resolves relative plugin paths from its
+// own node_modules location, not cwd, so anything ./-rooted is fragile.
+const PUBLISH_PLUGIN = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  './npm-publish-plugin.cjs',
+);
 
 const detectBranch = () => {
   if (process.env.GITHUB_REF_NAME) return process.env.GITHUB_REF_NAME;
