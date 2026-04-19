@@ -11,20 +11,30 @@
 //
 // Hooks:
 //   prepare — stamps nextRelease.version into each package.json.
-//   publish — runs `npm publish --tag <tag> --provenance --access public`
-//             sequentially on each package. On failure, logs which packages
-//             already hit npm so manual recovery of the remainder is easy.
+//   publish — runs `npx -y npm@<NPM_SPEC> publish --tag <tag> --provenance
+//             --access public` sequentially on each package. On failure,
+//             logs which packages already hit npm so manual recovery of
+//             the remainder is easy.
+//
+// Why npx, not bare `npm`?
+//   Trusted Publisher OIDC requires npm ≥ 11.5.1. Node 22's bundled npm
+//   (10.9.x) and the GitHub runner's toolcache image are both older, and
+//   corepack's npm-activation path has proven unreliable across runner
+//   image versions. Invoking the pinned npm spec through npx guarantees
+//   the right binary is used regardless of the ambient Node install.
+//   The NPM_PUBLISH_SPEC env var can override the default spec.
 //
 // DRY_RUN=true makes the publish a no-op (`npm publish --dry-run`) and
 // restores the on-disk package.json contents afterwards so repeated
 // dry-runs are idempotent.
 
-const { execSync } = require('node:child_process');
+const { execFileSync } = require('node:child_process');
 const { readFileSync, writeFileSync } = require('node:fs');
 const path = require('node:path');
 
 const isDryRun = () => process.env.DRY_RUN === 'true';
 const pkgJsonPath = (root) => path.join(root, 'package.json');
+const NPM_SPEC = process.env.NPM_PUBLISH_SPEC || 'npm@^11.5.1';
 
 // State retained between prepare and publish within the same run.
 const state = { roots: [], originals: new Map() };
@@ -70,6 +80,8 @@ exports.publish = async (pluginConfig, { logger, nextRelease }) => {
   try {
     for (const root of roots) {
       const args = [
+        '-y',
+        NPM_SPEC,
         'publish',
         '--tag',
         tag,
@@ -78,7 +90,7 @@ exports.publish = async (pluginConfig, { logger, nextRelease }) => {
         'public',
       ];
       if (isDryRun()) args.push('--dry-run');
-      execSync(`npm ${args.join(' ')}`, { cwd: root, stdio: 'inherit' });
+      execFileSync('npx', args, { cwd: root, stdio: 'inherit' });
       published.push(root);
       logger.log(
         `Published ${readPkgName(root)}@${version} (dist-tag: ${tag})`,

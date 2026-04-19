@@ -39,21 +39,25 @@ jobs:
           # NODE_AUTH_TOKEN that expands to an empty token, which npm
           # treats as explicit auth and short-circuits the Trusted
           # Publisher OIDC handshake — producing a 404 on publish.
-      - name: Install npm ≥ 11.5 via corepack (Trusted Publisher OIDC)
-        # Bypasses the broken npm 10.9.7 in the Node 22.22.x toolcache
-        # (see actions/runner-images#13883) by pulling npm from the
-        # registry via corepack rather than self-upgrading the broken one.
+      - name: Verify Trusted Publisher prerequisites
+        # The publish plugin uses `npx -y npm@^11.5.1` so we don't depend
+        # on the ambient npm version. This step logs what we actually
+        # have, and whether GitHub injected the OIDC env vars (required
+        # by `permissions: id-token: write`).
         run: |
-          corepack enable
-          corepack prepare npm@11 --activate
-          # Belt-and-suspenders: if a home-dir .npmrc was created by an
-          # earlier action, scrub any _authToken line so TP OIDC is used.
+          echo "node: $(node --version)"
+          echo "system npm: $(npm --version)"
+          echo "publish-time npm (via npx): $(npx -y 'npm@^11.5.1' --version)"
+          echo -n "ACTIONS_ID_TOKEN_REQUEST_URL present: "
+          [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] && echo yes || echo NO
+          echo -n "ACTIONS_ID_TOKEN_REQUEST_TOKEN present: "
+          [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ] && echo yes || echo NO
           if [ -f "$HOME/.npmrc" ]; then
-            sed -i.bak '/_authToken/d' "$HOME/.npmrc" || true
+            echo "--- ~/.npmrc (tokens redacted) ---"
+            sed 's/\(_authToken=\).*/\1<redacted>/' "$HOME/.npmrc"
+          else
+            echo "~/.npmrc does not exist (expected — TP OIDC handles auth)"
           fi
-          npm --version
-          echo "--- npm config (sanitised) ---"
-          npm config list | sed 's/authToken.*=.*/authToken=<redacted>/'
       - run: pnpm install --frozen-lockfile
       - name: Build core (sprite + font assets + library)
         run: pnpm -F @dev.icons/core build
@@ -88,21 +92,25 @@ jobs:
           # NODE_AUTH_TOKEN that expands to an empty token, which npm
           # treats as explicit auth and short-circuits the Trusted
           # Publisher OIDC handshake — producing a 404 on publish.
-      - name: Install npm ≥ 11.5 via corepack (Trusted Publisher OIDC)
-        # Bypasses the broken npm 10.9.7 in the Node 22.22.x toolcache
-        # (see actions/runner-images#13883) by pulling npm from the
-        # registry via corepack rather than self-upgrading the broken one.
+      - name: Verify Trusted Publisher prerequisites
+        # The publish plugin uses `npx -y npm@^11.5.1` so we don't depend
+        # on the ambient npm version. This step logs what we actually
+        # have, and whether GitHub injected the OIDC env vars (required
+        # by `permissions: id-token: write`).
         run: |
-          corepack enable
-          corepack prepare npm@11 --activate
-          # Belt-and-suspenders: if a home-dir .npmrc was created by an
-          # earlier action, scrub any _authToken line so TP OIDC is used.
+          echo "node: $(node --version)"
+          echo "system npm: $(npm --version)"
+          echo "publish-time npm (via npx): $(npx -y 'npm@^11.5.1' --version)"
+          echo -n "ACTIONS_ID_TOKEN_REQUEST_URL present: "
+          [ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] && echo yes || echo NO
+          echo -n "ACTIONS_ID_TOKEN_REQUEST_TOKEN present: "
+          [ -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ] && echo yes || echo NO
           if [ -f "$HOME/.npmrc" ]; then
-            sed -i.bak '/_authToken/d' "$HOME/.npmrc" || true
+            echo "--- ~/.npmrc (tokens redacted) ---"
+            sed 's/\(_authToken=\).*/\1<redacted>/' "$HOME/.npmrc"
+          else
+            echo "~/.npmrc does not exist (expected — TP OIDC handles auth)"
           fi
-          npm --version
-          echo "--- npm config (sanitised) ---"
-          npm config list | sed 's/authToken.*=.*/authToken=<redacted>/'
       - run: pnpm install --frozen-lockfile
       - name: Build core (produces font assets in packages/core/dist/font)
         run: pnpm -F @dev.icons/core build
