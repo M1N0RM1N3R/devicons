@@ -35,8 +35,14 @@ jobs:
           node-version: 22
           cache: pnpm
           registry-url: 'https://registry.npmjs.org'
-      - name: Upgrade npm to a version that supports Trusted Publisher OIDC
-        run: npm install -g npm@latest
+      - name: Install npm ≥ 11.5 via corepack (Trusted Publisher OIDC)
+        # Bypasses the broken npm 10.9.7 in the Node 22.22.x toolcache
+        # (see actions/runner-images#13883) by pulling npm from the
+        # registry via corepack rather than self-upgrading the broken one.
+        run: |
+          corepack enable
+          corepack prepare npm@11 --activate
+          npm --version
       - run: pnpm install --frozen-lockfile
       - name: Build core (sprite + font assets + library)
         run: pnpm -F @dev.icons/core build
@@ -67,8 +73,14 @@ jobs:
           node-version: 22
           cache: pnpm
           registry-url: 'https://registry.npmjs.org'
-      - name: Upgrade npm to a version that supports Trusted Publisher OIDC
-        run: npm install -g npm@latest
+      - name: Install npm ≥ 11.5 via corepack (Trusted Publisher OIDC)
+        # Bypasses the broken npm 10.9.7 in the Node 22.22.x toolcache
+        # (see actions/runner-images#13883) by pulling npm from the
+        # registry via corepack rather than self-upgrading the broken one.
+        run: |
+          corepack enable
+          corepack prepare npm@11 --activate
+          npm --version
       - run: pnpm install --frozen-lockfile
       - name: Build core (produces font assets in packages/core/dist/font)
         run: pnpm -F @dev.icons/core build
