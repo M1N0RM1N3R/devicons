@@ -18,6 +18,18 @@
 //   The `.N` suffix increments by 1 per canary publish against the same
 //   base version — continuous canary numbering.
 //
+// CWD note:
+//   semantic-release is invoked from packages/font (via `working-directory`
+//   in the workflow). semantic-release-monorepo scopes commits using the
+//   package.json at cwd, so running from the repo root would scope to the
+//   root `@dev.icons/repo` package and yield 0 commits — no canary ever
+//   fires. Running from packages/font makes it scope to `devicons`.
+//
+//   Because cwd = packages/font, file paths in this config are relative
+//   to packages/font (not the repo root). commitPaths is the exception:
+//   semantic-release-monorepo matches commit diff paths (always repo-root
+//   relative) against those globs, so commitPaths stays repo-root relative.
+//
 // Plugin loading note:
 //   semantic-release-monorepo wraps each plugin by string name, so inline
 //   plugin objects break it. The publish plugin is loaded by absolute path
@@ -56,23 +68,15 @@ module.exports = {
     ],
     ...(isCanary
       ? []
-      : [
-          [
-            '@semantic-release/changelog',
-            { changelogFile: 'packages/font/CHANGELOG.md' },
-          ],
-        ]),
-    [PUBLISH_PLUGIN, { pkgRoot: 'packages/font' }],
+      : [['@semantic-release/changelog', { changelogFile: 'CHANGELOG.md' }]]),
+    [PUBLISH_PLUGIN, { pkgRoot: '.' }],
     ...(isCanary
       ? []
       : [
           [
             '@semantic-release/git',
             {
-              assets: [
-                'packages/font/package.json',
-                'packages/font/CHANGELOG.md',
-              ],
+              assets: ['package.json', 'CHANGELOG.md'],
               message:
                 'chore(release): devicons ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
             },

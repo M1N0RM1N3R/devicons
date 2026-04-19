@@ -117,13 +117,19 @@ jobs:
       - name: Build devicons font package
         run: pnpm -F devicons build
       - name: Release devicons
+        # IMPORTANT: semantic-release-monorepo reads cwd's package.json to
+        # determine which package to scope commits to. Running from the
+        # repo root scopes to the root `@dev.icons/repo` package which
+        # never matches commitPaths, so no canary releases ever fire.
+        # Running from packages/font scopes correctly to `devicons`.
+        working-directory: packages/font
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
           ARGS=""
           if [ "$DRY_RUN" = "true" ]; then ARGS="--dry-run"; fi
-          pnpm exec semantic-release -e ./packages/font/release.config.cjs $ARGS
+          pnpm exec semantic-release $ARGS
 
   sync-canary:
     name: Sync main → canary
