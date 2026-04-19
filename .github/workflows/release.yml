@@ -34,7 +34,11 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          registry-url: 'https://registry.npmjs.org'
+          # registry-url intentionally omitted. setup-node's generated
+          # ~/.npmrc pins `_authToken=${NODE_AUTH_TOKEN}` and with no
+          # NODE_AUTH_TOKEN that expands to an empty token, which npm
+          # treats as explicit auth and short-circuits the Trusted
+          # Publisher OIDC handshake — producing a 404 on publish.
       - name: Install npm ≥ 11.5 via corepack (Trusted Publisher OIDC)
         # Bypasses the broken npm 10.9.7 in the Node 22.22.x toolcache
         # (see actions/runner-images#13883) by pulling npm from the
@@ -42,7 +46,14 @@ jobs:
         run: |
           corepack enable
           corepack prepare npm@11 --activate
+          # Belt-and-suspenders: if a home-dir .npmrc was created by an
+          # earlier action, scrub any _authToken line so TP OIDC is used.
+          if [ -f "$HOME/.npmrc" ]; then
+            sed -i.bak '/_authToken/d' "$HOME/.npmrc" || true
+          fi
           npm --version
+          echo "--- npm config (sanitised) ---"
+          npm config list | sed 's/authToken.*=.*/authToken=<redacted>/'
       - run: pnpm install --frozen-lockfile
       - name: Build core (sprite + font assets + library)
         run: pnpm -F @dev.icons/core build
@@ -72,7 +83,11 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          registry-url: 'https://registry.npmjs.org'
+          # registry-url intentionally omitted. setup-node's generated
+          # ~/.npmrc pins `_authToken=${NODE_AUTH_TOKEN}` and with no
+          # NODE_AUTH_TOKEN that expands to an empty token, which npm
+          # treats as explicit auth and short-circuits the Trusted
+          # Publisher OIDC handshake — producing a 404 on publish.
       - name: Install npm ≥ 11.5 via corepack (Trusted Publisher OIDC)
         # Bypasses the broken npm 10.9.7 in the Node 22.22.x toolcache
         # (see actions/runner-images#13883) by pulling npm from the
@@ -80,7 +95,14 @@ jobs:
         run: |
           corepack enable
           corepack prepare npm@11 --activate
+          # Belt-and-suspenders: if a home-dir .npmrc was created by an
+          # earlier action, scrub any _authToken line so TP OIDC is used.
+          if [ -f "$HOME/.npmrc" ]; then
+            sed -i.bak '/_authToken/d' "$HOME/.npmrc" || true
+          fi
           npm --version
+          echo "--- npm config (sanitised) ---"
+          npm config list | sed 's/authToken.*=.*/authToken=<redacted>/'
       - run: pnpm install --frozen-lockfile
       - name: Build core (produces font assets in packages/core/dist/font)
         run: pnpm -F @dev.icons/core build
