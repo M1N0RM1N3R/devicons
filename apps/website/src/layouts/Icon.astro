@@ -100,7 +100,8 @@ const related = await getRelatedIcons(slug, tags, 8);
   description={metaDescription}
   image={`/og/icons/${slug}.png`}
   keywords={keywords}
-  jsonLd={jsonLd}>
+  jsonLd={jsonLd}
+  brand={name}>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
     <Breadcrumbs
       items={[

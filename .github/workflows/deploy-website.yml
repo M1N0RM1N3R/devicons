@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - canary
+    paths:
+      - 'apps/website/**'
   workflow_dispatch:
     inputs:
       environment:
