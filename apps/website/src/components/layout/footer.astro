@@ -7,11 +7,17 @@ import {
 
 const year = new Date().getFullYear();
 const topTags = (await getFooterTags()).slice(0, 8);
+import ExploreAiSummary from '../seo/explore-ai-summary.astro';
+
+interface Props {
+  brand?: string;
+}
+const { brand } = Astro.props;
 ---
 
 <footer class="footer-brutalist border-t-2 border-border">
   <div class="footer-brand-mark" aria-hidden="true"></div>
-
+  <ExploreAiSummary brand={brand} />
   <div class="max-w-[1400px] mx-auto border-t-2 border-border">
     <div class="footer-grid">
       <div class="footer-col">
