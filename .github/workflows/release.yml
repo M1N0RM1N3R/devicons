@@ -32,9 +32,11 @@ jobs:
           version: 10.10.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
           registry-url: 'https://registry.npmjs.org'
+      - name: Upgrade npm to a version that supports Trusted Publisher OIDC
+        run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - name: Build core (sprite + font assets + library)
         run: pnpm -F @dev.icons/core build
@@ -45,8 +47,6 @@ jobs:
           pnpm -F @dev.icons/svelte build
       - name: Release Group 1
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: node scripts/release-group1.mjs
@@ -64,9 +64,11 @@ jobs:
           version: 10.10.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
           registry-url: 'https://registry.npmjs.org'
+      - name: Upgrade npm to a version that supports Trusted Publisher OIDC
+        run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - name: Build core (produces font assets in packages/core/dist/font)
         run: pnpm -F @dev.icons/core build
@@ -74,11 +76,89 @@ jobs:
         run: pnpm -F devicons build
       - name: Release devicons
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
           ARGS=""
           if [ "$DRY_RUN" = "true" ]; then ARGS="--dry-run"; fi
           pnpm exec semantic-release -e ./packages/font/release.config.cjs $ARGS
+
+  sync-canary:
+    name: Sync main → canary
+    needs: [group1, font]
+    runs-on: ubuntu-latest
+    # Only after a real release on main. Skip on canary pushes, dry-runs,
+    # and any workflow_dispatch (manual runs are for testing).
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: canary
+          persist-credentials: true
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Merge main into canary
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin main
+          MAIN_SHA=$(git rev-parse origin/main)
+          CANARY_SHA=$(git rev-parse HEAD)
+
+          if [ "$MAIN_SHA" = "$CANARY_SHA" ]; then
+            echo "canary is already at main ($MAIN_SHA) — nothing to sync."
+            exit 0
+          fi
+
+          if git merge-base --is-ancestor origin/main HEAD; then
+            echo "canary already contains main — nothing to sync."
+            exit 0
+          fi
+
+          if git merge --ff-only origin/main; then
+            echo "Fast-forwarded canary to main."
+            git push origin canary
+            exit 0
+          fi
+
+          echo "Fast-forward not possible — creating a merge commit."
+          if git merge origin/main --no-edit \
+              -m "chore(sync): merge main into canary [skip ci]"; then
+            git push origin canary
+            echo "canary synced with main via merge commit."
+            exit 0
+          fi
+
+          echo "Merge conflict — aborting and opening a sync PR for manual resolution."
+          git merge --abort || true
+
+          SYNC_BRANCH="chore/sync-main-into-canary-${GITHUB_RUN_ID}"
+          git checkout -b "$SYNC_BRANCH" origin/canary
+          if git merge origin/main --no-edit \
+              -m "chore(sync): merge main into canary [skip ci]"; then
+            git push origin "$SYNC_BRANCH"
+          else
+            git add -A
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "chore(sync): merge main into canary (CONFLICTS — resolve before merging) [skip ci]" || true
+            git push origin "$SYNC_BRANCH"
+          fi
+
+          gh pr create \
+            --base canary \
+            --head "$SYNC_BRANCH" \
+            --title "chore(sync): merge main into canary" \
+            --body "Automated sync after main release failed to merge cleanly. Resolve conflicts and merge this PR to bring canary up to date with main." \
+            --label sync || true
+
+          echo "::error::main → canary merge had conflicts. Sync PR opened on branch $SYNC_BRANCH."
+          exit 1
