@@ -18,6 +18,13 @@ permissions:
   pull-requests: write  # semantic-release PR comments
   id-token: write       # npm provenance via OIDC
 
+# Serialize release runs per-branch. If two PRs merge to main back-to-back,
+# we queue rather than race — two parallel runs would both try to commit the
+# release notes/version bump and one would fail with "local branch behind".
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   group1:
     name: Release Group 1 (core/react/vue/svelte)
@@ -74,12 +81,19 @@ jobs:
 
   font:
     name: Release devicons (font)
+    # Serialize after group1 so both jobs don't race on `@semantic-release/git`
+    # pushing to main. Without this, whichever finishes second sees
+    # "local branch main is behind the remote" and bails.
+    needs: group1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: true
+          # group1 just pushed its release commit to main; make sure we
+          # check out the latest tip so semantic-release sees it.
+          ref: ${{ github.ref }}
       - uses: pnpm/action-setup@v4
         with:
           version: 10.10.0
