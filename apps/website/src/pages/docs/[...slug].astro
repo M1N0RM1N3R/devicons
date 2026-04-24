@@ -2,7 +2,11 @@
 import { render } from 'astro:content';
 import { getSortedDocs } from '../../lib/docs';
 import Docs from '../../layouts/Docs.astro';
-import { faqSchema } from '../../lib/seo';
+import {
+  faqSchema,
+  howToSchema,
+  softwarePackageSchema,
+} from '../../lib/seo';
 
 export async function getStaticPaths() {
   const INDEX_ID = 'introduction';
@@ -41,9 +45,86 @@ const DOC_FAQS: Record<string, Array<{ question: string; answer: string }>> = {
   ],
 };
 
-const extraJsonLd = DOC_FAQS[entry.id]
-  ? [faqSchema(DOC_FAQS[entry.id])]
-  : undefined;
+const extraBlocks: Array<Record<string, unknown>> = [];
+
+if (DOC_FAQS[entry.id]) extraBlocks.push(faqSchema(DOC_FAQS[entry.id]));
+
+if (entry.id === 'installation') {
+  extraBlocks.push(
+    howToSchema({
+      name: 'Install Devicons',
+      description: 'Install the Devicons package for your framework of choice.',
+      url: '/docs/installation',
+      totalTime: 'PT2M',
+      steps: [
+        {
+          name: 'Pick your package',
+          text: 'Choose the Devicons package matching your framework: @dev.icons/react, @dev.icons/vue, @dev.icons/svelte, or @dev.icons/astro. For plain SVG or a web font, you can also use @dev.icons/core.',
+        },
+        {
+          name: 'Install with your package manager',
+          text: 'Run `npm install @dev.icons/react` (or the Vue/Svelte/Astro variant) inside your project. pnpm and yarn work identically.',
+        },
+        {
+          name: 'Import and render an icon',
+          text: 'Import any named icon component and render it with a `size` prop: `import { ReactIcon } from "@dev.icons/react"; <ReactIcon size={32} />`.',
+        },
+      ],
+    }),
+  );
+}
+
+if (entry.id === 'quick-start') {
+  extraBlocks.push(
+    howToSchema({
+      name: 'Quick start with Devicons',
+      description:
+        'Drop a first Devicons icon into your app end-to-end in under two minutes.',
+      url: '/docs/quick-start',
+      totalTime: 'PT2M',
+      steps: [
+        {
+          name: 'Install the package for your framework',
+          text: 'Run `npm install @dev.icons/react` (substitute vue/svelte/astro as needed).',
+        },
+        {
+          name: 'Import an icon by name',
+          text: 'Components use PascalCase: `react` → `ReactIcon`, `next-js` → `NextJsIcon`.',
+        },
+        {
+          name: 'Render with a size prop',
+          text: '`<ReactIcon size={32} />` renders a 32×32 SVG that inherits `currentColor` in the monochrome variant.',
+        },
+      ],
+    }),
+  );
+}
+
+const FRAMEWORK_PACKAGES: Record<
+  string,
+  { packageName: string; runtime: string }
+> = {
+  react: { packageName: '@dev.icons/react', runtime: 'React' },
+  vue: { packageName: '@dev.icons/vue', runtime: 'Vue' },
+  svelte: { packageName: '@dev.icons/svelte', runtime: 'Svelte' },
+  astro: { packageName: '@dev.icons/astro', runtime: 'Astro' },
+  'icon-font': { packageName: '@dev.icons/core', runtime: 'Web Font' },
+};
+
+const fwPkg = FRAMEWORK_PACKAGES[entry.id];
+if (fwPkg) {
+  extraBlocks.push(
+    softwarePackageSchema({
+      name: `${fwPkg.packageName} — Devicons for ${fwPkg.runtime}`,
+      description: entry.data.description,
+      url: `/docs/${entry.id}`,
+      packageName: fwPkg.packageName,
+      runtime: fwPkg.runtime,
+    }),
+  );
+}
+
+const extraJsonLd = extraBlocks.length > 0 ? extraBlocks : undefined;
 ---
 
 <Docs
