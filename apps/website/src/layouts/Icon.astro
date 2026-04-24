@@ -116,9 +116,16 @@ const related = await getRelatedIcons(slug, tags, 8);
       <div class="flex items-center gap-2 mt-3 sm:mt-4 flex-wrap">
         {deprecated && <Badge variant="destructive">Deprecated</Badge>}
         {version && <Badge variant="neutral">v{version}</Badge>}
-        <Badge variant="success">
-          {icons.length} variant{icons.length > 1 ? 's' : ''}
-        </Badge>
+        {icons.length > 1 ? (
+          <a
+            href={`/icons/${slug}/variants`}
+            data-astro-prefetch
+            class="inline-flex items-center px-1.5 py-0.5 border font-mono text-[10px] font-semibold uppercase tracking-[0.18em] leading-none bg-success/15 text-success border-success/20 hover:border-success transition-colors">
+            {icons.length} variants →
+          </a>
+        ) : (
+          <Badge variant="success">1 variant</Badge>
+        )}
         {
           website && (
             <a
@@ -192,6 +199,18 @@ const related = await getRelatedIcons(slug, tags, 8);
     badInDark={badInDark}
     badInLight={badInLight}
   />
+
+  {
+    Astro.slots.has('default') && (
+      <section class="max-w-4xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16">
+        <div class="border-t border-border pt-8 sm:pt-10">
+          <div class="prose max-w-[70ch]">
+            <slot />
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   {
     comparisonPartners.length > 0 && (

@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import Icon from "../../layouts/Icon.astro";
 
 export async function getStaticPaths() {
@@ -13,8 +13,7 @@ export async function getStaticPaths() {
     return {
       params: { slug: icon.id },
       props: {
-        ...icon.data,
-        slug: icon.id,
+        entry: icon,
         prev: prev ? { slug: prev.id, name: prev.data.name } : null,
         next: next ? { slug: next.id, name: next.data.name } : null,
       },
@@ -22,7 +21,14 @@ export async function getStaticPaths() {
   });
 }
 
-const props = Astro.props;
+const { entry, prev, next } = Astro.props as {
+  entry: CollectionEntry<"icons">;
+  prev: { slug: string; name: string } | null;
+  next: { slug: string; name: string } | null;
+};
+const { Content } = await render(entry);
 ---
 
-<Icon {...props} />
+<Icon {...entry.data} slug={entry.id} prev={prev} next={next}>
+  <Content />
+</Icon>
