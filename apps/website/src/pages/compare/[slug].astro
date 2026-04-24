@@ -1,16 +1,16 @@
 ---
-import PageLayout from "../../components/layout/page-layout.astro";
-import Breadcrumbs from "../../components/seo/breadcrumbs.astro";
-import IconRender from "../../components/icons/icon-render.astro";
-import { getActiveIcons } from "../../lib/icons-query";
-import { COMPARISONS, compareSlug } from "../../data/comparisons";
-import { SITE_TITLE } from "../../consts";
-import { breadcrumbSchema } from "../../lib/seo";
+import PageLayout from '../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../components/seo/breadcrumbs.astro';
+import IconRender from '../../components/icons/icon-render.astro';
+import { getActiveIcons } from '../../lib/icons-query';
+import { COMPARISONS, compareSlug } from '../../data/comparisons';
+import { SITE_TITLE } from '../../consts';
+import { breadcrumbSchema } from '../../lib/seo';
 
 export async function getStaticPaths() {
   const icons = await getActiveIcons();
-  const byId = new Map(icons.map((i) => [i.id, i]));
-  return COMPARISONS.flatMap((cmp) => {
+  const byId = new Map(icons.map(i => [i.id, i]));
+  return COMPARISONS.flatMap(cmp => {
     const a = byId.get(cmp.a);
     const b = byId.get(cmp.b);
     if (!a || !b) return [];
@@ -30,13 +30,16 @@ const description = `Compare ${a.data.name} and ${b.data.name} — two popular $
 
 const jsonLd = [
   breadcrumbSchema([
-    { name: "Home", url: "/" },
-    { name: "Compare", url: "/compare" },
-    { name: `${a.data.name} vs ${b.data.name}`, url: `/compare/${compareSlug(a.id, b.id)}` },
+    { name: 'Home', url: '/' },
+    { name: 'Compare', url: '/compare' },
+    {
+      name: `${a.data.name} vs ${b.data.name}`,
+      url: `/compare/${compareSlug(a.id, b.id)}`,
+    },
   ]),
 ];
 
-const iconFile = (id: string, data: (typeof a)["data"]) => data.icons[0] ?? id;
+const iconFile = (id: string, data: (typeof a)['data']) => data.icons[0] ?? id;
 
 const cards = [
   { id: a.id, data: a.data, file: iconFile(a.id, a.data) },
@@ -44,84 +47,91 @@ const cards = [
 ];
 ---
 
-<PageLayout title={title} description={description} image={`/og/compare/${compareSlug(a.id, b.id)}.png`} jsonLd={jsonLd}>
+<PageLayout
+  title={title}
+  description={description}
+  image={`/og/compare/${compareSlug(a.id, b.id)}.png`}
+  jsonLd={jsonLd}>
   <div class="max-w-[1200px] mx-auto px-6 pt-10">
     <Breadcrumbs
       items={[
-        { name: "Home", url: "/" },
-        { name: "Compare" },
+        { name: 'Home', url: '/' },
+        { name: 'Compare' },
         { name: `${a.data.name} vs ${b.data.name}` },
       ]}
     />
 
     <header class="mt-6 mb-10 pb-8 border-b border-border">
       <p class="type-label mb-4 flex items-center gap-3">
-        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
         {category}
       </p>
       <h1 class="type-h1">{a.data.name} vs {b.data.name}</h1>
       <p class="type-body-lg mt-3 max-w-[64ch]">
-        Two popular {category} options side-by-side. Grab the logo for either — or both
-        — and drop them into your stack diagrams, comparison pages, and docs.
+        Two popular {category} options side-by-side. Grab the logo for either — or
+        both — and drop them into your stack diagrams, comparison pages, and docs.
       </p>
     </header>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {cards.map((card) => (
-        <article class="p-6 border border-border flex flex-col gap-4">
-          <div class="flex items-center gap-4">
-            <IconRender
-              iconFile={card.file}
-              name={card.data.name}
-              size={64}
-              badInDark={card.data.badInDark}
-              badInLight={card.data.badInLight}
-              className="w-16 h-16 shrink-0"
-            />
-            <div class="min-w-0">
-              <h2 class="type-h2 truncate">{card.data.name}</h2>
-              {card.data.tags?.length > 0 && (
-                <p class="type-mono text-[10px] uppercase tracking-wider text-text-muted truncate mt-1">
-                  {card.data.tags.slice(0, 3).join(" · ")}
-                </p>
-              )}
+      {
+        cards.map(card => (
+          <article class="p-6 border border-border flex flex-col gap-4">
+            <div class="flex items-center gap-4">
+              <IconRender
+                iconFile={card.file}
+                name={card.data.name}
+                size={64}
+                badInDark={card.data.badInDark}
+                badInLight={card.data.badInLight}
+                className="w-16 h-16 shrink-0"
+              />
+              <div class="min-w-0">
+                <h2 class="type-h2 truncate">{card.data.name}</h2>
+                {card.data.tags?.length > 0 && (
+                  <p class="type-mono text-[10px] uppercase tracking-wider text-text-muted truncate mt-1">
+                    {card.data.tags.slice(0, 3).join(' · ')}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-          {card.data.description && (
-            <p class="type-body">{card.data.description}</p>
-          )}
-          <dl class="grid grid-cols-2 gap-3 text-sm mt-auto">
-            {card.data.license && (
-              <div>
-                <dt class="type-label mb-1">License</dt>
-                <dd>{card.data.license}</dd>
-              </div>
+            {card.data.description && (
+              <p class="type-body">{card.data.description}</p>
             )}
-            {card.data.website && (
-              <div class="col-span-2">
-                <dt class="type-label mb-1">Website</dt>
-                <dd>
-                  <a
-                    href={card.data.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-accent hover:text-accent-hover transition-colors break-all"
-                  >
-                    {card.data.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                  </a>
-                </dd>
-              </div>
-            )}
-          </dl>
-          <a
-            href={`/icons/${card.id}`}
-            data-astro-prefetch
-            class="btn btn--primary btn--mono btn--sm"
-          >
-            Open {card.data.name} page &rarr;
-          </a>
-        </article>
-      ))}
+            <dl class="grid grid-cols-2 gap-3 text-sm mt-auto">
+              {card.data.license && (
+                <div>
+                  <dt class="type-label mb-1">License</dt>
+                  <dd>{card.data.license}</dd>
+                </div>
+              )}
+              {card.data.website && (
+                <div class="col-span-2">
+                  <dt class="type-label mb-1">Website</dt>
+                  <dd>
+                    <a
+                      href={card.data.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-accent hover:text-accent-hover transition-colors break-all">
+                      {card.data.website
+                        .replace(/^https?:\/\//, '')
+                        .replace(/\/$/, '')}
+                    </a>
+                  </dd>
+                </div>
+              )}
+            </dl>
+            <a
+              href={`/icons/${card.id}`}
+              data-astro-prefetch
+              class="btn btn--primary btn--mono btn--sm">
+              Open {card.data.name} page
+            </a>
+          </article>
+        ))
+      }
     </div>
   </div>
 </PageLayout>

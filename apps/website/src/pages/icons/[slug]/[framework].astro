@@ -1,0 +1,234 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import PageLayout from '../../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../../components/seo/breadcrumbs.astro';
+import IconRender from '../../../components/icons/icon-render.astro';
+import { SITE_TITLE } from '../../../consts';
+import {
+  breadcrumbSchema,
+  iconBrandSchema,
+  iconImageSchema,
+} from '../../../lib/seo';
+
+const FRAMEWORKS = ['react', 'vue', 'svelte', 'astro', 'font'] as const;
+type Framework = (typeof FRAMEWORKS)[number];
+
+const FRAMEWORK_META: Record<
+  Framework,
+  {
+    label: string;
+    pkg: string;
+    runtime: string;
+    buildImport: (cmp: string) => string;
+    buildRender: (cmp: string) => string;
+  }
+> = {
+  react: {
+    label: 'React',
+    pkg: '@dev.icons/react',
+    runtime: 'React',
+    buildImport: cmp => `import { ${cmp} } from "@dev.icons/react";`,
+    buildRender: cmp => `<${cmp} size={32} />`,
+  },
+  vue: {
+    label: 'Vue',
+    pkg: '@dev.icons/vue',
+    runtime: 'Vue',
+    buildImport: cmp => `import { ${cmp} } from "@dev.icons/vue";`,
+    buildRender: cmp => `<${cmp} :size="32" />`,
+  },
+  svelte: {
+    label: 'Svelte',
+    pkg: '@dev.icons/svelte',
+    runtime: 'Svelte',
+    buildImport: cmp => `import { ${cmp} } from "@dev.icons/svelte";`,
+    buildRender: cmp => `<${cmp} size={32} />`,
+  },
+  astro: {
+    label: 'Astro',
+    pkg: '@dev.icons/astro',
+    runtime: 'Astro',
+    buildImport: cmp => `---\nimport { ${cmp} } from "@dev.icons/astro";\n---`,
+    buildRender: cmp => `<${cmp} size={32} client:load />`,
+  },
+  font: {
+    label: 'Icon font',
+    pkg: '@dev.icons/core',
+    runtime: 'Web Font',
+    buildImport: () => `@import "devicons/css";`,
+    buildRender: slug => `<i class="devicons devicons-${slug}"></i>`,
+  },
+};
+
+const toComponentName = (slug: string) => {
+  const reserved = new Set([
+    'react',
+    'vue',
+    'svelte',
+    'astro',
+    'import',
+    'export',
+    'default',
+  ]);
+  const pascal = slug
+    .split(/[-_]/)
+    .filter(Boolean)
+    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+    .join('');
+  return reserved.has(slug) ? `_${pascal}` : `${pascal}Icon`;
+};
+
+export async function getStaticPaths() {
+  const fws = ['react', 'vue', 'svelte', 'astro', 'font'] as const;
+  const icons = await getCollection('icons');
+  const gated = icons.filter(
+    i => !i.data.deprecated && (i.data.popular || i.data.recommended),
+  );
+  return gated.flatMap(icon =>
+    fws.map(fw => ({
+      params: { slug: icon.id, framework: fw },
+      props: { entry: icon, framework: fw },
+    })),
+  );
+}
+
+const { entry, framework } = Astro.props as {
+  entry: CollectionEntry<'icons'>;
+  framework: Framework;
+};
+const { name, description, icons: iconFiles, website, mainColor, license } =
+  entry.data;
+const meta = FRAMEWORK_META[framework];
+const cmp =
+  framework === 'font' ? entry.id : toComponentName(entry.id);
+const iconFile = iconFiles[0] ?? entry.id;
+
+const title = `${name} icon for ${meta.label} — copy-ready component | ${SITE_TITLE}`;
+const pageDescription = description
+  ? `${description} Drop the ${name} logo into your ${meta.runtime} project with a single import — copy the snippet, or grab the SVG.`
+  : `${name} icon as a ${meta.runtime} component: copy-ready import and render snippet, plus the raw SVG. Free, MIT licensed.`;
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Icons', url: '/icons' },
+    { name, url: `/icons/${entry.id}` },
+    {
+      name: meta.label,
+      url: `/icons/${entry.id}/${framework}`,
+    },
+  ]),
+  iconBrandSchema({
+    name,
+    description,
+    slug: entry.id,
+    website,
+    mainColor,
+  }),
+  iconImageSchema({ name, slug: entry.id, license }),
+];
+
+const importSnippet = meta.buildImport(cmp);
+const renderSnippet = meta.buildRender(cmp);
+---
+
+<PageLayout
+  title={title}
+  description={pageDescription}
+  image={`/og/icons/${entry.id}.png`}
+  jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
+    <Breadcrumbs
+      items={[
+        { name: 'Home', url: '/' },
+        { name: 'Icons', url: '/icons' },
+        { name, url: `/icons/${entry.id}` },
+        { name: meta.label },
+      ]}
+    />
+
+    <header class="mt-6 mb-8">
+      <p class="type-label mb-4 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
+        {meta.label} · {meta.pkg}
+      </p>
+      <h1 class="type-display-sm">{name} icon for {meta.label}</h1>
+      {description && (
+        <p class="type-body-lg mt-3 max-w-[64ch]">{description}</p>
+      )}
+    </header>
+
+    <section class="mb-10 p-6 border border-border flex items-center gap-6">
+      <IconRender
+        iconFile={iconFile}
+        name={name}
+        size={80}
+        className="w-20 h-20 shrink-0"
+      />
+      <div class="min-w-0">
+        <p class="type-mono text-xs text-text-muted uppercase tracking-caps mb-2">
+          Install
+        </p>
+        <code class="type-mono block break-all">npm install {meta.pkg}</code>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="type-label mb-3 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
+        Import
+      </h2>
+      <pre class="p-4 border border-border bg-surface overflow-x-auto"><code class="type-mono text-sm whitespace-pre">{importSnippet}</code></pre>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="type-label mb-3 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
+        Render
+      </h2>
+      <pre class="p-4 border border-border bg-surface overflow-x-auto"><code class="type-mono text-sm whitespace-pre">{renderSnippet}</code></pre>
+    </section>
+
+    <section class="mt-12 pt-6 border-t border-border">
+      <h2 class="type-label mb-3 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
+        Also available
+      </h2>
+      <ul class="flex flex-wrap gap-2">
+        {
+          FRAMEWORKS.filter(f => f !== framework).map(f => (
+            <li>
+              <a
+                href={`/icons/${entry.id}/${f}`}
+                data-astro-prefetch="viewport"
+                class="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider border border-border hover:border-accent hover:text-accent transition-colors">
+                {FRAMEWORK_META[f].label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a
+            href={`/icons/${entry.id}`}
+            data-astro-prefetch
+            class="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider border border-border hover:border-accent hover:text-accent transition-colors">
+            Full {name} page →
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <nav class="mt-12 pt-6 border-t border-border">
+      <a
+        href={`/docs/${framework === 'font' ? 'icon-font' : framework}`}
+        data-astro-prefetch
+        class="font-mono text-xs font-semibold uppercase tracking-caps text-text-muted hover:text-accent transition-colors">
+        {meta.label} framework guide →
+      </a>
+    </nav>
+  </div>
+</PageLayout>

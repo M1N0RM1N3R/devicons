@@ -10,7 +10,11 @@ import {
   formatTagLabel,
 } from '../../../lib/icons-query';
 import { SITE_TITLE } from '../../../consts';
-import { breadcrumbSchema, collectionPageSchema } from '../../../lib/seo';
+import {
+  breadcrumbSchema,
+  collectionPageSchema,
+  definedTermSchema,
+} from '../../../lib/seo';
 
 export async function getStaticPaths() {
   const tags = await getUniqueTags();
@@ -56,6 +60,11 @@ const jsonLd = [
     description,
     url: `/icons/tag/${slugifyTag(rawTag)}`,
     items: icons.map(i => ({ name: i.name, url: `/icons/${i.slug}` })),
+  }),
+  definedTermSchema({
+    name: label,
+    description: `Developer brands and tools tagged "${rawTag}" in the Devicons library. ${count} ${count === 1 ? 'icon' : 'icons'}.`,
+    url: `/icons/tag/${slugifyTag(rawTag)}`,
   }),
 ];
 ---

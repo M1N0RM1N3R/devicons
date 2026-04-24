@@ -1,0 +1,114 @@
+---
+import PageLayout from '../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../components/seo/breadcrumbs.astro';
+import IconGrid from '../../components/icons/icon-grid.astro';
+import { getActiveIcons, toListItem } from '../../lib/icons-query';
+import { SITE_TITLE } from '../../consts';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/seo';
+import { USE_CASES, type UseCase } from '../../data/use-cases';
+
+export async function getStaticPaths() {
+  const icons = await getActiveIcons();
+  return USE_CASES.map(uc => {
+    const matched = icons
+      .filter(i => i.data.tags.some(t => uc.tagMatches.includes(t)))
+      .map(toListItem)
+      .sort((a, b) => {
+        // recommended + popular first, then alphabetical
+        const score = (x: typeof a) =>
+          (x.recommended ? 2 : 0) + (x.popular ? 1 : 0);
+        const diff = score(b) - score(a);
+        if (diff !== 0) return diff;
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+      });
+    return {
+      params: { slug: uc.slug },
+      props: { useCase: uc, icons: matched },
+    };
+  }).filter(p => p.props.icons.length > 0);
+}
+
+const { useCase, icons } = Astro.props as {
+  useCase: UseCase;
+  icons: ReturnType<typeof toListItem>[];
+};
+
+const title = `${useCase.title} — ${icons.length} developer logos | ${SITE_TITLE}`;
+const description = `${icons.length} curated developer icons for ${useCase.keyword}. ${useCase.intro}`;
+
+const related = (useCase.related ?? [])
+  .map(slug => USE_CASES.find(u => u.slug === slug))
+  .filter((u): u is UseCase => Boolean(u));
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Use cases', url: '/use-cases' },
+    { name: useCase.title, url: `/use-cases/${useCase.slug}` },
+  ]),
+  collectionPageSchema({
+    name: useCase.title,
+    description,
+    url: `/use-cases/${useCase.slug}`,
+    items: icons.map(i => ({ name: i.name, url: `/icons/${i.slug}` })),
+  }),
+];
+---
+
+<PageLayout
+  title={title}
+  description={description}
+  image="/og/home.png"
+  jsonLd={jsonLd}>
+  <div class="max-w-[1400px] mx-auto px-6 pt-10">
+    <Breadcrumbs
+      items={[
+        { name: 'Home', url: '/' },
+        { name: 'Use cases', url: '/use-cases' },
+        { name: useCase.title },
+      ]}
+    />
+
+    <header class="mt-6 mb-10 pb-8 border-b border-border">
+      <p class="type-label mb-4 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
+        {useCase.eyebrow} · {icons.length} icons
+      </p>
+      <h1 class="type-h1">{useCase.title}</h1>
+      <p class="type-body-lg mt-3 max-w-[64ch]">{useCase.intro}</p>
+    </header>
+
+    <IconGrid items={icons} />
+
+    <section class="prose max-w-[70ch] mt-12 pt-8 border-t border-border">
+      <p class="type-body">{useCase.body}</p>
+    </section>
+
+    {
+      related.length > 0 && (
+        <aside class="my-16 pt-8 border-t border-border">
+          <h2 class="type-label mb-4 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              class="inline-block w-3 h-[2px] bg-accent"
+            />
+            Related use cases
+          </h2>
+          <ul class="flex flex-wrap gap-2">
+            {related.map(r => (
+              <li>
+                <a
+                  href={`/use-cases/${r.slug}`}
+                  data-astro-prefetch="viewport"
+                  class="inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider border border-border hover:border-accent hover:text-accent transition-colors">
+                  {r.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+  </div>
+</PageLayout>

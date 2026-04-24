@@ -1,0 +1,67 @@
+---
+import PageLayout from '../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../components/seo/breadcrumbs.astro';
+import { SITE_TITLE } from '../../consts';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/seo';
+import { USE_CASES } from '../../data/use-cases';
+
+const title = `Icon use cases — curated sets by topic | ${SITE_TITLE}`;
+const description = `Curated icon groupings for common developer content: AI apps, databases, frontend frameworks, DevOps, design tools, and languages. ${USE_CASES.length} use-case pages.`;
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Use cases', url: '/use-cases' },
+  ]),
+  collectionPageSchema({
+    name: 'Icon use cases',
+    description,
+    url: '/use-cases',
+    items: USE_CASES.map(uc => ({
+      name: uc.title,
+      url: `/use-cases/${uc.slug}`,
+    })),
+  }),
+];
+---
+
+<PageLayout
+  title={title}
+  description={description}
+  image="/og/home.png"
+  jsonLd={jsonLd}>
+  <div class="max-w-[1200px] mx-auto px-6 pt-10">
+    <Breadcrumbs items={[{ name: 'Home', url: '/' }, { name: 'Use cases' }]} />
+
+    <header class="mt-6 mb-10 pb-8 border-b border-border">
+      <p class="type-label mb-4 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
+        {USE_CASES.length} use cases
+      </p>
+      <h1 class="type-h1">Icon use cases</h1>
+      <p class="type-body-lg mt-3 max-w-[64ch]">
+        Curated icon sets grouped by what you're writing about: AI stacks,
+        database content, framework comparisons, DevOps diagrams. Each page has
+        a shortlist with context on how the logos are typically arranged.
+      </p>
+    </header>
+
+    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {
+        USE_CASES.map(uc => (
+          <li>
+            <a
+              href={`/use-cases/${uc.slug}`}
+              data-astro-prefetch="viewport"
+              class="block p-6 border border-border hover:border-accent transition-colors">
+              <p class="type-label mb-2 text-text-muted">{uc.eyebrow}</p>
+              <h2 class="type-h2 mb-2">{uc.title}</h2>
+              <p class="type-body text-text-muted">{uc.intro}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</PageLayout>
