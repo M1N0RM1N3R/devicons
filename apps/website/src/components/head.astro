@@ -38,10 +38,11 @@ const {
   jsonLd,
 } = Astro.props;
 
-// Normalize canonical: lowercase path, strip trailing slash (except root).
+// Normalize canonical: lowercase + ensure trailing slash. This matches the
+// site's trailingSlash: 'always' config so canonicals align with served URLs
+// and the sitemap (no dual-URL split).
 const rawPath = Astro.url.pathname.toLowerCase();
-const normalizedPath =
-  rawPath.length > 1 && rawPath.endsWith("/") ? rawPath.slice(0, -1) : rawPath;
+const normalizedPath = rawPath.endsWith("/") ? rawPath : `${rawPath}/`;
 const canonicalURL = new URL(normalizedPath, Astro.site ?? SITE_URL);
 
 // Markdown alternate: emit <link rel="alternate" type="text/markdown"> for
@@ -52,7 +53,12 @@ function resolveMarkdownAlternate(path: string): string | null {
   const trimmed = path.replace(/\/$/, "");
   // Known top-level pages with MD counterparts.
   if (trimmed === "/search" || trimmed === "/legal") return `${trimmed}.md`;
-  if (trimmed === "/docs" || trimmed === "/icons" || trimmed === "/packs")
+  if (
+    trimmed === "/docs" ||
+    trimmed === "/icons" ||
+    trimmed === "/packs" ||
+    trimmed === "/compare"
+  )
     return `${trimmed}.md`;
   // Listing/utility pages under /icons do not have MD counterparts.
   if (

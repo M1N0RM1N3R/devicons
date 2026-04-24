@@ -22,6 +22,7 @@ export default defineConfig({
   },
   site: 'https://devicons.io',
   build: {
+    format: 'directory',
     inlineStylesheets: 'always',
     // Parallelize page rendering. OG image generation (satori + sharp) is
     // CPU-bound and independent per page, so a small amount of concurrency
@@ -79,8 +80,7 @@ export default defineConfig({
           pathname === '/icons/popular/' ||
           pathname.startsWith('/icons/tag/') ||
           pathname.startsWith('/icons/color/');
-        const isIconDetail =
-          pathname.startsWith('/icons/') && !isIconListing;
+        const isIconDetail = pathname.startsWith('/icons/') && !isIconListing;
 
         if (isRoot) {
           item.priority = 1.0;
