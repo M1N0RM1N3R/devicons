@@ -1,0 +1,99 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import PageLayout from '../../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../../components/seo/breadcrumbs.astro';
+import { SITE_TITLE } from '../../../consts';
+import { breadcrumbSchema, collectionPageSchema } from '../../../lib/seo';
+
+export async function getStaticPaths() {
+  const icons = await getCollection('icons');
+  return icons
+    .filter(i => !i.data.deprecated && i.data.icons.length > 1)
+    .map(icon => ({
+      params: { slug: icon.id },
+      props: { entry: icon },
+    }));
+}
+
+const { entry } = Astro.props as { entry: CollectionEntry<'icons'> };
+const { name, icons: variants, description } = entry.data;
+
+const title = `${name} logo variants — ${variants.length} SVG files | ${SITE_TITLE}`;
+const pageDescription = `All ${variants.length} ${name} logo variants: download each as a free, optimized SVG or copy for your React, Vue, or Svelte project.`;
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Icons', url: '/icons' },
+    { name, url: `/icons/${entry.id}` },
+    { name: 'Variants', url: `/icons/${entry.id}/variants` },
+  ]),
+  collectionPageSchema({
+    name: `${name} logo variants`,
+    description: pageDescription,
+    url: `/icons/${entry.id}/variants`,
+    items: variants.map(v => ({
+      name: v,
+      url: `/devicons/icons/${v}.svg`,
+    })),
+  }),
+];
+---
+
+<PageLayout title={title} description={pageDescription} image={`/og/icons/${entry.id}.png`} jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
+    <Breadcrumbs
+      items={[
+        { name: 'Home', url: '/' },
+        { name: 'Icons', url: '/icons' },
+        { name, url: `/icons/${entry.id}` },
+        { name: 'Variants' },
+      ]}
+    />
+
+    <header class="mt-6 mb-6 sm:mb-8">
+      <p class="type-label mb-4 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"></span>
+        {variants.length} variants
+      </p>
+      <h1 class="type-display-sm">{name} logo variants</h1>
+      {description && (
+        <p class="type-body-lg mt-3 max-w-[64ch]">{description}</p>
+      )}
+    </header>
+
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {variants.map(file => (
+        <li class="p-6 border border-border flex flex-col gap-4">
+          <div class="aspect-square flex items-center justify-center p-6 sm:p-8 bg-surface border border-border">
+            <img
+              src={`/devicons/icons/${file}.svg`}
+              alt={`${name} ${file} variant`}
+              loading="lazy"
+              decoding="async"
+              class="w-full h-full object-contain max-w-[120px] max-h-[120px]"
+            />
+          </div>
+          <div class="flex items-center justify-between">
+            <code class="font-mono text-xs">{file}.svg</code>
+            <a
+              href={`/devicons/icons/${file}.svg`}
+              download
+              class="font-mono text-xs font-semibold uppercase tracking-caps text-accent hover:text-accent-hover transition-colors">
+              Download
+            </a>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <nav class="mt-12 pt-6 border-t border-border">
+      <a
+        href={`/icons/${entry.id}`}
+        data-astro-prefetch
+        class="font-mono text-xs font-semibold uppercase tracking-caps text-text-muted hover:text-accent transition-colors">
+        ← Back to {name}
+      </a>
+    </nav>
+  </div>
+</PageLayout>

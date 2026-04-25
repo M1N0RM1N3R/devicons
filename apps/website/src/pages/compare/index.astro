@@ -1,0 +1,162 @@
+---
+import PageLayout from '../../components/layout/page-layout.astro';
+import Breadcrumbs from '../../components/seo/breadcrumbs.astro';
+import IconRender from '../../components/icons/icon-render.astro';
+import { getActiveIcons } from '../../lib/icons-query';
+import { COMPARISONS, compareSlug } from '../../data/comparisons';
+import { SITE_TITLE } from '../../consts';
+import { breadcrumbSchema, collectionPageSchema } from '../../lib/seo';
+
+const icons = await getActiveIcons();
+const byId = new Map(icons.map(i => [i.id, i]));
+
+interface PairCard {
+  slug: string;
+  category: string;
+  a: { id: string; name: string; iconFile: string };
+  b: { id: string; name: string; iconFile: string };
+}
+
+const pairs: PairCard[] = COMPARISONS.flatMap(cmp => {
+  const a = byId.get(cmp.a);
+  const b = byId.get(cmp.b);
+  if (!a || !b) return [];
+  return [
+    {
+      slug: compareSlug(cmp.a, cmp.b),
+      category: cmp.category,
+      a: { id: a.id, name: a.data.name, iconFile: a.data.icons[0] ?? a.id },
+      b: { id: b.id, name: b.data.name, iconFile: b.data.icons[0] ?? b.id },
+    },
+  ];
+});
+
+// Group by category, preserving first-seen category order.
+const grouped = pairs.reduce<Map<string, PairCard[]>>((acc, pair) => {
+  const list = acc.get(pair.category) ?? [];
+  list.push(pair);
+  acc.set(pair.category, list);
+  return acc;
+}, new Map());
+
+const title = `Compare developer tools — logos side-by-side | ${SITE_TITLE}`;
+const description = `${pairs.length} curated comparisons of popular developer tools: React vs Vue, Postgres vs MongoDB, Docker vs Kubernetes, and more. Grab either logo as a free SVG or React, Vue, or Svelte component.`;
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Compare', url: '/compare' },
+  ]),
+  collectionPageSchema({
+    name: 'Devicons Comparisons',
+    description,
+    url: '/compare',
+    items: pairs.map(p => ({
+      name: `${p.a.name} vs ${p.b.name}`,
+      url: `/compare/${p.slug}`,
+    })),
+  }),
+];
+---
+
+<PageLayout
+  title={title}
+  description={description}
+  image="/og/compare.png"
+  jsonLd={jsonLd}>
+  <div class="max-w-[1200px] mx-auto px-6 pt-10">
+    <Breadcrumbs items={[{ name: 'Home', url: '/' }, { name: 'Compare' }]} />
+
+    <header class="mt-6 mb-10 pb-8 border-b border-border">
+      <p class="type-label mb-4 flex items-center gap-3">
+        <span aria-hidden="true" class="inline-block w-3 h-[2px] bg-accent"
+        ></span>
+        {pairs.length} comparisons
+      </p>
+      <h1 class="type-h1">Icon comparisons</h1>
+      <p class="type-body-lg mt-3 max-w-[64ch]">
+        Pair up the logos of tools developers weigh against each other —
+        frontend frameworks, databases, cloud providers, bundlers. Perfect for
+        stack-decision blog posts, docs, and comparison pages.
+      </p>
+    </header>
+
+    {
+      [...grouped.entries()].map(([category, items]) => (
+        <section class="mt-10 first:mt-0">
+          <h2 class="type-label mb-4 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              class="inline-block w-3 h-[2px] bg-accent"
+            />
+            {category}
+          </h2>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {items.map(pair => (
+              <li>
+                <a
+                  href={`/compare/${pair.slug}`}
+                  data-astro-prefetch="viewport"
+                  class="compare-card">
+                  <div class="compare-card__icons">
+                    <IconRender
+                      iconFile={pair.a.iconFile}
+                      name={pair.a.name}
+                      size={40}
+                      className="w-10 h-10 shrink-0"
+                    />
+                    <span class="compare-card__vs">vs</span>
+                    <IconRender
+                      iconFile={pair.b.iconFile}
+                      name={pair.b.name}
+                      size={40}
+                      className="w-10 h-10 shrink-0"
+                    />
+                  </div>
+                  <span class="compare-card__label">
+                    {pair.a.name} vs {pair.b.name}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</PageLayout>
+
+<style>
+  .compare-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--c-border);
+    background: var(--c-bg);
+    transition: border-color 0.12s ease, background 0.12s ease;
+  }
+  .compare-card:hover {
+    border-color: var(--c-accent);
+    background: color-mix(in oklab, var(--c-accent) 4%, transparent);
+  }
+  .compare-card__icons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .compare-card__vs {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+  }
+  .compare-card__label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--c-text);
+    font-size: 15px;
+  }
+</style>

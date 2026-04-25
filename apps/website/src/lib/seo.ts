@@ -205,3 +205,100 @@ export const faqSchema = (
     },
   })),
 });
+
+interface HowToInput {
+  name: string;
+  description: string;
+  url: string;
+  totalTime?: string; // ISO 8601 duration e.g. "PT2M"
+  steps: Array<{ name: string; text: string; url?: string }>;
+  site?: string;
+}
+
+export const howToSchema = ({
+  name,
+  description,
+  url,
+  totalTime,
+  steps,
+  site = SITE_URL,
+}: HowToInput): JsonLd => ({
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name,
+  description,
+  ...(totalTime ? { totalTime } : {}),
+  mainEntityOfPage: abs(url, site),
+  step: steps.map((s, i) => ({
+    '@type': 'HowToStep',
+    position: i + 1,
+    name: s.name,
+    text: s.text,
+    ...(s.url ? { url: abs(s.url, site) } : {}),
+  })),
+});
+
+interface SoftwarePackageInput {
+  name: string;
+  description: string;
+  url: string;
+  packageName: string; // e.g. "@dev.icons/react"
+  programmingLanguage?: string;
+  runtime?: string; // e.g. "React", "Vue"
+  site?: string;
+}
+
+export const softwarePackageSchema = ({
+  name,
+  description,
+  url,
+  packageName,
+  programmingLanguage = 'TypeScript',
+  runtime,
+  site = SITE_URL,
+}: SoftwarePackageInput): JsonLd => ({
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name,
+  description,
+  codeRepository: GITHUB_URL,
+  programmingLanguage,
+  ...(runtime ? { runtimePlatform: runtime } : {}),
+  url: abs(url, site),
+  license: 'https://opensource.org/licenses/MIT',
+  author: { '@id': abs('/#organization', site) },
+  // SoftwareApplication mirror so Google treats it as a developer app.
+  isPartOf: {
+    '@type': 'SoftwareApplication',
+    name: packageName,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Any',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    downloadUrl: `https://www.npmjs.com/package/${packageName}`,
+  },
+});
+
+interface DefinedTermInput {
+  name: string;
+  description: string;
+  url: string;
+  site?: string;
+}
+
+export const definedTermSchema = ({
+  name,
+  description,
+  url,
+  site = SITE_URL,
+}: DefinedTermInput): JsonLd => ({
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  name,
+  description,
+  url: abs(url, site),
+  inDefinedTermSet: {
+    '@type': 'DefinedTermSet',
+    name: `${SITE_TITLE} tag taxonomy`,
+    url: abs('/icons', site),
+  },
+});

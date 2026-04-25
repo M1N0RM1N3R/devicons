@@ -1,5 +1,5 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import PageLayout from '../components/layout/page-layout.astro';
 import { IconDetail } from '../components/icons/icon-detail';
 import Breadcrumbs from '../components/seo/breadcrumbs.astro';
@@ -10,11 +10,11 @@ import {
   breadcrumbSchema,
   iconBrandSchema,
   iconImageSchema,
-  faqSchema,
 } from '../lib/seo';
 import { getRelatedIcons } from '../lib/related-icons';
-import { slugifyTag, formatTagLabel } from '../lib/icons-query';
-import { buildIconFaq } from '../lib/icon-faq';
+import { slugifyTag } from '../lib/icons-query';
+import { bucketForHex } from '../lib/colors';
+import { COMPARISONS, compareSlug } from '../data/comparisons';
 
 type IconNav = { slug: string; name: string } | null;
 type Props = CollectionEntry<'icons'>['data'] & {
@@ -34,7 +34,6 @@ const {
   license,
   mainColor,
   otherColors,
-  aliases,
   badInDark,
   badInLight,
   slug,
@@ -56,31 +55,6 @@ const metaDescription =
     ? `${description} Download the ${name} logo as a free SVG, or use the React, Vue, and Svelte components.`
     : `Download the ${name} logo as an optimized SVG. Free React, Vue, and Svelte components under the MIT license.`;
 
-const keywords = [
-  `${name} logo`,
-  `${name} icon`,
-  `${name} svg`,
-  `${name} logo svg`,
-  `${name} logo download`,
-  `${name} logo png`,
-  `${name} react component`,
-  `${name} brand color`,
-  ...(aliases ?? []).flatMap(a => [`${a} logo`, `${a} icon`]),
-  ...(tags ?? []).map(t => `${formatTagLabel(t)} icons`),
-  'developer icons',
-  'developer logos',
-].filter(Boolean);
-
-const faqEntries = buildIconFaq({
-  name,
-  description,
-  slug,
-  tags,
-  aliases,
-  mainColor,
-  license,
-});
-
 const jsonLd = [
   breadcrumbSchema([
     { name: 'Home', url: '/' },
@@ -89,8 +63,29 @@ const jsonLd = [
   ]),
   iconBrandSchema({ name, description, slug, website, mainColor }),
   iconImageSchema({ name, slug, license }),
-  faqSchema(faqEntries),
 ];
+
+const colorChips = [
+  mainColor ? { hex: mainColor, label: 'Primary' } : null,
+  ...(otherColors ?? []).map((hex: string) => ({ hex, label: 'Secondary' })),
+].filter((c): c is { hex: string; label: string } => c !== null);
+
+const comparisonPairs = COMPARISONS.flatMap(cmp => {
+  if (cmp.a === slug) return [{ otherSlug: cmp.b, pairSlug: compareSlug(cmp.a, cmp.b) }];
+  if (cmp.b === slug) return [{ otherSlug: cmp.a, pairSlug: compareSlug(cmp.a, cmp.b) }];
+  return [];
+});
+
+const comparisonPartners = comparisonPairs.length
+  ? await (async () => {
+      const all = await getCollection('icons');
+      const byId = new Map(all.map(i => [i.id, i.data.name]));
+      return comparisonPairs.map(c => ({
+        ...c,
+        otherName: byId.get(c.otherSlug) ?? c.otherSlug,
+      }));
+    })()
+  : [];
 
 const related = await getRelatedIcons(slug, tags, 8);
 ---
@@ -99,7 +94,6 @@ const related = await getRelatedIcons(slug, tags, 8);
   title={title}
   description={metaDescription}
   image={`/og/icons/${slug}.png`}
-  keywords={keywords}
   jsonLd={jsonLd}
   brand={name}>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
@@ -122,19 +116,57 @@ const related = await getRelatedIcons(slug, tags, 8);
       <div class="flex items-center gap-2 mt-3 sm:mt-4 flex-wrap">
         {deprecated && <Badge variant="destructive">Deprecated</Badge>}
         {version && <Badge variant="neutral">v{version}</Badge>}
-        <Badge variant="success">
-          {icons.length} variant{icons.length > 1 ? 's' : ''}
-        </Badge>
+        {icons.length > 1 ? (
+          <a
+            href={`/icons/${slug}/variants`}
+            data-astro-prefetch
+            class="inline-flex items-center px-1.5 py-0.5 border font-mono text-[10px] font-semibold uppercase tracking-[0.18em] leading-none bg-success/15 text-success border-success/20 hover:border-success transition-colors">
+            {icons.length} variants →
+          </a>
+        ) : (
+          <Badge variant="success">1 variant</Badge>
+        )}
         {
           website && (
             <a
               href={website}
               target="_blank"
               rel="noopener noreferrer"
-              class="font-mono text-xs font-semibold uppercase tracking-[0.18em] leading-none text-accent hover:text-accent-hover transition-colors break-all">
+              class="font-mono text-xs font-semibold uppercase tracking-caps leading-none text-accent hover:text-accent-hover transition-colors break-all">
               {website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
             </a>
           )
+        }
+        {
+          colorChips.map(({ hex, label }) => {
+            const bucket = bucketForHex(hex);
+            const chipClass =
+              'inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-caps leading-none text-text-muted hover:text-accent transition-colors';
+            const swatch = (
+              <span
+                aria-hidden="true"
+                class="inline-block w-3 h-3 border border-border shrink-0"
+                style={`background-color: ${hex}`}
+              />
+            );
+            const hexText = hex.toUpperCase();
+            return bucket ? (
+              <a
+                href={`/icons/color/${bucket}`}
+                aria-label={`${label} brand color ${hexText}`}
+                class={chipClass}>
+                {swatch}
+                {hexText}
+              </a>
+            ) : (
+              <span
+                aria-label={`${label} brand color ${hexText}`}
+                class={chipClass}>
+                {swatch}
+                {hexText}
+              </span>
+            );
+          })
         }
       </div>
 
@@ -168,92 +200,50 @@ const related = await getRelatedIcons(slug, tags, 8);
     badInLight={badInLight}
   />
 
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16">
-    <div class="border-t border-border pt-8 sm:pt-10">
-      <h2 class="type-h2 mb-4">About the {name} logo</h2>
-      <p class="type-body max-w-[70ch]">
-        {
-          description
-            ? `${description} The ${name} logo is published here as an optimized SVG alongside React, Vue, and Svelte components — free under the ${license ?? 'MIT'} license.`
-            : `${name} is a developer brand featured in the Devicons library. The logo ships as an optimized SVG plus React, Vue, and Svelte components — free under the ${license ?? 'MIT'} license.`
-        }
-      </p>
-      {
-        tags.length > 0 && (
-          <p class="type-body max-w-[70ch] mt-3 text-text-muted">
-            You'll see the {name} logo across{' '}
-            {tags
-              .slice(0, 3)
-              .map(t => formatTagLabel(t).toLowerCase())
-              .join(', ')}{' '}
-            stacks. Browse every{' '}
-            <a
-              href={`/icons/tag/${slugifyTag(tags[0])}`}
-              class="text-accent hover:text-accent-hover transition-colors">
-              {formatTagLabel(tags[0]).toLowerCase()} logo
-            </a>{' '}
-            in the same category.
-          </p>
-        )
-      }
-    </div>
+  {
+    Astro.slots.has('default') && (
+      <section class="max-w-4xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16">
+        <div class="border-t border-border pt-8 sm:pt-10">
+          <div class="prose max-w-[70ch]">
+            <slot />
+          </div>
+        </div>
+      </section>
+    )
+  }
 
-    {
-      mainColor && (
-        <div class="mt-10 sm:mt-12 pt-8 border-t border-border">
-          <h2 class="type-h2 mb-4">{name} brand color</h2>
-          <p class="type-body max-w-[70ch] mb-6">
-            The primary {name} brand color. Use the hex below when pairing the{' '}
-            {name} logo with your UI, slides, or documentation.
+  {
+    comparisonPartners.length > 0 && (
+      <section class="max-w-4xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16">
+        <div class="border-t border-border pt-6 sm:pt-8">
+          <p class="type-label mb-3 flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              class="inline-block w-3 h-[2px] bg-accent"
+            />
+            Compare
           </p>
-          <ul class="flex flex-wrap gap-3">
-            <li class="flex items-center gap-3 p-3 border border-border min-w-45">
-              <span
-                aria-hidden="true"
-                class="inline-block w-10 h-10 border border-border shrink-0"
-                style={`background-color: ${mainColor}`}
-              />
-              <div class="flex flex-col gap-0.5">
-                <span class="type-label">Primary</span>
-                <code class="font-mono text-sm">{mainColor.toUpperCase()}</code>
-              </div>
-            </li>
-            {otherColors?.map((hex: string) => (
-              <li class="flex items-center gap-3 p-3 border border-border min-w-45">
-                <span
-                  aria-hidden="true"
-                  class="inline-block w-10 h-10 border border-border shrink-0"
-                  style={`background-color: ${hex}`}
-                />
-                <div class="flex flex-col gap-0.5">
-                  <span class="type-label">Secondary</span>
-                  <code class="font-mono text-sm">{hex.toUpperCase()}</code>
-                </div>
+          <ul class="flex flex-wrap gap-2">
+            {comparisonPartners.map(c => (
+              <li>
+                <a
+                  href={`/compare/${c.pairSlug}`}
+                  data-astro-prefetch
+                  class="inline-flex items-center gap-2 px-3 py-2 border border-border text-sm hover:border-accent hover:text-accent transition-colors">
+                  <span class="font-mono text-xs uppercase tracking-caps text-text-muted">
+                    vs
+                  </span>
+                  <span>{c.otherName}</span>
+                </a>
               </li>
             ))}
           </ul>
         </div>
-      )
-    }
+      </section>
+    )
+  }
 
-    <div class="mt-10 sm:mt-12 pt-8 border-t border-border">
-      <h2 class="type-h2 mb-6">{name} logo FAQ</h2>
-      <dl class="divide-y divide-border">
-        {
-          faqEntries.map(entry => (
-            <div class="py-5 first:pt-0">
-              <dt class="type-h3 mb-2">{entry.question}</dt>
-              <dd class="type-body text-text-muted max-w-[70ch]">
-                {entry.answer}
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-    </div>
-  </section>
-
-  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-8 sm:pb-12">
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16 pb-8 sm:pb-12">
     <RelatedIcons icons={related} />
 
     {

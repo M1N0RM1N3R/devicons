@@ -4,7 +4,7 @@ import PageLayout from '../components/layout/page-layout.astro';
 import HeroSection from '../components/home/hero-section.astro';
 import IconMarquee from '../components/home/icon-marquee.astro';
 import { SearchIsland } from '../components/search/search-island';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { SITE_TITLE } from '../consts';
 import {
   collectionPageSchema,
   softwareApplicationSchema,
@@ -13,6 +13,9 @@ import {
 
 const icons = await getCollection('icons');
 const iconCount = icons.length;
+
+const homeTitle = `Developer icons & logos — free SVG, React, Vue, Svelte | ${SITE_TITLE}`;
+const homeDescription = `${iconCount.toLocaleString()}+ free developer icons and logos — optimized SVGs plus React, Vue, Svelte, and Astro components. MIT licensed, CDN-ready, open source.`;
 
 const popularIcons = icons
   .filter(icon => icon.data.popular)
@@ -24,8 +27,8 @@ const popularIcons = icons
 
 const jsonLd = [
   collectionPageSchema({
-    name: SITE_TITLE,
-    description: SITE_DESCRIPTION,
+    name: homeTitle,
+    description: homeDescription,
     url: '/',
     items: popularIcons,
   }),
@@ -56,8 +59,8 @@ const jsonLd = [
 ---
 
 <PageLayout
-  title={SITE_TITLE}
-  description={SITE_DESCRIPTION}
+  title={homeTitle}
+  description={homeDescription}
   image="/og/home.png"
   jsonLd={jsonLd}>
   <HeroSection iconCount={iconCount} />
